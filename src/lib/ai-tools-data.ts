@@ -1,0 +1,169 @@
+/**
+ * AI Tools Dataset
+ * 
+ * Complete dataset of 50 AI tools with their metadata, organized by category.
+ * This data is used for browsing, filtering, and tracking AI tool usage.
+ */
+
+import { AITool } from '@/types/ai-tools';
+
+export const aiTools: AITool[] = [
+  // Chat
+  { id: 1,  originalRank: 1,  name: "ChatGPT",      url: "https://chat.openai.com",    fallbackIcon: "🤖", category: "Chat", rank: 1 },
+  { id: 7,  originalRank: 7,  name: "Claude",       url: "https://claude.ai",          fallbackIcon: "🧠", category: "Chat", rank: 2 },
+  { id: 2,  originalRank: 2,  name: "Gemini",       url: "https://gemini.google.com",  fallbackIcon: "💎", category: "Chat", rank: 3 },
+  { id: 3,  originalRank: 3,  name: "deepseek",     url: "https://deepseek.com",       fallbackIcon: "🔍", category: "Chat", rank: 4 },
+  { id: 46, originalRank: 46, name: "Meta AI",      url: "https://ai.meta.com",        fallbackIcon: "🔵", category: "Chat", rank: 5 },
+  { id: 4,  originalRank: 4,  name: "Grok",         url: "https://grok.x.ai",          fallbackIcon: "🚀", category: "Chat", rank: 6 },
+  { id: 37, originalRank: 37, name: "Poe",          url: "https://poe.com",            fallbackIcon: "💬", category: "Chat", rank: 7 },
+  { id: 49, originalRank: 49, name: "Monica",       url: "https://monica.im",          fallbackIcon: "💬", category: "Chat", rank: 8 },
+  { id: 17, originalRank: 17, name: "Kimi",         url: "https://kimi.ai",            fallbackIcon: "🤖", category: "Chat", rank: 9,  flags: ["cn-region"] },
+  { id: 20, originalRank: 20, name: "Qwen3",        url: "https://qwen.ai",            fallbackIcon: "🔷", category: "Chat", rank: 10, flags: ["cn-region"] },
+  { id: 12, originalRank: 12, name: "Doubao",       url: "https://doubao.com",         fallbackIcon: "🎯", category: "Chat", rank: 11, flags: ["cn-region"] },
+
+  // Search
+  { id: 6,  originalRank: 6,  name: "perplexity",   url: "https://perplexity.ai",      fallbackIcon: "🔮", category: "Search", rank: 1 },
+  { id: 39, originalRank: 39, name: "Google Labs",  url: "https://labs.google.com",    fallbackIcon: "🧪", category: "Search", rank: 2 },
+
+  // Roleplay
+  { id: 5,  originalRank: 5,  name: "character.ai", url: "https://character.ai",       fallbackIcon: "🎭", category: "Roleplay", rank: 1 },
+  { id: 8,  originalRank: 8,  name: "JanitorAI",    url: "https://janitorai.com",      fallbackIcon: "🧹", category: "Roleplay", rank: 2 },
+  { id: 24, originalRank: 24, name: "Crushon AI",   url: "https://crushon.ai",         fallbackIcon: "💕", category: "Roleplay", rank: 3 },
+  { id: 42, originalRank: 42, name: "candy.ai",     url: "https://candy.ai",           fallbackIcon: "🍭", category: "Roleplay", rank: 4 },
+  { id: 43, originalRank: 43, name: "JuicyChat",    url: "https://juicychat.ai",       fallbackIcon: "💬", category: "Roleplay", rank: 5 },
+  { id: 48, originalRank: 48, name: "Joi",          url: "https://joi.ai",             fallbackIcon: "⚫", category: "Roleplay", rank: 6 },
+  { id: 14, originalRank: 14, name: "SPICYCHAT.AI", url: "https://spicychat.ai",       fallbackIcon: "🌶️", category: "Roleplay", rank: 7 },
+
+  // Image
+  { id: 28, originalRank: 28, name: "Midjourney",   url: "https://midjourney.com",     fallbackIcon: "🎨", category: "Image", rank: 1 },
+  { id: 40, originalRank: 40, name: "Leonardo.Ai",  url: "https://leonardo.ai",        fallbackIcon: "🎨", category: "Image", rank: 2 },
+  { id: 32, originalRank: 32, name: "CIVITAI",      url: "https://civitai.com",        fallbackIcon: "🎭", category: "Image", rank: 3 },
+  { id: 19, originalRank: 19, name: "SEARRT.AI",    url: "https://seaart.ai",          fallbackIcon: "🎨", category: "Image", rank: 4, flags: ["cn-region"] },
+  { id: 30, originalRank: 30, name: "Photoroom",    url: "https://photoroom.com",      fallbackIcon: "📷", category: "Image", rank: 5 },
+  { id: 27, originalRank: 27, name: "Pixelcut",     url: "https://pixelcut.ai",        fallbackIcon: "✂️", category: "Image", rank: 6 },
+  { id: 11, originalRank: 11, name: "remove.bg",    url: "https://remove.bg",          fallbackIcon: "🖼️", category: "Image", rank: 7 },
+  { id: 34, originalRank: 34, name: "cutout.pro",   url: "https://cutout.pro",         fallbackIcon: "✂️", category: "Image", rank: 8 },
+  { id: 50, originalRank: 50, name: "ourdream.ai",  url: "https://ourdream.ai",        fallbackIcon: "💭", category: "Image", rank: 9 },
+
+  // Video
+  { id: 44, originalRank: 44, name: "VEED",         url: "https://veed.io",            fallbackIcon: "🎬", category: "Video", rank: 1 },
+  { id: 33, originalRank: 33, name: "KlingAI",      url: "https://kling.ai",           fallbackIcon: "🎬", category: "Video", rank: 2, flags: ["cn-region"] },
+  { id: 47, originalRank: 47, name: "Remaker",      url: "https://remaker.ai",         fallbackIcon: "🔄", category: "Video", rank: 3 },
+
+  // Audio
+  { id: 21, originalRank: 21, name: "ElevenLabs",   url: "https://elevenlabs.io",      fallbackIcon: "🔊", category: "Audio", rank: 1 },
+  { id: 15, originalRank: 15, name: "SUNO",         url: "https://suno.ai",            fallbackIcon: "🎵", category: "Audio", rank: 2 },
+
+  // Transcribe
+  { id: 29, originalRank: 29, name: "TurboScribe",  url: "https://turboscribe.ai",     fallbackIcon: "📝", category: "Transcribe", rank: 1 },
+
+  // Build
+  { id: 26, originalRank: 26, name: "CURSOR",       url: "https://cursor.sh",          fallbackIcon: "📝", category: "Build", rank: 1 },
+  { id: 41, originalRank: 41, name: "replit",       url: "https://replit.com",         fallbackIcon: "💻", category: "Build", rank: 2 },
+  { id: 23, originalRank: 23, name: "Lovable",      url: "https://lovable.dev",        fallbackIcon: "💚", category: "Build", rank: 3 },
+
+  // Write
+  { id: 13, originalRank: 13, name: "NotebookLM",   url: "https://notebooklm.google.com", fallbackIcon: "📓", category: "Write", rank: 1 },
+  { id: 25, originalRank: 25, name: "GAMMA",        url: "https://gamma.app",          fallbackIcon: "📊", category: "Write", rank: 2 },
+  { id: 16, originalRank: 16, name: "QuillBot",     url: "https://quillbot.com",       fallbackIcon: "✍️", category: "Write", rank: 3 },
+  { id: 31, originalRank: 31, name: "manus",        url: "https://manus.app",          fallbackIcon: "🖐️", category: "Write", rank: 4 },
+
+  // Dev
+  { id: 22, originalRank: 22, name: "Hugging Face", url: "https://huggingface.co",     fallbackIcon: "🤗", category: "Dev", rank: 1 },
+  { id: 10, originalRank: 10, name: "Google AI Studio", url: "https://aistudio.google.com", fallbackIcon: "🎨", category: "Dev", rank: 2 },
+  { id: 36, originalRank: 36, name: "DeepAI",       url: "https://deepai.org",         fallbackIcon: "🧠", category: "Dev", rank: 3 },
+
+  // Utils
+  { id: 38, originalRank: 38, name: "ZeroGPT",      url: "https://zerogpt.com",        fallbackIcon: "🔍", category: "Utils", rank: 1 },
+  { id: 9,  originalRank: 9,  name: "Quark",        url: "https://quark.app",          fallbackIcon: "⚛️", category: "Utils", rank: 2 },
+
+  // Automation
+  { id: 51, originalRank: 51, name: "Zapier",       url: "https://zapier.com",         fallbackIcon: "⚡", category: "Automation", rank: 1 },
+  { id: 52, originalRank: 52, name: "n8n",          url: "https://n8n.io",             fallbackIcon: "🔗", category: "Automation", rank: 2 },
+
+  // Vector DB
+  { id: 53, originalRank: 53, name: "Pinecone",     url: "https://www.pinecone.io/",   fallbackIcon: "🌲", category: "Vector DB", rank: 1 },
+  { id: 54, originalRank: 54, name: "Weaviate",     url: "https://weaviate.io/",       fallbackIcon: "🔗", category: "Vector DB", rank: 2 },
+
+  // APIs
+  { id: 55, originalRank: 55, name: "Amadeus",      url: "https://developers.amadeus.com/", fallbackIcon: "✈️", category: "APIs", rank: 1 },
+
+  // Planning
+  { id: 56, originalRank: 56, name: "Linear",       url: "https://linear.app/",        fallbackIcon: "📊", category: "Planning", rank: 1 },
+
+  // Build (additional tools)
+  { id: 57, originalRank: 57, name: "Bolt.new",     url: "https://bolt.new/",          fallbackIcon: "⚡", category: "Build", rank: 4 },
+  { id: 58, originalRank: 58, name: "v0",           url: "https://v0.app/",            fallbackIcon: "🚀", category: "Build", rank: 5 },
+  { id: 59, originalRank: 59, name: "ChatPRD",      url: "http://chatprd.ai",          fallbackIcon: "📋", category: "Build", rank: 6 },
+
+  // Utils (additional tools)
+  { id: 60, originalRank: 60, name: "Warp",         url: "https://warp.dev",           fallbackIcon: "⚡", category: "Utils", rank: 3 },
+
+  // Dev (additional tools)
+  { id: 61, originalRank: 61, name: "Claude Code",  url: "https://www.anthropic.com/claude-code", fallbackIcon: "🤖", category: "Dev", rank: 4 },
+
+  // Design/Prototype
+  { id: 62, originalRank: 62, name: "Magic Patterns", url: "https://www.magicpatterns.com/", fallbackIcon: "✨", category: "Design/Prototype", rank: 1 },
+  { id: 63, originalRank: 63, name: "Figma",        url: "https://www.figma.com/",     fallbackIcon: "🎨", category: "Design/Prototype", rank: 2 },
+  { id: 64, originalRank: 64, name: "Mobbin",       url: "https://mobbin.com/",        fallbackIcon: "📱", category: "Design/Prototype", rank: 3 },
+
+  // Speech-to-text
+  { id: 65, originalRank: 65, name: "WisprFlow",    url: "https://wisprflow.ai/",      fallbackIcon: "🎤", category: "Speech-to-text", rank: 1 },
+
+  // Productivity
+  { id: 66, originalRank: 66, name: "Raycast",      url: "https://www.raycast.com/",   fallbackIcon: "⚡", category: "Productivity", rank: 1 },
+  { id: 67, originalRank: 67, name: "Granola",      url: "https://www.granola.ai/",    fallbackIcon: "🥣", category: "Productivity", rank: 2 },
+  { id: 68, originalRank: 68, name: "Superhuman",   url: "http://superhuman.com",      fallbackIcon: "🚀", category: "Productivity", rank: 3 },
+  { id: 69, originalRank: 69, name: "Notion",       url: "https://www.notion.com/",    fallbackIcon: "📝", category: "Productivity", rank: 4 },
+
+  // Video (additional tools)
+  { id: 70, originalRank: 70, name: "Descript",     url: "https://www.descript.com/",  fallbackIcon: "🎬", category: "Video", rank: 4 },
+
+  // DB
+  { id: 71, originalRank: 71, name: "Supabase",     url: "https://supabase.com",       fallbackIcon: "🗄️", category: "DB", rank: 1 },
+
+  // Deploy
+  { id: 72, originalRank: 72, name: "Vercel",       url: "https://vercel.com/",        fallbackIcon: "▲", category: "Deploy", rank: 1 },
+
+  // Image (additional tools)
+  { id: 73, originalRank: 73, name: "Unsplash",     url: "https://unsplash.com/",      fallbackIcon: "📸", category: "Image", rank: 10 },
+
+  // Other
+  { id: 45, originalRank: 45, name: "Hailuo AI",    url: "https://hailuo.ai",          fallbackIcon: "🌀", category: "Other", rank: 1, flags: ["cn-region"] },
+  { id: 18, originalRank: 18, name: "PolyBuzz",     url: "https://polybuzz.ai",        fallbackIcon: "🐝", category: "Other", rank: 2 },
+  { id: 35, originalRank: 35, name: "Adot",         url: "https://adot.ai",            fallbackIcon: "🔍", category: "Other", rank: 3 },
+];
+
+/**
+ * Get AI tools by category
+ */
+export function getAIToolsByCategory(category: string): AITool[] {
+  if (category === 'all') return aiTools;
+  return aiTools.filter(tool => tool.category === category);
+}
+
+/**
+ * Search AI tools by name
+ */
+export function searchAITools(searchTerm: string): AITool[] {
+  if (!searchTerm.trim()) return aiTools;
+  return aiTools.filter(tool => 
+    tool.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+}
+
+/**
+ * Get AI tool by ID
+ */
+export function getAIToolById(id: number): AITool | undefined {
+  return aiTools.find(tool => tool.id === id);
+}
+
+/**
+ * Get AI tool by name
+ */
+export function getAIToolByName(name: string): AITool | undefined {
+  return aiTools.find(tool => 
+    tool.name.toLowerCase() === name.toLowerCase()
+  );
+}

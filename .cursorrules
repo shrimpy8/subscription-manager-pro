@@ -1,0 +1,151 @@
+# Cursor AI Development Rules - Subscription Manager Pro
+
+## 🎯 Project Overview
+This is a Next.js project that combines the best features from:
+- **SubscriptionTracker-Enhanced**: React + TypeScript + Vite + Tailwind CSS
+- **aitoolstracker**: Next.js + TypeScript + Tailwind CSS + shadcn/ui
+
+## 🛠 Technology Stack Guidelines
+
+### Frontend Standards
+- **Next.js 15.5.3**: App Router with TypeScript
+- **TypeScript**: Use comprehensive interfaces, avoid `any` types
+- **Tailwind CSS v3**: Consistent styling with design system patterns
+- **shadcn/ui**: UI component library with Radix UI primitives
+- **Component Architecture**: Functional components with React hooks
+
+### Code Quality Standards
+- **Error Handling**: Always implement try-catch blocks and user feedback
+- **Input Validation**: Sanitize all user inputs before processing
+- **Type Safety**: Use proper TypeScript interfaces, avoid `any` types
+- **Documentation**: Add JSDoc comments for all public functions and components
+
+## 📁 Project Structure
+
+### Next.js App Router Structure
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── layout.tsx         # Root layout
+│   ├── page.tsx           # Home page
+│   └── globals.css        # Global styles
+├── components/            # Reusable UI components
+│   ├── ui/               # shadcn/ui components
+│   ├── ai-tools-browser.tsx
+│   ├── add-subscription-modal.tsx
+│   ├── advanced-filters.tsx
+│   ├── settings-modal.tsx
+│   └── sidebar.tsx
+├── lib/                   # Utility functions and configurations
+│   ├── utils.ts          # Common utilities
+│   ├── subscription-storage.ts
+│   ├── ai-tools-data.ts
+│   └── sample-data.ts
+├── types/                 # TypeScript type definitions
+│   ├── subscription.ts
+│   └── ai-tools.ts
+└── hooks/                 # Custom React hooks (future)
+```
+
+## 🔧 Development Workflow
+
+### Centralized Processing Guidelines
+
+### Single Source of Truth Rule
+**✅ REQUIRED: Always use centralized utilities**
+```typescript
+// Date operations
+import { formatDate, getDaysUntilRenewal } from '@/lib/utils'
+
+// String operations
+import { sanitizeInput, formatCurrency } from '@/lib/utils'
+
+// Validation
+import { isValidEmail, isValidUrl } from '@/lib/utils'
+```
+
+**❌ BANNED: Direct manipulation patterns**
+```typescript
+// These patterns create verification overhead and inconsistency
+new Date().toISOString()
+date.toLocaleDateString()  
+date.toISOString().split('T')[0]
+new Date(date.getTime() + milliseconds)  // Manual date arithmetic
+```
+
+### Utility-First Development Process
+1. **Before implementing**: Check if utility exists for the operation
+2. **Second occurrence rule**: Abstract into utility immediately (never copy-paste)
+3. **Test utilities extensively**: High test coverage for shared code
+4. **Document with examples**: Clear usage patterns in utility files
+
+## 🎨 UI/UX Guidelines
+
+### Design System
+- **Consistent Styling**: Use established color schemes and spacing
+- **Responsive Design**: Mobile-first approach with proper breakpoints
+- **Accessibility**: Follow WCAG guidelines, use semantic HTML
+- **Component Reusability**: Build components that can be reused across features
+
+### Component Patterns
+- **Form Handling**: Use controlled components with validation
+- **Loading States**: Always show loading indicators for async operations
+- **Error States**: Provide clear error messages and recovery options
+- **Empty States**: Handle cases where no data is available
+
+## 🧪 Testing Strategy
+
+### Development Features (Remove Before Production)
+- Auto-date population for testing convenience
+- Debug API response logging
+- Mock data fallback mechanisms
+- Console.log statements for debugging
+
+### Quality Gates
+- No hardcoded dynamic data
+- Comprehensive error handling and fallbacks
+- Input validation and sanitization
+- Proper TypeScript typing throughout
+
+## 📝 Documentation Standards
+
+### Code Comments
+- Document complex business logic
+- Explain API response structures
+- Mark temporary development features for removal
+- Add JSDoc comments for all public functions
+
+### Commit Messages
+```
+Format: "Action: Brief description"
+
+Examples:
+- "feat: Add subscription filtering with advanced options"
+- "fix: Resolve date validation for same-day subscriptions"
+- "refactor: Extract reusable form validation utilities"
+- "docs: Update component documentation"
+- "style: Improve responsive design for mobile devices"
+```
+
+## 🚨 Production Readiness
+
+### Before Deployment Checklist
+- [ ] Remove auto-date population logic
+- [ ] Clean up debug console logging
+- [ ] Validate all API credentials for production
+- [ ] Test error handling scenarios
+- [ ] Verify no hardcoded development values
+- [ ] Remove mock data fallbacks
+- [ ] Ensure all environment variables are properly configured
+
+## 🎯 Quality Metrics
+- No static defaults for dynamic data
+- >90% test coverage for critical functions
+- <2s response times for typical operations
+- Comprehensive error handling and fallbacks
+- Zero TypeScript `any` types in production code
+- All user inputs properly validated and sanitized
+
+---
+
+**Remember**: Always consider the end-user experience. Build features that are intuitive, reliable, and performant. When in doubt, prioritize code clarity and maintainability over clever optimizations.

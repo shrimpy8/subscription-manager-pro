@@ -1,0 +1,89 @@
+AI Tools by Category
+===================
+
+Chat
+----
+ChatGPT, Claude, Gemini, deepseek, Meta AI, Grok, Poe, Monica, Kimi, Qwen3, Doubao
+
+Search
+------
+perplexity, Google Labs
+
+Roleplay
+--------
+character.ai, JanitorAI, Crushon AI, candy.ai, JuicyChat, Joi, SPICYCHAT.AI
+
+Image
+-----
+Midjourney, Leonardo.Ai, CIVITAI, SEARRT.AI, Photoroom, Pixelcut, remove.bg, cutout.pro, ourdream.ai, Unsplash
+
+Video
+-----
+VEED, KlingAI, Remaker, Descript
+
+Audio
+-----
+ElevenLabs, SUNO
+
+Transcribe
+----------
+TurboScribe
+
+Build
+-----
+CURSOR, replit, Lovable, Bolt.new, v0, ChatPRD
+
+Write
+-----
+NotebookLM, GAMMA, QuillBot, manus
+
+Dev
+---
+Hugging Face, Google AI Studio, DeepAI, Claude Code
+
+Utils
+-----
+ZeroGPT, Quark, Warp
+
+Automation
+----------
+Zapier, n8n
+
+Vector DB
+---------
+Pinecone, Weaviate
+
+APIs
+----
+Amadeus
+
+Planning
+--------
+Linear
+
+Design/Prototype
+----------------
+Magic Patterns, Figma, Mobbin
+
+Speech-to-text
+--------------
+WisprFlow
+
+Productivity
+------------
+Raycast, Granola, Superhuman, Notion
+
+DB
+--
+Supabase
+
+Deploy
+------
+Vercel
+
+Other
+-----
+Hailuo AI, PolyBuzz, Adot
+
+Total Tools: 73
+Categories: 20

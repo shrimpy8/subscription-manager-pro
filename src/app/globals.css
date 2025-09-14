@@ -1,26 +1,251 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 24.6 95% 53.1%;
+    --primary-foreground: 60 9.1% 97.8%;
+    --secondary: 60 4.8% 95.9%;
+    --secondary-foreground: 24 9.8% 10%;
+    --muted: 60 4.8% 95.9%;
+    --muted-foreground: 25 5.3% 44.7%;
+    --accent: 60 4.8% 95.9%;
+    --accent-foreground: 24 9.8% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 60 9.1% 97.8%;
+    --border: 20 5.9% 90%;
+    --input: 20 5.9% 90%;
+    --ring: 24.6 95% 53.1%;
+    --radius: 0.5rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 24.6 95% 53.1%;
+    --primary-foreground: 60 9.1% 97.8%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 24.6 95% 53.1%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* SubscriptionTracker-inspired styling */
+@layer components {
+  /* Consistent Card Styles */
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-sm border border-orange-200/50 shadow-lg rounded-lg;
+  }
+  
+  .glass-card-dark {
+    @apply bg-gray-900/80 backdrop-blur-sm border border-orange-800/50 shadow-lg rounded-lg;
+  }
+  
+  .subscription-card {
+    @apply glass-card p-6 hover:shadow-xl transition-all duration-200 hover:scale-[1.02];
+  }
+  
+  .subscription-card-dark {
+    @apply glass-card-dark p-6 hover:shadow-xl transition-all duration-200 hover:scale-[1.02];
+  }
+
+  /* Consistent Color Scheme */
+  .gradient-bg {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  }
+  
+  .gradient-text {
+    @apply bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent;
+  }
+
+  /* Consistent Typography */
+  .page-title {
+    @apply text-3xl font-bold gradient-text;
+  }
+  
+  .section-title {
+    @apply text-xl font-semibold text-gray-900;
+  }
+  
+  .card-title {
+    @apply text-lg font-semibold text-gray-900;
+  }
+  
+  .card-subtitle {
+    @apply text-sm font-medium text-gray-600;
+  }
+
+  /* Consistent Button Styles */
+  .btn-primary {
+    @apply gradient-bg text-white hover:opacity-90 transition-opacity duration-200;
+  }
+  
+  .btn-secondary {
+    @apply bg-orange-100 text-orange-800 border border-orange-200 hover:bg-orange-200 transition-colors duration-200;
+  }
+
+  /* Consistent Filter Components */
+  .filter-chip {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-orange-100 text-orange-800 border border-orange-200;
+  }
+  
+  .filter-chip-active {
+    @apply gradient-bg text-white border-orange-600;
+  }
+
+  /* Consistent Status Badges */
+  .status-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  
+  .status-active {
+    @apply bg-green-100 text-green-800;
+  }
+  
+  .status-paused {
+    @apply bg-yellow-100 text-yellow-800;
+  }
+  
+  .status-canceled {
+    @apply bg-red-100 text-red-800;
+  }
+  
+  .priority-high {
+    @apply bg-red-100 text-red-800;
+  }
+  
+  .priority-medium {
+    @apply bg-yellow-100 text-yellow-800;
+  }
+  
+  .priority-low {
+    @apply bg-green-100 text-green-800;
+  }
+
+  /* Consistent Form Styles */
+  .form-section {
+    @apply space-y-4;
+  }
+  
+  .form-section-title {
+    @apply text-base font-semibold text-gray-700 mb-3;
+  }
+  
+  .form-field-group {
+    @apply space-y-2;
+  }
+  
+  .form-label {
+    @apply text-sm font-medium text-gray-700;
+  }
+
+  /* Consistent Modal Styles */
+  .modal-overlay {
+    @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50;
+  }
+  
+  .modal-content {
+    @apply bg-white rounded-lg p-6 w-full max-w-md mx-4 shadow-xl;
+  }
+  
+  .modal-header {
+    @apply flex items-center justify-between mb-6;
+  }
+  
+  .modal-title {
+    @apply text-lg font-semibold text-gray-900;
+  }
+
+  /* Consistent Spacing */
+  .section-spacing {
+    @apply mb-8;
+  }
+  
+  .card-spacing {
+    @apply mb-6;
+  }
+  
+  .element-spacing {
+    @apply mb-4;
+  }
+}
+
+/* Custom scrollbar */
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(251 146 60) rgb(254 243 199);
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: rgb(254 243 199);
+    border-radius: 3px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgb(251 146 60);
+    border-radius: 3px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: rgb(249 115 22);
+  }
+}
+
+/* Custom styles for nested dropdown */
+@layer components {
+  .nested-dropdown-item {
+    @apply relative;
+  }
+  
+  .nested-dropdown-item::before {
+    content: '';
+    @apply absolute left-0 top-0 bottom-0 w-0.5 bg-orange-300;
+  }
+  
+  .nested-dropdown-item:hover::before {
+    @apply bg-orange-500;
+  }
 }

@@ -1,103 +1,589 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+import { useState, useEffect } from 'react';
+import { Plus, Search, Filter, Grid, List, BarChart3, Settings, Sparkles, Download } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Subscription, SubscriptionFilters, ViewMode } from '@/types/subscription';
+import { loadSubscriptions, saveSubscriptions, exportSubscriptionsToCSV, downloadCSV } from '@/lib/subscription-persistence';
+import { handleSubscriptionError } from '@/utils/error-handler';
+import { formatCurrency, getDaysUntilRenewal, getStatusColor, getPriorityColor, generateId, toDate, getDefaultRenewalDate, getCurrentDate, formatDate } from '@/lib/utils';
+import { initializeSampleData } from '@/lib/sample-data';
+import { AdvancedFilters } from '@/components/advanced-filters';
+import AIToolsBrowser from '@/components/ai-tools-browser';
+import Sidebar from '@/components/sidebar';
+import AddSubscriptionModal from '@/components/add-subscription-modal';
+import { ErrorBoundary } from '@/components/error-boundary';
+import SubscriptionsTable from '@/components/subscriptions-table';
+import SubscriptionDetailsModal from '@/components/subscription-details-modal';
+import EditSubscriptionModal from '@/components/edit-subscription-modal';
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+export default function HomePage() {
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
+  const [filters, setFilters] = useState<SubscriptionFilters>({
+    search: '',
+    category: 'all',
+    subcategory: 'all',
+    status: 'all',
+    billingCycle: 'all',
+    priority: 'all',
+    usageFrequency: 'all',
+    costRange: { min: 0, max: 1000 },
+    tags: [],
+    showExpiringSoon: false,
+    showUnused: false
+  });
+  const [viewMode, setViewMode] = useState<ViewMode>({
+    type: 'grid',
+    sortBy: 'name',
+    sortOrder: 'asc',
+    groupBy: undefined
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [currentTab, setCurrentTab] = useState<'subscriptions' | 'ai-tools'>('subscriptions');
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedSubscription, setSelectedSubscription] = useState<Subscription | null>(null);
+  
+  // Simple test to see if client-side JS is working
+  if (typeof window !== 'undefined') {
+    // Client-side JavaScript is executing
+  }
+
+  useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+    
+    const loadData = async () => {
+      try {
+        setIsLoading(true);
+        const loadedSubscriptions = await loadSubscriptions();
+        setSubscriptions(loadedSubscriptions);
+      } catch (error) {
+        handleSubscriptionError(
+          error as Error,
+          'loading initial data',
+          { component: 'main-page' }
+        );
+        setSubscriptions([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  // Filter and sort subscriptions
+  const filteredSubscriptions = subscriptions
+    .filter(sub => {
+      const matchesSearch = sub.name.toLowerCase().includes(filters.search.toLowerCase()) ||
+                           sub.plan.toLowerCase().includes(filters.search.toLowerCase());
+      const matchesCategory = filters.category === 'all' || sub.category === filters.category;
+      
+      // Subcategory filtering - only apply when category is AI Tools
+      const matchesSubcategory = filters.subcategory === 'all' || 
+        (filters.category === 'AI Tools' && sub.subcategory === filters.subcategory) ||
+        (filters.category !== 'AI Tools');
+      
+      const matchesStatus = filters.status === 'all' || sub.status === filters.status;
+      const matchesPriority = filters.priority === 'all' || sub.priority === filters.priority;
+      const matchesUsage = filters.usageFrequency === 'all' || sub.usageFrequency === filters.usageFrequency;
+      const matchesCost = sub.cost >= filters.costRange.min && sub.cost <= filters.costRange.max;
+      
+      // AI Tools Tracker enhanced filtering
+      const matchesExpiringSoon = !filters.showExpiringSoon || getDaysUntilRenewal(sub.renewalDate) <= 7;
+      const matchesUnused = !filters.showUnused || sub.usageFrequency === 'rarely';
+      
+      return matchesSearch && matchesCategory && matchesSubcategory && matchesStatus && matchesPriority && 
+             matchesUsage && matchesCost && matchesExpiringSoon && matchesUnused;
+    })
+    .sort((a, b) => {
+      let aValue: string | number | Date = a[viewMode.sortBy] as string | number | Date;
+      let bValue: string | number | Date = b[viewMode.sortBy] as string | number | Date;
+      
+      if (viewMode.sortBy === 'cost') {
+        aValue = a.cost;
+        bValue = b.cost;
+      } else if (viewMode.sortBy === 'renewalDate') {
+        aValue = toDate(a.renewalDate);
+        bValue = toDate(b.renewalDate);
+      } else if (typeof aValue === 'string' && typeof bValue === 'string') {
+        aValue = aValue.toLowerCase();
+        bValue = bValue.toLowerCase();
+      }
+      
+      if (viewMode.sortOrder === 'asc') {
+        return aValue > bValue ? 1 : -1;
+      } else {
+        return aValue < bValue ? 1 : -1;
+      }
+    });
+
+  const totalMonthlyCost = subscriptions
+    .filter(sub => sub.status === 'active')
+    .reduce((sum, sub) => sum + sub.cost, 0);
+
+  const activeSubscriptions = subscriptions.filter(sub => sub.status === 'active').length;
+  const expiringSoon = subscriptions.filter(sub => 
+    sub.status === 'active' && getDaysUntilRenewal(sub.renewalDate) <= 7
+  ).length;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading subscriptions...</p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
+    );
+  }
+
+  // Error banner component
+  const ErrorBanner = () => {
+    if (!error) return null;
+    
+    return (
+      <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-4">
+        <div className="flex">
+          <div className="flex-shrink-0">
+            <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+            </svg>
+          </div>
+          <div className="ml-3">
+            <p className="text-sm text-red-800">{error}</p>
+          </div>
+          <div className="ml-auto pl-3">
+            <div className="-mx-1.5 -my-1.5">
+              <button
+                type="button"
+                className="inline-flex bg-red-50 rounded-md p-1.5 text-red-500 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-red-50 focus:ring-red-600"
+                onClick={() => setError(null)}
+              >
+                <span className="sr-only">Dismiss</span>
+                <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
+      {/* Sidebar */}
+      <Sidebar 
+        currentTab={currentTab} 
+        onTabChange={setCurrentTab}
+      />
+
+      {/* Main Content Area */}
+      <div className="md:ml-64 min-h-screen">
+        {/* Top Header Bar */}
+        <header className="glass-card border-b border-orange-200/50 sticky top-0 z-30">
+          <div className="px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-16">
+              <div className="flex items-center space-x-4">
+                <h2 className="section-title">
+                  {currentTab === 'subscriptions' ? 'Subscriptions' : 'Trending AI Tools'}
+                </h2>
+                <Badge variant="secondary" className="btn-secondary">
+                  {currentTab === 'subscriptions' ? `${activeSubscriptions} Active` : '50 Tools'}
+                </Badge>
+              </div>
+              
+              {currentTab === 'subscriptions' && (
+                <div className="flex items-center space-x-4">
+                  <Button 
+                    variant="outline"
+                    disabled={isExporting}
+                    onClick={async () => {
+                      try {
+                        setIsExporting(true);
+                        setError(null);
+                        const csvContent = exportSubscriptionsToCSV(subscriptions);
+                        downloadCSV(csvContent, `subscriptions-${formatDate(getCurrentDate(), 'input')}.csv`);
+                      } catch (error) {
+                        setError('Failed to export subscriptions. Please try again.');
+                        handleSubscriptionError(
+                          error as Error,
+                          'exporting subscriptions',
+                          { component: 'main-page' }
+                        );
+                      } finally {
+                        setIsExporting(false);
+                      }
+                    }}
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    {isExporting ? 'Exporting...' : 'Export CSV'}
+                  </Button>
+                  <Button 
+                    className="btn-primary"
+                    onClick={() => window.open('/ai-tool-form', '_blank')}
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Subscription
+                  </Button>
+                </div>
+              )}
+              
+              {currentTab === 'ai-tools' && (
+                <div className="flex items-center space-x-4">
+                  <Button 
+                    className="btn-primary"
+                    onClick={() => window.open('/ai-tool-form', '_blank')}
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add AI Tool
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+        </header>
+
+        {/* Main Content */}
+        {currentTab === 'subscriptions' ? (
+          <ErrorBoundary>
+            <div className="px-4 sm:px-6 lg:px-8 py-8">
+              <ErrorBanner />
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 section-spacing">
+          <Card className="subscription-card">
+            <CardHeader className="pb-2">
+              <CardTitle className="card-subtitle">Monthly Cost</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-orange-600">
+                {formatCurrency(totalMonthlyCost)}
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card className="subscription-card">
+            <CardHeader className="pb-2">
+              <CardTitle className="card-subtitle">Active Subscriptions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-green-600">{activeSubscriptions}</div>
+            </CardContent>
+          </Card>
+          
+          <Card className="subscription-card">
+            <CardHeader className="pb-2">
+              <CardTitle className="card-subtitle">Expiring Soon</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-yellow-600">{expiringSoon}</div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Search and View Controls */}
+        <Card className="subscription-card card-spacing">
+          <CardContent className="pt-6">
+            <div className="flex flex-col lg:flex-row gap-4">
+              {/* Search */}
+              <div className="flex-1">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Input
+                    placeholder="Search subscriptions..."
+                    value={filters.search}
+                    onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+              
+              {/* View Mode Toggle */}
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant={viewMode.type === 'grid' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode(prev => ({ ...prev, type: 'grid' }))}
+                >
+                  <Grid className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant={viewMode.type === 'list' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode(prev => ({ ...prev, type: 'list' }))}
+                >
+                  <List className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant={viewMode.type === 'analytics' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode(prev => ({ ...prev, type: 'analytics' }))}
+                >
+                  <BarChart3 className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Advanced Filters - AI Tools Tracker Feature */}
+        <AdvancedFilters
+          filters={filters}
+          onFiltersChange={(newFilters) => setFilters(prev => ({ ...prev, ...newFilters }))}
+          onClearFilters={() => setFilters({
+            search: '',
+            category: 'all',
+            subcategory: 'all',
+            status: 'all',
+            billingCycle: 'all',
+            priority: 'all',
+            usageFrequency: 'all',
+            costRange: { min: 0, max: 1000 },
+            tags: [],
+            showExpiringSoon: false,
+            showUnused: false
+          })}
+        />
+
+        {/* Main Content */}
+        <Tabs value={viewMode.type} onValueChange={(value) => setViewMode(prev => ({ ...prev, type: value as "grid" | "list" | "analytics" }))}>
+          <TabsContent value="grid" className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredSubscriptions.map((subscription) => (
+                <Card key={subscription.id} className="subscription-card">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                          <span className="text-orange-600 font-semibold text-sm">
+                            {subscription.name.charAt(0)}
+                          </span>
+                        </div>
+                        <div>
+                          <CardTitle className="text-lg">{subscription.name}</CardTitle>
+                          <p className="text-sm text-gray-600">{subscription.plan}</p>
+                        </div>
+                      </div>
+                      <Badge className={getStatusColor(subscription.status)}>
+                        {subscription.status}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  
+                  <CardContent className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-2xl font-bold text-orange-600">
+                        {formatCurrency(subscription.cost, subscription.currency)}
+                      </span>
+                      <Badge className={getPriorityColor(subscription.priority)}>
+                        {subscription.priority}
+                      </Badge>
+                    </div>
+                    
+                    <div className="text-sm text-gray-600">
+                      <p>Renews in {getDaysUntilRenewal(subscription.renewalDate)} days</p>
+                      <p>Category: {subscription.category}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="list" className="space-y-4">
+            <SubscriptionsTable
+              subscriptions={filteredSubscriptions}
+              onEdit={(subscription) => {
+                setSelectedSubscription(subscription);
+                setIsEditModalOpen(true);
+              }}
+              onDuplicate={async (subscription) => {
+                const duplicated = {
+                  ...subscription,
+                  id: generateId(),
+                  name: `${subscription.name} (Copy)`,
+                  status: 'active' as const,
+                  startDate: getCurrentDate(),
+                  renewalDate: getDefaultRenewalDate()
+                };
+                const updatedSubscriptions = [...subscriptions, duplicated];
+                setSubscriptions(updatedSubscriptions);
+                setIsSaving(true);
+                try {
+                  await saveSubscriptions(updatedSubscriptions);
+                } catch (error) {
+                  setError('Failed to save subscription. Please try again.');
+                  handleSubscriptionError(
+                    error as Error,
+                    'duplicating subscription',
+                    { component: 'main-page' }
+                  );
+                } finally {
+                  setIsSaving(false);
+                }
+              }}
+              onDelete={async (subscription) => {
+                if (confirm(`Are you sure you want to delete ${subscription.name}?`)) {
+                  const updatedSubscriptions = subscriptions.filter(s => s.id !== subscription.id);
+                  setSubscriptions(updatedSubscriptions);
+                  setIsSaving(true);
+                  try {
+                    await saveSubscriptions(updatedSubscriptions);
+                  } catch (error) {
+                    setError('Failed to delete subscription. Please try again.');
+                    handleSubscriptionError(
+                      error as Error,
+                      'deleting subscription',
+                      { component: 'main-page' }
+                    );
+                  } finally {
+                    setIsSaving(false);
+                  }
+                }
+              }}
+              onPause={async (subscription) => {
+                const updatedSubscriptions = subscriptions.map(s => 
+                  s.id === subscription.id 
+                    ? { ...s, status: s.status === 'paused' ? 'active' : 'paused' }
+                    : s
+                );
+                setSubscriptions(updatedSubscriptions);
+                setIsSaving(true);
+                try {
+                  await saveSubscriptions(updatedSubscriptions);
+                } catch (error) {
+                  setError('Failed to update subscription status. Please try again.');
+                  handleSubscriptionError(
+                    error as Error,
+                    'updating subscription status',
+                    { component: 'main-page' }
+                  );
+                } finally {
+                  setIsSaving(false);
+                }
+              }}
+              onViewDetails={(subscription) => {
+                setSelectedSubscription(subscription);
+                setIsDetailsModalOpen(true);
+              }}
+            />
+          </TabsContent>
+          
+          <TabsContent value="analytics" className="space-y-4">
+            <Card className="subscription-card">
+              <CardHeader>
+                <CardTitle>Analytics Dashboard</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600">Analytics features coming soon...</p>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          </Tabs>
+          </div>
+          </ErrorBoundary>
+        ) : (
+          <ErrorBoundary>
+            <div className="px-4 sm:px-6 lg:px-8 py-8">
+              <ErrorBanner />
+              <AIToolsBrowser
+              onAddToSubscriptions={(tool) => {
+                // Create new subscription from AI tool
+                const newSubscription: Subscription = {
+                  id: generateId(),
+                  name: tool.name,
+                  category: 'AI Tools',
+                  subcategory: tool.category, // Use AI tool category as subcategory
+                  status: 'active',
+                  cost: 0,
+                  billingCycle: 'Monthly',
+                  renewalDate: getDefaultRenewalDate(),
+                  startDate: getCurrentDate(),
+                  priority: 'medium',
+                  usageFrequency: 'monthly',
+                  url: tool.url,
+                  description: `AI tool from ${tool.category} category`,
+                  notes: `Added from AI Tools Browser - ${tool.category} category`,
+                  accountEmail: '',
+                  autoRenew: true
+                };
+                
+                const updatedSubscriptions = [...subscriptions, newSubscription];
+                setSubscriptions(updatedSubscriptions);
+                setIsSaving(true);
+                try {
+                  await saveSubscriptions(updatedSubscriptions);
+                } catch (error) {
+                  setError('Failed to add subscription. Please try again.');
+                  handleSubscriptionError(
+                    error as Error,
+                    'adding subscription from AI tool',
+                    { component: 'main-page' }
+                  );
+                } finally {
+                  setIsSaving(false);
+                }
+                
+                // Silent action - no alert needed
+              }}
+              onMarkAsUsing={(tool) => {
+                // Silent action - no alert needed
+              }}
+            />
+          </div>
+          </ErrorBoundary>
+        )}
+        </div>
+
+      {/* Modals */}
+      <ErrorBoundary>
+        <AddSubscriptionModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onAdd={async (subscription) => {
+          const updatedSubscriptions = [...subscriptions, subscription];
+          setSubscriptions(updatedSubscriptions);
+          await saveSubscriptions(updatedSubscriptions);
+        }}
+      />
+
+
+      <SubscriptionDetailsModal
+        isOpen={isDetailsModalOpen}
+        onClose={() => {
+          setIsDetailsModalOpen(false);
+          setSelectedSubscription(null);
+        }}
+        subscription={selectedSubscription}
+      />
+
+      <EditSubscriptionModal
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setSelectedSubscription(null);
+        }}
+        subscription={selectedSubscription}
+        onSave={async (updatedSubscription) => {
+          const updatedSubscriptions = subscriptions.map(s => 
+            s.id === updatedSubscription.id ? updatedSubscription : s
+          );
+          setSubscriptions(updatedSubscriptions);
+          await saveSubscriptions(updatedSubscriptions);
+        }}
+      />
+      </ErrorBoundary>
     </div>
   );
 }
