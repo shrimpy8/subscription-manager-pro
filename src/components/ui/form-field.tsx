@@ -6,12 +6,12 @@ import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { ValidationRule, validateField } from '@/utils/validation';
 
-interface FormFieldProps {
+interface FormFieldProps<T = string> {
   label: string;
   name: string;
   type?: 'text' | 'email' | 'url' | 'number' | 'password' | 'tel' | 'date' | 'textarea';
-  value: any;
-  onChange: (value: any) => void;
+  value: T;
+  onChange: (value: T) => void;
   onBlur?: () => void;
   placeholder?: string;
   required?: boolean;
@@ -23,7 +23,7 @@ interface FormFieldProps {
   error?: string;
 }
 
-export function FormField({
+export function FormField<T = string>({
   label,
   name,
   type = 'text',
@@ -38,7 +38,7 @@ export function FormField({
   showValidation = true,
   helpText,
   error
-}: FormFieldProps) {
+}: FormFieldProps<T>) {
   const [localError, setLocalError] = useState<string>('');
   const [isTouched, setIsTouched] = useState(false);
 
@@ -141,18 +141,18 @@ export function FormField({
 /**
  * Form validation wrapper component
  */
-interface FormValidationProps {
+interface FormValidationProps<T = Record<string, unknown>> {
   children: React.ReactNode;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: T) => void;
   validation?: Record<string, ValidationRule[]>;
   className?: string;
 }
 
-export function FormValidation({ children, onSubmit, validation = {}, className }: FormValidationProps) {
+export function FormValidation<T = Record<string, unknown>>({ children, onSubmit, validation = {}, className }: FormValidationProps<T>) {
   const [errors, setErrors] = useState<Record<string, string[]>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const validateForm = (formData: any): boolean => {
+  const validateForm = (formData: T): boolean => {
     const newErrors: Record<string, string[]> = {};
     let isValid = true;
 

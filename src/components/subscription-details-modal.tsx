@@ -25,10 +25,10 @@ export default function SubscriptionDetailsModal({
   // Using centralized date utility function
 
   const getSubscriptionIcon = (subscription: Subscription) => {
-    if ((subscription as any).logoUrl) {
+    if (subscription.logoUrl) {
       return (
         <img 
-          src={(subscription as any).logoUrl} 
+          src={subscription.logoUrl} 
           alt={subscription.name}
           className="w-16 h-16 rounded-xl object-cover"
           onError={(e) => {
@@ -36,7 +36,7 @@ export default function SubscriptionDetailsModal({
             target.style.display = 'none';
             const parent = target.parentElement;
             if (parent) {
-              parent.innerHTML = `<div class="w-16 h-16 bg-orange-100 rounded-xl flex items-center justify-center text-2xl">${(subscription as any).fallbackIcon || subscription.name.charAt(0)}</div>`;
+              parent.innerHTML = `<div class="w-16 h-16 bg-orange-100 rounded-xl flex items-center justify-center text-2xl">${subscription.fallbackIcon || subscription.name.charAt(0)}</div>`;
             }
           }}
         />
@@ -45,7 +45,7 @@ export default function SubscriptionDetailsModal({
 
     return (
       <div className="w-16 h-16 bg-orange-100 rounded-xl flex items-center justify-center text-2xl">
-        {(subscription as any).fallbackIcon || subscription.name.charAt(0)}
+        {subscription.fallbackIcon || subscription.name.charAt(0)}
       </div>
     );
   };
@@ -76,18 +76,18 @@ export default function SubscriptionDetailsModal({
                                  'bg-red-100 text-red-800'}>
                   {subscription.status}
                 </Badge>
-                {(subscription as any).chinaRegionOnly && (
+                {subscription.chinaRegionOnly && (
                   <Badge variant="outline" className="bg-red-100 text-red-800 border-red-300">
                     CN Region
                   </Badge>
                 )}
-                {(subscription as any).safeForWork === false && (
+                {subscription.safeForWork === false && (
                   <Badge variant="outline" className="bg-purple-100 text-purple-800 border-purple-300">
                     NSFW
                   </Badge>
                 )}
               </div>
-              <p className="text-gray-600 mb-2">{(subscription as any).plan || 'Free'} Plan</p>
+              <p className="text-gray-600 mb-2">{subscription.plan || 'Free'} Plan</p>
               <p className="text-sm text-gray-500">{subscription.description}</p>
             </div>
             <Button 
@@ -132,11 +132,11 @@ export default function SubscriptionDetailsModal({
                   <span className="text-gray-600">Auto Renew</span>
                   <span className="font-medium">{subscription.autoRenew ? 'Yes' : 'No'}</span>
                 </div>
-                {(subscription as any).latestPromotionCode && (
+                {subscription.latestPromotionCode && (
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Latest Promo</span>
                     <Badge variant="outline" className="bg-green-100 text-green-800">
-                      {(subscription as any).latestPromotionCode}
+                      {subscription.latestPromotionCode}
                     </Badge>
                   </div>
                 )}
@@ -188,11 +188,11 @@ export default function SubscriptionDetailsModal({
                   <span className="text-gray-600 block mb-1">Current Email</span>
                   <span className="font-medium">{subscription.accountEmail || 'Not set'}</span>
                 </div>
-                {(subscription as any).accountEmailsUsedPreviously?.length > 0 && (
+                {subscription.accountEmailsUsedPreviously?.length > 0 && (
                   <div>
                     <span className="text-gray-600 block mb-1">Previous Emails</span>
                     <div className="space-y-1">
-                      {(subscription as any).accountEmailsUsedPreviously.map((email: string, index: number) => (
+                      {subscription.accountEmailsUsedPreviously.map((email: string, index: number) => (
                         <span key={index} className="text-sm text-gray-500 block">{email}</span>
                       ))}
                     </div>
@@ -219,11 +219,11 @@ export default function SubscriptionDetailsModal({
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {(subscription as any).apiAccessKeys?.length > 0 && (
+                {subscription.apiAccessKeys?.length > 0 && (
                   <div>
                     <span className="text-gray-600 block mb-1">API Keys</span>
                     <div className="space-y-1">
-                      {(subscription as any).apiAccessKeys.map((key: string, index: number) => (
+                      {subscription.apiAccessKeys.map((key: string, index: number) => (
                         <div key={index} className="text-sm font-mono bg-gray-100 p-2 rounded">
                           {key.substring(0, 8)}...{key.substring(key.length - 4)}
                         </div>
@@ -231,24 +231,24 @@ export default function SubscriptionDetailsModal({
                     </div>
                   </div>
                 )}
-                {(subscription as any).secretKey && (
+                {subscription.secretKey && (
                   <div>
                     <span className="text-gray-600 block mb-1">Secret Key</span>
                     <div className="text-sm font-mono bg-gray-100 p-2 rounded">
-                      {(subscription as any).secretKey.substring(0, 8)}...{(subscription as any).secretKey.substring((subscription as any).secretKey.length - 4)}
+                      {subscription.secretKey.substring(0, 8)}...{subscription.secretKey.substring(subscription.secretKey.length - 4)}
                     </div>
                   </div>
                 )}
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Safe for Work</span>
-                  <Badge variant="outline" className={(subscription as any).safeForWork ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
-                    {(subscription as any).safeForWork ? 'Yes' : 'No'}
+                  <Badge variant="outline" className={subscription.safeForWork ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
+                    {subscription.safeForWork ? 'Yes' : 'No'}
                   </Badge>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">China Region Only</span>
-                  <Badge variant="outline" className={(subscription as any).chinaRegionOnly ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}>
-                    {(subscription as any).chinaRegionOnly ? 'Yes' : 'No'}
+                  <Badge variant="outline" className={subscription.chinaRegionOnly ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}>
+                    {subscription.chinaRegionOnly ? 'Yes' : 'No'}
                   </Badge>
                 </div>
               </CardContent>
@@ -271,7 +271,7 @@ export default function SubscriptionDetailsModal({
           )}
 
           {/* Promotion History */}
-          {(subscription as any).previouslyUsedPromotionCode?.length > 0 && (
+          {subscription.previouslyUsedPromotionCode?.length > 0 && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center text-lg">
@@ -281,7 +281,7 @@ export default function SubscriptionDetailsModal({
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
-                  {(subscription as any).previouslyUsedPromotionCode.map((code: string, index: number) => (
+                  {subscription.previouslyUsedPromotionCode.map((code: string, index: number) => (
                     <Badge key={index} variant="outline" className="bg-blue-100 text-blue-800">
                       {code}
                     </Badge>

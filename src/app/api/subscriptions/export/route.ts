@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
         sub.name,
         sub.category,
         sub.subcategory || '',
-        (sub as any).plan || '',
+        sub.plan || '',
         sub.cost.toString(),
         sub.currency,
         sub.billingCycle,
@@ -54,8 +54,8 @@ export async function GET(request: NextRequest) {
         sub.notes,
         sub.accountEmail,
         sub.autoRenew ? 'Yes' : 'No',
-        (sub as any).safeForWork ? 'Yes' : 'No',
-        (sub as any).chinaRegionOnly ? 'Yes' : 'No'
+        sub.safeForWork ? 'Yes' : 'No',
+        sub.chinaRegionOnly ? 'Yes' : 'No'
       ]);
 
       const csvContent = [headers, ...rows]

@@ -95,10 +95,10 @@ export default function SubscriptionsTable({
 
   const getSubscriptionIcon = (subscription: Subscription) => {
     // Try to use logoUrl if available
-    if ((subscription as any).logoUrl) {
+    if (subscription.logoUrl) {
       return (
         <img 
-          src={(subscription as any).logoUrl} 
+          src={subscription.logoUrl} 
           alt={subscription.name}
           className="w-8 h-8 rounded-lg object-cover"
           onError={(e) => {
@@ -115,10 +115,10 @@ export default function SubscriptionsTable({
     }
 
     // Use fallback icon if available
-    if ((subscription as any).fallbackIcon) {
+    if (subscription.fallbackIcon) {
       return (
         <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center text-lg">
-          {(subscription as any).fallbackIcon}
+          {subscription.fallbackIcon}
         </div>
       );
     }
@@ -216,12 +216,12 @@ export default function SubscriptionsTable({
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center space-x-2">
                         <p className="font-medium text-gray-900 truncate">{subscription.name}</p>
-                        {(subscription as any).chinaRegionOnly && (
+                        {subscription.chinaRegionOnly && (
                           <Badge variant="outline" className="bg-red-100 text-red-800 border-red-300 text-xs">
                             CN Region
                           </Badge>
                         )}
-                        {(subscription as any).safeForWork === false && (
+                        {subscription.safeForWork === false && (
                           <Badge variant="outline" className="bg-purple-100 text-purple-800 border-purple-300 text-xs">
                             NSFW
                           </Badge>
@@ -237,7 +237,7 @@ export default function SubscriptionsTable({
                 </td>
                 <td className="p-4">
                   <span className="text-sm font-medium text-gray-900">
-                    {(subscription as any).plan || subscription.plan || 'Free'}
+                    {subscription.plan || 'Free'}
                   </span>
                 </td>
                 <td className="p-4">
@@ -247,9 +247,9 @@ export default function SubscriptionsTable({
                       {formatCurrency(subscription.cost, subscription.currency)}
                     </span>
                   </div>
-                  {(subscription as any).latestPromotionCode && (
+                  {subscription.latestPromotionCode && (
                     <p className="text-xs text-green-600 mt-1">
-                      -{(subscription as any).latestPromotionCode}
+                      -{subscription.latestPromotionCode}
                     </p>
                   )}
                 </td>

@@ -121,7 +121,7 @@ export default function EditSubscriptionModal({
                 </div>
                 <div>
                   <Label htmlFor="plan" className="text-sm font-medium text-gray-700">Plan</Label>
-                  <Select value={(formData as any).plan || ''} onValueChange={(value) => handleInputChange('plan', value)}>
+                  <Select value={formData.plan || ''} onValueChange={(value) => handleInputChange('plan', value)}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select plan" />
                     </SelectTrigger>

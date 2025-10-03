@@ -6,6 +6,21 @@
  */
 
 import { handleValidationError } from './error-handler';
+import { Subscription } from '@/types/subscription';
+
+/**
+ * Interface for AI tool data validation
+ */
+export interface AIToolData {
+  name: string;
+  url: string;
+  category: string;
+  subcategory?: string;
+  description?: string;
+  cost?: number;
+  currency?: string;
+  billingCycle?: string;
+}
 
 /**
  * Result of a validation operation
@@ -26,10 +41,15 @@ export interface FieldValidation {
   /** The name of the field being validated */
   field: string;
   /** The value to validate */
-  value: any;
+  value: ValidationValue;
   /** Array of validation rules to apply */
   rules: ValidationRule[];
 }
+
+/**
+ * Supported validation value types
+ */
+export type ValidationValue = string | number | boolean | Date | null | undefined;
 
 /**
  * A single validation rule
@@ -38,11 +58,11 @@ export interface ValidationRule {
   /** The type of validation to perform */
   type: 'required' | 'email' | 'url' | 'minLength' | 'maxLength' | 'min' | 'max' | 'pattern' | 'custom';
   /** The value to compare against (for min/max/length rules) */
-  value?: any;
+  value?: ValidationValue;
   /** The error message to display if validation fails */
   message: string;
   /** Custom validator function (for 'custom' type) */
-  validator?: (value: any) => boolean;
+  validator?: (value: ValidationValue) => boolean;
 }
 
 /**
@@ -59,7 +79,7 @@ export interface ValidationRule {
  * ]);
  * ```
  */
-export function validateField(field: string, value: any, rules: ValidationRule[]): ValidationResult {
+export function validateField(field: string, value: ValidationValue, rules: ValidationRule[]): ValidationResult {
   const errors: string[] = [];
   const warnings: string[] = [];
 
@@ -89,7 +109,7 @@ export function validateField(field: string, value: any, rules: ValidationRule[]
  * @returns True if the rule passes, false otherwise
  * @internal
  */
-function validateRule(value: any, rule: ValidationRule): boolean {
+function validateRule(value: ValidationValue, rule: ValidationRule): boolean {
   switch (rule.type) {
     case 'required':
       return value !== null && value !== undefined && value !== '';
@@ -168,7 +188,7 @@ export function validateFields(fields: FieldValidation[]): ValidationResult {
  * });
  * ```
  */
-export function validateSubscription(data: any): ValidationResult {
+export function validateSubscription(data: Partial<Subscription>): ValidationResult {
   const fields: FieldValidation[] = [
     {
       field: 'name',
@@ -258,7 +278,7 @@ export function validateSubscription(data: any): ValidationResult {
  * });
  * ```
  */
-export function validateAITool(data: any): ValidationResult {
+export function validateAITool(data: Partial<AIToolData>): ValidationResult {
   const fields: FieldValidation[] = [
     {
       field: 'name',
@@ -415,9 +435,9 @@ export function useValidation() {
   const [errors, setErrors] = React.useState<Record<string, string[]>>({});
   const [isValidating, setIsValidating] = React.useState(false);
 
-  const validateField = React.useCallback(async (
+  const validateFieldHook = React.useCallback(async (
     field: string, 
-    value: any, 
+    value: ValidationValue, 
     rules: ValidationRule[]
   ) => {
     setIsValidating(true);
@@ -461,7 +481,7 @@ export function useValidation() {
   return {
     errors,
     isValidating,
-    validateField,
+    validateField: validateFieldHook,
     clearErrors,
     hasErrors
   };
