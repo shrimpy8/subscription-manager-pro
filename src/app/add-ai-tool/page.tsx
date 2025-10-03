@@ -268,7 +268,7 @@ export default function AddAIToolPage() {
             <Button 
               type="button" 
               variant="outline"
-              onClick={() => window.location.href = '/'}
+              onClick={() => window.location.href = '/?tab=ai-tools'}
             >
               Cancel
             </Button>
