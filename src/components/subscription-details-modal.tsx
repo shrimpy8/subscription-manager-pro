@@ -52,10 +52,10 @@ export default function SubscriptionDetailsModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="!max-w-[75vw] !w-[75vw] max-h-[90vh] overflow-y-auto sm:!max-w-[75vw]">
+      <DialogContent className="!max-w-[75vw] !w-[75vw] max-h-[90vh] overflow-y-auto sm:!max-w-[75vw] glass-card">
         <DialogHeader>
           <div className="flex items-center justify-between">
-            <DialogTitle className="text-2xl font-bold text-gray-900">
+            <DialogTitle className="modal-title text-2xl">
               Subscription Details
             </DialogTitle>
             <Button variant="ghost" size="sm" onClick={onClose}>
@@ -104,7 +104,7 @@ export default function SubscriptionDetailsModal({
             {/* Billing Information */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center text-lg">
+                <CardTitle className="flex items-center card-title">
                   <DollarSign className="w-5 h-5 mr-2 text-orange-600" />
                   Billing Information
                 </CardTitle>
@@ -146,7 +146,7 @@ export default function SubscriptionDetailsModal({
             {/* Dates & Usage */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center text-lg">
+                <CardTitle className="flex items-center card-title">
                   <Calendar className="w-5 h-5 mr-2 text-orange-600" />
                   Dates & Usage
                 </CardTitle>
@@ -178,7 +178,7 @@ export default function SubscriptionDetailsModal({
             {/* Account Information */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center text-lg">
+                <CardTitle className="flex items-center card-title">
                   <User className="w-5 h-5 mr-2 text-orange-600" />
                   Account Information
                 </CardTitle>
@@ -213,7 +213,7 @@ export default function SubscriptionDetailsModal({
             {/* API & Security */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center text-lg">
+                <CardTitle className="flex items-center card-title">
                   <Key className="w-5 h-5 mr-2 text-orange-600" />
                   API & Security
                 </CardTitle>
@@ -259,7 +259,7 @@ export default function SubscriptionDetailsModal({
           {subscription.notes && (
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center text-lg">
+                <CardTitle className="flex items-center card-title">
                   <Shield className="w-5 h-5 mr-2 text-orange-600" />
                   Personal Notes
                 </CardTitle>
@@ -274,7 +274,7 @@ export default function SubscriptionDetailsModal({
           {subscription.previouslyUsedPromotionCode && subscription.previouslyUsedPromotionCode.length > 0 && (
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center text-lg">
+                <CardTitle className="flex items-center card-title">
                   <Globe className="w-5 h-5 mr-2 text-orange-600" />
                   Promotion History
                 </CardTitle>

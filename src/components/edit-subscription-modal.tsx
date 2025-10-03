@@ -93,10 +93,10 @@ export default function EditSubscriptionModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="!max-w-[75vw] !w-[75vw] max-h-[90vh] overflow-y-auto sm:!max-w-[75vw]">
+      <DialogContent className="!max-w-[75vw] !w-[75vw] max-h-[90vh] overflow-y-auto sm:!max-w-[75vw] glass-card">
         <DialogHeader>
           <div className="flex items-center justify-between">
-            <DialogTitle className="text-2xl font-bold text-gray-900">
+            <DialogTitle className="modal-title text-2xl">
               Edit Subscription
             </DialogTitle>
             <Button variant="ghost" size="sm" onClick={onClose}>
@@ -109,12 +109,12 @@ export default function EditSubscriptionModal({
           {/* Basic Information */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg font-semibold text-gray-900">Basic Information</CardTitle>
+              <CardTitle className="card-title">Basic Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="name" className="text-sm font-medium text-gray-700">Name *</Label>
+                  <Label htmlFor="name" className="form-label">Name *</Label>
                   <Input
                     id="name"
                     value={formData.name || ''}
@@ -123,7 +123,7 @@ export default function EditSubscriptionModal({
                   />
                 </div>
                 <div>
-                  <Label htmlFor="plan" className="text-sm font-medium text-gray-700">Plan</Label>
+                  <Label htmlFor="plan" className="form-label">Plan</Label>
                   <Select value={formData.plan || ''} onValueChange={(value) => handleInputChange('plan', value)}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select plan" />
@@ -139,7 +139,7 @@ export default function EditSubscriptionModal({
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="category" className="text-sm font-medium text-gray-700">Category *</Label>
+                  <Label htmlFor="category" className="form-label">Category *</Label>
                   <Input
                     id="category"
                     value={formData.category || ''}
@@ -148,7 +148,7 @@ export default function EditSubscriptionModal({
                   />
                 </div>
                 <div>
-                  <Label htmlFor="subcategory" className="text-sm font-medium text-gray-700">Subcategory</Label>
+                  <Label htmlFor="subcategory" className="form-label">Subcategory</Label>
                   <Input
                     id="subcategory"
                     value={formData.subcategory || ''}
@@ -158,7 +158,7 @@ export default function EditSubscriptionModal({
               </div>
 
               <div>
-                <Label htmlFor="description" className="text-sm font-medium text-gray-700">Description</Label>
+                <Label htmlFor="description" className="form-label">Description</Label>
                 <Textarea
                   id="description"
                   value={formData.description || ''}
@@ -172,12 +172,12 @@ export default function EditSubscriptionModal({
           {/* Billing Information */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg font-semibold text-gray-900">Billing Information</CardTitle>
+              <CardTitle className="card-title">Billing Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <Label htmlFor="cost" className="text-sm font-medium text-gray-700">Cost *</Label>
+                  <Label htmlFor="cost" className="form-label">Cost *</Label>
                   <div className="relative">
                     <span className="absolute left-3 top-3 text-gray-500">$</span>
                     <Input
@@ -193,7 +193,7 @@ export default function EditSubscriptionModal({
                   </div>
                 </div>
                 <div>
-                  <Label htmlFor="currency" className="text-sm font-medium text-gray-700">Currency</Label>
+                  <Label htmlFor="currency" className="form-label">Currency</Label>
                   <Select value={formData.currency || 'USD'} onValueChange={(value) => handleInputChange('currency', value)}>
                     <SelectTrigger>
                       <SelectValue />
@@ -207,7 +207,7 @@ export default function EditSubscriptionModal({
                   </Select>
                 </div>
                 <div>
-                  <Label htmlFor="billingCycle" className="text-sm font-medium text-gray-700">Billing Cycle</Label>
+                  <Label htmlFor="billingCycle" className="form-label">Billing Cycle</Label>
                   <Select value={formData.billingCycle || 'Monthly'} onValueChange={(value) => handleInputChange('billingCycle', value)}>
                     <SelectTrigger>
                       <SelectValue />
@@ -223,7 +223,7 @@ export default function EditSubscriptionModal({
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="startDate" className="text-sm font-medium text-gray-700">Start Date</Label>
+                  <Label htmlFor="startDate" className="form-label">Start Date</Label>
                   <Input
                     id="startDate"
                     type="date"
@@ -232,7 +232,7 @@ export default function EditSubscriptionModal({
                   />
                 </div>
                 <div>
-                  <Label htmlFor="renewalDate" className="text-sm font-medium text-gray-700">Renewal Date</Label>
+                  <Label htmlFor="renewalDate" className="form-label">Renewal Date</Label>
                   <Input
                     id="renewalDate"
                     type="date"
@@ -247,12 +247,12 @@ export default function EditSubscriptionModal({
           {/* Status & Usage */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg font-semibold text-gray-900">Status & Usage</CardTitle>
+              <CardTitle className="card-title">Status & Usage</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <Label htmlFor="status" className="text-sm font-medium text-gray-700">Status</Label>
+                  <Label htmlFor="status" className="form-label">Status</Label>
                   <Select value={formData.status || 'active'} onValueChange={(value) => handleInputChange('status', value)}>
                     <SelectTrigger>
                       <SelectValue />
@@ -265,7 +265,7 @@ export default function EditSubscriptionModal({
                   </Select>
                 </div>
                 <div>
-                  <Label htmlFor="priority" className="text-sm font-medium text-gray-700">Priority</Label>
+                  <Label htmlFor="priority" className="form-label">Priority</Label>
                   <Select value={formData.priority || 'medium'} onValueChange={(value) => handleInputChange('priority', value)}>
                     <SelectTrigger>
                       <SelectValue />
@@ -278,7 +278,7 @@ export default function EditSubscriptionModal({
                   </Select>
                 </div>
                 <div>
-                  <Label htmlFor="usageFrequency" className="text-sm font-medium text-gray-700">Usage Frequency</Label>
+                  <Label htmlFor="usageFrequency" className="form-label">Usage Frequency</Label>
                   <Select value={formData.usageFrequency || 'monthly'} onValueChange={(value) => handleInputChange('usageFrequency', value)}>
                     <SelectTrigger>
                       <SelectValue />
@@ -294,7 +294,7 @@ export default function EditSubscriptionModal({
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="url" className="text-sm font-medium text-gray-700">Website URL</Label>
+                  <Label htmlFor="url" className="form-label">Website URL</Label>
                   <Input
                     id="url"
                     type="url"
@@ -304,7 +304,7 @@ export default function EditSubscriptionModal({
                   />
                 </div>
                 <div>
-                  <Label htmlFor="accountEmail" className="text-sm font-medium text-gray-700">Account Email</Label>
+                  <Label htmlFor="accountEmail" className="form-label">Account Email</Label>
                   <Input
                     id="accountEmail"
                     type="email"
@@ -323,7 +323,7 @@ export default function EditSubscriptionModal({
                     onChange={(e) => handleInputChange('autoRenew', e.target.checked)}
                     className="rounded border-gray-300"
                   />
-                  <span className="text-sm font-medium text-gray-700">Auto Renew</span>
+                  <span className="form-label">Auto Renew</span>
                 </label>
               </div>
             </CardContent>
@@ -332,7 +332,7 @@ export default function EditSubscriptionModal({
           {/* Personal Notes */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg font-semibold text-gray-900">Personal Notes</CardTitle>
+              <CardTitle className="card-title">Personal Notes</CardTitle>
             </CardHeader>
             <CardContent>
               <Textarea

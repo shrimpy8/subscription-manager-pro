@@ -25,7 +25,7 @@ export default function DeleteConfirmationDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md glass-card">
         <DialogHeader>
           <div className="flex items-center space-x-3">
             <div className="flex-shrink-0">
@@ -34,7 +34,7 @@ export default function DeleteConfirmationDialog({
               </div>
             </div>
             <div>
-              <DialogTitle className="text-lg font-semibold text-gray-900">
+              <DialogTitle className="modal-title">
                 Delete Subscription
               </DialogTitle>
               <DialogDescription className="text-sm text-gray-600">
@@ -98,7 +98,7 @@ export default function DeleteConfirmationDialog({
             variant="destructive"
             onClick={onConfirm}
             disabled={isLoading}
-            className="px-4 py-2 bg-red-600 hover:bg-red-700"
+            className="px-4 py-2 bg-red-600 hover:bg-red-700 transition-colors duration-200"
           >
             {isLoading ? (
               <div className="flex items-center space-x-2">
