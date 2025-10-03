@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 interface LoadingSpinnerProps {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -61,7 +62,7 @@ export function LoadingButton({
   variant = 'default'
 }: LoadingButtonProps) {
   return (
-    <button
+    <Button
       className={className}
       disabled={disabled || isLoading}
       onClick={onClick}
@@ -74,7 +75,7 @@ export function LoadingButton({
       ) : (
         children
       )}
-    </button>
+    </Button>
   );
 }
 

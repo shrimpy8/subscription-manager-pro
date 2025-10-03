@@ -758,7 +758,11 @@ export default function AIToolSubscriptionForm() {
 
           {/* Footer Actions */}
           <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
-            <Button type="button" variant="outline">
+            <Button 
+              type="button" 
+              variant="outline"
+              onClick={() => window.location.href = '/'}
+            >
               Cancel
             </Button>
             <Button type="submit" className="gradient-bg hover:opacity-90">

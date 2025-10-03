@@ -438,8 +438,8 @@ export default function HomePage() {
                   id: generateId(),
                   name: `${subscription.name}_Copy`,
                   status: 'active' as const,
-                  startDate: getCurrentDate().toISOString(),
-                  renewalDate: getDefaultRenewalDate().toISOString()
+                  startDate: getCurrentDate(),
+                  renewalDate: getDefaultRenewalDate()
                 };
                 const updatedSubscriptions = [...subscriptions, duplicated];
                 setSubscriptions(updatedSubscriptions);
