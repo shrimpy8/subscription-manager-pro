@@ -88,6 +88,13 @@ subscription-manager-pro/
 │       └── validation.ts     # Form validation
 ├── public/                   # Static assets
 │   └── toolsSubscription.json # AI tools data
+├── memory-bank/             # Project documentation and context
+│   ├── projectbrief.md      # Project overview and scope
+│   ├── productContext.md    # Product context and user needs
+│   ├── systemPatterns.md    # Architecture and design patterns
+│   ├── techContext.md       # Technology stack and setup
+│   ├── activeContext.md     # Current development status
+│   └── progress.md          # Feature completion tracking
 ├── package.json              # Dependencies and scripts
 ├── tailwind.config.ts        # Tailwind configuration
 ├── tsconfig.json            # TypeScript configuration
@@ -104,7 +111,7 @@ subscription-manager-pro/
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/subscription-manager-pro.git
+   git clone https://github.com/shrimpy8/subscription-manager-pro.git
    cd subscription-manager-pro
    ```
 
@@ -230,6 +237,17 @@ subscription-manager-pro/
 - **Input Validation**: Comprehensive validation on all inputs
 - **Error Handling**: Graceful error handling and user feedback
 
+## 📚 Project Documentation
+
+The project includes comprehensive documentation in the `memory-bank/` folder:
+
+- **`projectbrief.md`**: Project overview, features, and technical architecture
+- **`productContext.md`**: Product context, user needs, and value propositions
+- **`systemPatterns.md`**: System architecture patterns and design decisions
+- **`techContext.md`**: Technology stack, development environment, and configuration
+- **`activeContext.md`**: Current development status and recent activity
+- **`progress.md`**: Feature completion tracking and project status
+
 ## 🧪 Testing
 
 The application includes comprehensive error handling and validation:
@@ -283,7 +301,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If you encounter any issues or have questions:
 
-1. Check the [Issues](https://github.com/yourusername/subscription-manager-pro/issues) page
+1. Check the [Issues](https://github.com/shrimpy8/subscription-manager-pro/issues) page
 2. Create a new issue with detailed information
 3. Include steps to reproduce any bugs
 
