@@ -268,7 +268,10 @@ export default function AddAIToolPage() {
             <Button 
               type="button" 
               variant="outline"
-              onClick={() => window.location.href = '/?tab=ai-tools'}
+              onClick={() => {
+                console.log('Navigating to Trending AI Tools...');
+                window.location.href = '/?tab=ai-tools';
+              }}
             >
               Cancel
             </Button>

@@ -58,9 +58,12 @@ export default function HomePage() {
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
       const tab = urlParams.get('tab');
+      console.log('URL tab parameter:', tab);
       if (tab === 'ai-tools') {
+        console.log('Setting tab to ai-tools');
         setCurrentTab('ai-tools');
       } else {
+        console.log('Setting tab to subscriptions');
         setCurrentTab('subscriptions');
       }
     }
