@@ -160,7 +160,7 @@ export default function AddSubscriptionModal({ isOpen, onClose, onAdd }: AddSubs
           </div>
 
           <div className="flex space-x-3 pt-4">
-            <Button type="submit" className="flex-1 gradient-bg">
+            <Button type="submit" className="flex-1 gradient-bg hover:opacity-90">
               Add Subscription
             </Button>
             <Button type="button" variant="outline" onClick={onClose} className="flex-1">

@@ -95,10 +95,9 @@ export default function DeleteConfirmationDialog({
             Cancel
           </Button>
           <Button
-            variant="destructive"
             onClick={onConfirm}
             disabled={isLoading}
-            className="px-4 py-2 bg-red-600 hover:bg-red-700 transition-colors duration-200"
+            className="px-4 py-2 bg-red-600 hover:bg-red-700 transition-opacity duration-200 hover:opacity-90"
           >
             {isLoading ? (
               <div className="flex items-center space-x-2">
