@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo, useMemo, useCallback } from 'react';
 import { Plus, Search, Grid, List, BarChart3, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -94,7 +94,8 @@ export default function HomePage() {
   }, []); // Remove initial from dependencies to prevent infinite loop
 
   // Filter and sort subscriptions
-  const filteredSubscriptions = subscriptions
+  const filteredSubscriptions = useMemo(() => {
+    return subscriptions
     .filter(sub => {
       const matchesSearch = sub.name.toLowerCase().includes(filters.search.toLowerCase()) ||
                            sub.plan.toLowerCase().includes(filters.search.toLowerCase());
@@ -138,15 +139,23 @@ export default function HomePage() {
         return aValue < bValue ? 1 : -1;
       }
     });
+  }, [subscriptions, filters, viewMode]);
 
-  const totalMonthlyCost = subscriptions
-    .filter(sub => sub.status === 'active')
-    .reduce((sum, sub) => sum + sub.cost, 0);
+  const totalMonthlyCost = useMemo(() => {
+    return subscriptions
+      .filter(sub => sub.status === 'active')
+      .reduce((sum, sub) => sum + sub.cost, 0);
+  }, [subscriptions]);
 
-  const activeSubscriptions = subscriptions.filter(sub => sub.status === 'active').length;
-  const expiringSoon = subscriptions.filter(sub => 
-    sub.status === 'active' && getDaysUntilRenewal(sub.renewalDate) <= 7
-  ).length;
+  const activeSubscriptions = useMemo(() => {
+    return subscriptions.filter(sub => sub.status === 'active').length;
+  }, [subscriptions]);
+
+  const expiringSoon = useMemo(() => {
+    return subscriptions.filter(sub => 
+      sub.status === 'active' && getDaysUntilRenewal(sub.renewalDate) <= 7
+    ).length;
+  }, [subscriptions]);
 
   if (initial.isLoading) {
     return <LoadingPage message={initial.loadingMessage || 'Loading subscriptions...'} />;

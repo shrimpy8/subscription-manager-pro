@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, memo, useMemo, useCallback } from 'react';
 import { 
   ChevronUp, 
   ChevronDown, 
@@ -41,7 +41,7 @@ interface SubscriptionsTableProps {
 type SortField = 'name' | 'plan' | 'cost' | 'billingCycle' | 'startDate' | 'status';
 type SortOrder = 'asc' | 'desc';
 
-export default function SubscriptionsTable({
+const SubscriptionsTable = memo(function SubscriptionsTable({
   subscriptions,
   onEdit,
   onDuplicate,
@@ -53,18 +53,19 @@ export default function SubscriptionsTable({
   const [sortField, setSortField] = useState<SortField>('name');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
 
-  const handleSort = (field: SortField) => {
+  const handleSort = useCallback((field: SortField) => {
     if (sortField === field) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
     } else {
       setSortField(field);
       setSortOrder('asc');
     }
-  };
+  }, [sortField, sortOrder]);
 
-  const sortedSubscriptions = [...subscriptions].sort((a, b) => {
-    let aValue: string | number | Date = a[sortField] as string | number | Date;
-    let bValue: string | number | Date = b[sortField] as string | number | Date;
+  const sortedSubscriptions = useMemo(() => {
+    return [...subscriptions].sort((a, b) => {
+      let aValue: string | number | Date = a[sortField] as string | number | Date;
+      let bValue: string | number | Date = b[sortField] as string | number | Date;
 
     if (sortField === 'cost') {
       aValue = a.cost;
@@ -82,7 +83,8 @@ export default function SubscriptionsTable({
     } else {
       return aValue < bValue ? 1 : -1;
     }
-  });
+    });
+  }, [subscriptions, sortField, sortOrder]);
 
   const getSortIcon = (field: SortField) => {
     if (sortField !== field) {
@@ -376,4 +378,6 @@ export default function SubscriptionsTable({
     </div>
     </ErrorBoundary>
   );
-}
+});
+
+export default SubscriptionsTable;

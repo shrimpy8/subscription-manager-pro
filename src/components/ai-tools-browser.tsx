@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo, useMemo, useCallback } from 'react';
 import { Search, ExternalLink, Plus, Check, Filter, X, Eye, EyeOff, MessageSquare, Search as SearchIcon, Users, Image, Video, Music, FileText, Wrench, Code, Settings, Sparkles, Zap, Database, Globe, Calendar, Palette, Mic, TrendingUp, Server, Rocket } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -44,7 +44,7 @@ interface AIToolsBrowserProps {
   onToolSelectionChange?: (selectedTools: Set<number>) => void;
 }
 
-export default function AIToolsBrowser({
+const AIToolsBrowser = memo(function AIToolsBrowser({
   onAddToSubscriptions,
   onMarkAsUsing,
   selectedTools = new Set(),
@@ -592,4 +592,6 @@ export default function AIToolsBrowser({
     </div>
     </ErrorBoundary>
   );
-}
+});
+
+export default AIToolsBrowser;
