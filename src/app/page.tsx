@@ -21,8 +21,11 @@ import EditSubscriptionModal from '@/components/edit-subscription-modal';
 import DeleteConfirmationDialog from '@/components/delete-confirmation-dialog';
 import { useMultipleLoadingStates } from '@/hooks/use-loading-state';
 import { LoadingPage } from '@/components/ui/loading-spinner';
+import { ToastContainer, useToast } from '@/components/ui/toast';
+import { getErrorMessage, getUserFriendlyMessage } from '@/utils/error-messages';
 
 export default function HomePage() {
+  const toast = useToast();
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [filters, setFilters] = useState<SubscriptionFilters>({
     search: '',
@@ -58,12 +61,9 @@ export default function HomePage() {
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
       const tab = urlParams.get('tab');
-      console.log('URL tab parameter:', tab);
       if (tab === 'ai-tools') {
-        console.log('Setting tab to ai-tools');
         setCurrentTab('ai-tools');
       } else {
-        console.log('Setting tab to subscriptions');
         setCurrentTab('subscriptions');
       }
     }
@@ -83,13 +83,16 @@ export default function HomePage() {
         initial.setLoading(true, 'Loading subscriptions...');
         const loadedSubscriptions = await loadSubscriptions();
         setSubscriptions(loadedSubscriptions);
+        toast.success('Subscriptions loaded successfully!');
       } catch (error) {
         handleSubscriptionError(
           error as Error,
           'loading initial data',
           { component: 'main-page' }
         );
-        initial.setError('Failed to load subscriptions');
+        const errorMessage = getUserFriendlyMessage('LOAD_ERROR');
+        initial.setError(errorMessage);
+        toast.error(errorMessage);
         setSubscriptions([]);
       } finally {
         initial.setLoading(false);
@@ -242,8 +245,11 @@ export default function HomePage() {
                         exportLoading.clearError();
                         const csvContent = exportSubscriptionsToCSV(subscriptions);
                         downloadCSV(csvContent, `subscriptions-${formatDate(getCurrentDate(), 'input')}.csv`);
+                        toast.success(`Successfully exported ${subscriptions.length} subscriptions!`);
                       } catch (error) {
-                        exportLoading.setError('Failed to export subscriptions. Please try again.');
+                        const errorMessage = getUserFriendlyMessage('EXPORT_ERROR');
+                        exportLoading.setError(errorMessage);
+                        toast.error(errorMessage);
                         handleSubscriptionError(
                           error as Error,
                           'exporting subscriptions',
@@ -449,8 +455,11 @@ export default function HomePage() {
                 save.setLoading(true, 'Saving subscription...');
                 try {
                   await saveSubscriptions(updatedSubscriptions);
+                  toast.success(`Successfully duplicated "${subscription.name}"!`);
                 } catch (error) {
-                  save.setError('Failed to save subscription. Please try again.');
+                  const errorMessage = getUserFriendlyMessage('SAVE_ERROR');
+                  save.setError(errorMessage);
+                  toast.error(errorMessage);
                   handleSubscriptionError(
                     error as Error,
                     'duplicating subscription',
@@ -474,8 +483,11 @@ export default function HomePage() {
                 save.setLoading(true, 'Saving subscription...');
                 try {
                   await saveSubscriptions(updatedSubscriptions);
+                  toast.success(`Successfully updated "${subscription.name}" status!`);
                 } catch (error) {
-                  save.setError('Failed to update subscription status. Please try again.');
+                  const errorMessage = getUserFriendlyMessage('SAVE_ERROR');
+                  save.setError(errorMessage);
+                  toast.error(errorMessage);
                   handleSubscriptionError(
                     error as Error,
                     'updating subscription status',
@@ -540,8 +552,11 @@ export default function HomePage() {
                 save.setLoading(true, 'Saving subscription...');
                 try {
                   await saveSubscriptions(updatedSubscriptions);
+                  toast.success(`Successfully added "${tool.name}" to your subscriptions!`);
                 } catch (error) {
-                  add.setError('Failed to add subscription. Please try again.');
+                  const errorMessage = getUserFriendlyMessage('SAVE_ERROR');
+                  add.setError(errorMessage);
+                  toast.error(errorMessage);
                   handleSubscriptionError(
                     error as Error,
                     'adding subscription from AI tool',
@@ -607,8 +622,11 @@ export default function HomePage() {
             await saveSubscriptions(updatedSubscriptions);
             setIsDeleteDialogOpen(false);
             setSubscriptionToDelete(null);
+            toast.success(`Successfully deleted "${subscriptionToDelete.name}"!`);
           } catch (error) {
-            deleteLoading.setError('Failed to delete subscription. Please try again.');
+            const errorMessage = getUserFriendlyMessage('DELETE_ERROR');
+            deleteLoading.setError(errorMessage);
+            toast.error(errorMessage);
             handleSubscriptionError(
               error as Error,
               'deleting subscription',
@@ -622,6 +640,9 @@ export default function HomePage() {
         isLoading={deleteLoading.isLoading}
       />
       </ErrorBoundary>
+      
+      {/* Toast Notifications */}
+      <ToastContainer />
     </div>
   );
 }

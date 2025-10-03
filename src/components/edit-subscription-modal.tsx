@@ -15,6 +15,8 @@ import { toDate, formatDateForInput } from '@/lib/utils';
 import { validateSubscription } from '@/utils/validation';
 import { useLoadingState } from '@/hooks/use-loading-state';
 import { LoadingButton } from '@/components/ui/loading-spinner';
+import { useToast } from '@/components/ui/toast';
+import { getUserFriendlyMessage } from '@/utils/error-messages';
 
 interface EditSubscriptionModalProps {
   isOpen: boolean;
@@ -37,6 +39,7 @@ export default function EditSubscriptionModal({
 }: EditSubscriptionModalProps) {
   const [formData, setFormData] = useState<Partial<Subscription>>({});
   const loadingState = useLoadingState();
+  const toast = useToast();
 
   useEffect(() => {
     if (subscription) {
@@ -61,7 +64,8 @@ export default function EditSubscriptionModal({
     // Validate form data
     const validation = validateSubscription(formData);
     if (!validation.isValid) {
-      alert(`Please fix the following errors:\n${Object.values(validation.errors).join('\n')}`);
+      const errorMessage = getUserFriendlyMessage('VALIDATION_ERROR');
+      toast.error(errorMessage);
       return;
     }
 
@@ -74,14 +78,17 @@ export default function EditSubscriptionModal({
       } as Subscription;
 
       await onSave(updatedSubscription);
+      toast.success(`Successfully updated "${subscription.name}"!`);
       onClose();
     } catch (error) {
+      const errorMessage = getUserFriendlyMessage('SAVE_ERROR');
+      loadingState.setError(errorMessage);
+      toast.error(errorMessage);
       handleSubscriptionError(
         error as Error,
         'updating',
         { component: 'edit-subscription-modal' }
       );
-      loadingState.setError('Failed to save subscription');
     } finally {
       loadingState.setLoading(false);
     }

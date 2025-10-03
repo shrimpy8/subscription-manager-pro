@@ -8,8 +8,11 @@ import { Subscription } from '@/types/subscription';
 import { handleError } from '@/utils/error-handler';
 import { saveSubscriptions, loadSubscriptions } from '@/lib/subscription-storage';
 import Link from 'next/link';
+import { useToast, ToastContainer } from '@/components/ui/toast';
+import { getUserFriendlyMessage } from '@/utils/error-messages';
 
 export default function SettingsPage() {
+  const toast = useToast();
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
@@ -46,7 +49,8 @@ export default function SettingsPage() {
         error as Error,
         { component: 'settings-page', action: 'export data' }
       );
-      alert('Export failed. Please try again.');
+      const errorMessage = getUserFriendlyMessage('EXPORT_ERROR');
+      toast.error(errorMessage);
     } finally {
       setIsExporting(false);
     }
@@ -67,7 +71,7 @@ export default function SettingsPage() {
             if (Array.isArray(importedData)) {
               setSubscriptions(importedData);
               saveSubscriptions(importedData);
-              alert(`Successfully imported ${importedData.length} subscriptions!`);
+              toast.success(`Successfully imported ${importedData.length} subscriptions!`);
             } else {
               throw new Error('Invalid file format');
             }
@@ -76,7 +80,8 @@ export default function SettingsPage() {
               error as Error,
               { component: 'settings-page', action: 'import data' }
             );
-            alert('Import failed. Please check the file format.');
+            const errorMessage = getUserFriendlyMessage('VALIDATION_ERROR');
+            toast.error(errorMessage);
           } finally {
             setIsImporting(false);
           }
@@ -91,7 +96,7 @@ export default function SettingsPage() {
     if (confirm('Are you sure you want to clear all subscriptions? This action cannot be undone.')) {
       setSubscriptions([]);
       saveSubscriptions([]);
-      alert('All subscriptions have been cleared.');
+      toast.success('All subscriptions have been cleared.');
     }
   };
 
@@ -253,6 +258,9 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
+      
+      {/* Toast Notifications */}
+      <ToastContainer />
     </div>
   );
 }

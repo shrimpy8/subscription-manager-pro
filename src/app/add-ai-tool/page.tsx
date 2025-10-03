@@ -10,6 +10,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, FileText, Globe } from 'lucide-react';
 import { AIToolCategory, AI_TOOL_CATEGORY_LABEL, AI_TOOL_CATEGORY_COLORS } from '@/types/ai-tools';
+import { useToast, ToastContainer } from '@/components/ui/toast';
+import { getUserFriendlyMessage } from '@/utils/error-messages';
 
 interface AIToolFormData {
   name: string;
@@ -26,6 +28,7 @@ const AI_TOOL_CATEGORIES: AIToolCategory[] = [
 ];
 
 export default function AddAIToolPage() {
+  const toast = useToast();
   const [formData, setFormData] = useState<AIToolFormData>({
     name: '',
     url: '',
@@ -69,7 +72,8 @@ export default function AddAIToolPage() {
     
     const errors = validateForm();
     if (errors.length > 0) {
-      alert(`Please fix the following errors:\n${errors.join('\n')}`);
+      const errorMessage = getUserFriendlyMessage('VALIDATION_ERROR');
+      toast.error(errorMessage);
       return;
     }
     
@@ -90,10 +94,9 @@ export default function AddAIToolPage() {
       };
       
       // TODO: Add to AI tools list via API
-      console.log('New AI Tool:', newAITool);
       
       // For now, just show success message
-      alert('AI Tool added successfully! You can now browse it in the AI Tools section.');
+      toast.success('AI Tool added successfully! You can now browse it in the AI Tools section.');
       
       // Reset form
       setFormData({
@@ -105,8 +108,8 @@ export default function AddAIToolPage() {
       });
       
     } catch (error) {
-      console.error('Error adding AI tool:', error);
-      alert('Failed to add AI tool. Please try again.');
+      const errorMessage = getUserFriendlyMessage('SAVE_ERROR');
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -285,6 +288,9 @@ export default function AddAIToolPage() {
           </div>
         </form>
       </div>
+      
+      {/* Toast Notifications */}
+      <ToastContainer />
     </div>
   );
 }
