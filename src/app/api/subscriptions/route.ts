@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Subscription } from '@/types/subscription';
+import { sampleSubscriptions } from '@/lib/sample-data';
 
 // Mock data store (in production, this would be a database)
-let subscriptions: Subscription[] = [];
+let subscriptions: Subscription[] = [...sampleSubscriptions];
 
 /**
  * GET /api/subscriptions
@@ -30,9 +31,23 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+    
+    // Apply favicon logic for AI tools
+    let logo = body.logo;
+    if (body.category === 'AI Tools' && body.url && !logo) {
+      try {
+        const domain = new URL(body.url).hostname;
+        logo = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+      } catch (error) {
+        // If URL parsing fails, keep original logo or use fallback
+        logo = body.logo || '';
+      }
+    }
+    
     const subscription: Subscription = {
       id: `sub-${Date.now()}`,
       ...body,
+      logo: logo,
       startDate: new Date(body.startDate || Date.now()),
       renewalDate: new Date(body.renewalDate || Date.now() + 30 * 24 * 60 * 60 * 1000)
     };

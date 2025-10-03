@@ -1,25 +1,25 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Plus, Search, Filter, Grid, List, BarChart3, Settings, Sparkles, Download } from 'lucide-react';
+import { Plus, Search, Grid, List, BarChart3, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { Subscription, SubscriptionFilters, ViewMode } from '@/types/subscription';
 import { loadSubscriptions, saveSubscriptions, exportSubscriptionsToCSV, downloadCSV } from '@/lib/subscription-persistence';
 import { handleSubscriptionError } from '@/utils/error-handler';
 import { formatCurrency, getDaysUntilRenewal, getStatusColor, getPriorityColor, generateId, toDate, getDefaultRenewalDate, getCurrentDate, formatDate } from '@/lib/utils';
-import { initializeSampleData } from '@/lib/sample-data';
 import { AdvancedFilters } from '@/components/advanced-filters';
 import AIToolsBrowser from '@/components/ai-tools-browser';
 import Sidebar from '@/components/sidebar';
-import AddSubscriptionModal from '@/components/add-subscription-modal';
 import { ErrorBoundary } from '@/components/error-boundary';
 import SubscriptionsTable from '@/components/subscriptions-table';
 import SubscriptionDetailsModal from '@/components/subscription-details-modal';
 import EditSubscriptionModal from '@/components/edit-subscription-modal';
+import { useMultipleLoadingStates } from '@/hooks/use-loading-state';
+import { LoadingPage } from '@/components/ui/loading-spinner';
 
 export default function HomePage() {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
@@ -42,16 +42,27 @@ export default function HomePage() {
     sortOrder: 'asc',
     groupBy: undefined
   });
-  const [isLoading, setIsLoading] = useState(false);
-  const [isExporting, setIsExporting] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // Unified loading state management
+  const loadingStates = useMultipleLoadingStates(['initial', 'export', 'save', 'delete', 'add']);
+  const { initial, export: exportLoading, save, delete: deleteLoading, add } = loadingStates;
   const [currentTab, setCurrentTab] = useState<'subscriptions' | 'ai-tools'>('subscriptions');
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedSubscription, setSelectedSubscription] = useState<Subscription | null>(null);
   
+  // Handle URL parameters to set the current tab
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const tab = urlParams.get('tab');
+      if (tab === 'ai-tools') {
+        setCurrentTab('ai-tools');
+      } else {
+        setCurrentTab('subscriptions');
+      }
+    }
+  }, []);
+
   // Simple test to see if client-side JS is working
   if (typeof window !== 'undefined') {
     // Client-side JavaScript is executing
@@ -63,7 +74,7 @@ export default function HomePage() {
     
     const loadData = async () => {
       try {
-        setIsLoading(true);
+        initial.setLoading(true, 'Loading subscriptions...');
         const loadedSubscriptions = await loadSubscriptions();
         setSubscriptions(loadedSubscriptions);
       } catch (error) {
@@ -72,14 +83,15 @@ export default function HomePage() {
           'loading initial data',
           { component: 'main-page' }
         );
+        initial.setError('Failed to load subscriptions');
         setSubscriptions([]);
       } finally {
-        setIsLoading(false);
+        initial.setLoading(false);
       }
     };
 
     loadData();
-  }, []);
+  }, []); // Remove initial from dependencies to prevent infinite loop
 
   // Filter and sort subscriptions
   const filteredSubscriptions = subscriptions
@@ -136,20 +148,14 @@ export default function HomePage() {
     sub.status === 'active' && getDaysUntilRenewal(sub.renewalDate) <= 7
   ).length;
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading subscriptions...</p>
-        </div>
-      </div>
-    );
+  if (initial.isLoading) {
+    return <LoadingPage message={initial.loadingMessage || 'Loading subscriptions...'} />;
   }
 
   // Error banner component
   const ErrorBanner = () => {
-    if (!error) return null;
+    const hasError = initial.error || exportLoading.error || save.error || deleteLoading.error || add.error;
+    if (!hasError) return null;
     
     return (
       <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-4">
@@ -160,14 +166,20 @@ export default function HomePage() {
             </svg>
           </div>
           <div className="ml-3">
-            <p className="text-sm text-red-800">{error}</p>
+            <p className="text-sm text-red-800">{initial.error || exportLoading.error || save.error || deleteLoading.error || add.error}</p>
           </div>
           <div className="ml-auto pl-3">
             <div className="-mx-1.5 -my-1.5">
               <button
                 type="button"
                 className="inline-flex bg-red-50 rounded-md p-1.5 text-red-500 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-red-50 focus:ring-red-600"
-                onClick={() => setError(null)}
+                onClick={() => {
+                  initial.clearError();
+                  exportLoading.clearError();
+                  save.clearError();
+                  deleteLoading.clearError();
+                  add.clearError();
+                }}
               >
                 <span className="sr-only">Dismiss</span>
                 <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -208,31 +220,31 @@ export default function HomePage() {
                 <div className="flex items-center space-x-4">
                   <Button 
                     variant="outline"
-                    disabled={isExporting}
+                    disabled={exportLoading.isLoading}
                     onClick={async () => {
                       try {
-                        setIsExporting(true);
-                        setError(null);
+                        exportLoading.setLoading(true, 'Exporting subscriptions...');
+                        exportLoading.clearError();
                         const csvContent = exportSubscriptionsToCSV(subscriptions);
                         downloadCSV(csvContent, `subscriptions-${formatDate(getCurrentDate(), 'input')}.csv`);
                       } catch (error) {
-                        setError('Failed to export subscriptions. Please try again.');
+                        exportLoading.setError('Failed to export subscriptions. Please try again.');
                         handleSubscriptionError(
                           error as Error,
                           'exporting subscriptions',
                           { component: 'main-page' }
                         );
                       } finally {
-                        setIsExporting(false);
+                        exportLoading.setLoading(false);
                       }
                     }}
                   >
                     <Download className="w-4 h-4 mr-2" />
-                    {isExporting ? 'Exporting...' : 'Export CSV'}
+                    {exportLoading.isLoading ? (exportLoading.loadingMessage || 'Exporting...') : 'Export CSV'}
                   </Button>
                   <Button 
                     className="btn-primary"
-                    onClick={() => window.open('/ai-tool-form', '_blank')}
+                    onClick={() => window.location.href = '/ai-tool-form'}
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     Add Subscription
@@ -244,7 +256,7 @@ export default function HomePage() {
                 <div className="flex items-center space-x-4">
                   <Button 
                     className="btn-primary"
-                    onClick={() => window.open('/ai-tool-form', '_blank')}
+                    onClick={() => window.location.href = '/add-ai-tool'}
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     Add AI Tool
@@ -419,58 +431,58 @@ export default function HomePage() {
                 };
                 const updatedSubscriptions = [...subscriptions, duplicated];
                 setSubscriptions(updatedSubscriptions);
-                setIsSaving(true);
+                save.setLoading(true, 'Saving subscription...');
                 try {
                   await saveSubscriptions(updatedSubscriptions);
                 } catch (error) {
-                  setError('Failed to save subscription. Please try again.');
+                  save.setError('Failed to save subscription. Please try again.');
                   handleSubscriptionError(
                     error as Error,
                     'duplicating subscription',
                     { component: 'main-page' }
                   );
                 } finally {
-                  setIsSaving(false);
+                  save.setLoading(false);
                 }
               }}
               onDelete={async (subscription) => {
                 if (confirm(`Are you sure you want to delete ${subscription.name}?`)) {
                   const updatedSubscriptions = subscriptions.filter(s => s.id !== subscription.id);
                   setSubscriptions(updatedSubscriptions);
-                  setIsSaving(true);
+                  save.setLoading(true, 'Saving subscription...');
                   try {
                     await saveSubscriptions(updatedSubscriptions);
                   } catch (error) {
-                    setError('Failed to delete subscription. Please try again.');
+                    deleteLoading.setError('Failed to delete subscription. Please try again.');
                     handleSubscriptionError(
                       error as Error,
                       'deleting subscription',
                       { component: 'main-page' }
                     );
                   } finally {
-                    setIsSaving(false);
+                    save.setLoading(false);
                   }
                 }
               }}
               onPause={async (subscription) => {
                 const updatedSubscriptions = subscriptions.map(s => 
                   s.id === subscription.id 
-                    ? { ...s, status: s.status === 'paused' ? 'active' : 'paused' }
+                    ? { ...s, status: s.status === 'paused' ? 'active' as const : 'paused' as const }
                     : s
                 );
                 setSubscriptions(updatedSubscriptions);
-                setIsSaving(true);
+                save.setLoading(true, 'Saving subscription...');
                 try {
                   await saveSubscriptions(updatedSubscriptions);
                 } catch (error) {
-                  setError('Failed to update subscription status. Please try again.');
+                  save.setError('Failed to update subscription status. Please try again.');
                   handleSubscriptionError(
                     error as Error,
                     'updating subscription status',
                     { component: 'main-page' }
                   );
                 } finally {
-                  setIsSaving(false);
+                  save.setLoading(false);
                 }
               }}
               onViewDetails={(subscription) => {
@@ -498,7 +510,7 @@ export default function HomePage() {
             <div className="px-4 sm:px-6 lg:px-8 py-8">
               <ErrorBanner />
               <AIToolsBrowser
-              onAddToSubscriptions={(tool) => {
+              onAddToSubscriptions={async (tool) => {
                 // Create new subscription from AI tool
                 const newSubscription: Subscription = {
                   id: generateId(),
@@ -516,23 +528,27 @@ export default function HomePage() {
                   description: `AI tool from ${tool.category} category`,
                   notes: `Added from AI Tools Browser - ${tool.category} category`,
                   accountEmail: '',
-                  autoRenew: true
+                  autoRenew: true,
+                  plan: 'Free',
+                  logo: `https://www.google.com/s2/favicons?domain=${new URL(tool.url).hostname}&sz=64`,
+                  fallbackIcon: tool.fallbackIcon,
+                  currency: 'USD'
                 };
                 
                 const updatedSubscriptions = [...subscriptions, newSubscription];
                 setSubscriptions(updatedSubscriptions);
-                setIsSaving(true);
+                save.setLoading(true, 'Saving subscription...');
                 try {
                   await saveSubscriptions(updatedSubscriptions);
                 } catch (error) {
-                  setError('Failed to add subscription. Please try again.');
+                  add.setError('Failed to add subscription. Please try again.');
                   handleSubscriptionError(
                     error as Error,
                     'adding subscription from AI tool',
                     { component: 'main-page' }
                   );
                 } finally {
-                  setIsSaving(false);
+                  save.setLoading(false);
                 }
                 
                 // Silent action - no alert needed
@@ -548,17 +564,6 @@ export default function HomePage() {
 
       {/* Modals */}
       <ErrorBoundary>
-        <AddSubscriptionModal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        onAdd={async (subscription) => {
-          const updatedSubscriptions = [...subscriptions, subscription];
-          setSubscriptions(updatedSubscriptions);
-          await saveSubscriptions(updatedSubscriptions);
-        }}
-      />
-
-
       <SubscriptionDetailsModal
         isOpen={isDetailsModalOpen}
         onClose={() => {

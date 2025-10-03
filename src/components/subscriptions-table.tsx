@@ -35,6 +35,7 @@ interface SubscriptionsTableProps {
   onDelete?: (subscription: Subscription) => void;
   onPause?: (subscription: Subscription) => void;
   onViewDetails?: (subscription: Subscription) => void;
+  onAddSubscription?: () => void;
 }
 
 type SortField = 'name' | 'plan' | 'cost' | 'billingCycle' | 'startDate' | 'status';
@@ -46,7 +47,8 @@ export default function SubscriptionsTable({
   onDuplicate,
   onDelete,
   onPause,
-  onViewDetails
+  onViewDetails,
+  onAddSubscription
 }: SubscriptionsTableProps) {
   const [sortField, setSortField] = useState<SortField>('name');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
@@ -94,7 +96,42 @@ export default function SubscriptionsTable({
   // Using centralized date utility function
 
   const getSubscriptionIcon = (subscription: Subscription) => {
-    // Try to use logoUrl if available
+    // Use Google's favicon service for ALL subscriptions with URLs, just like the AI tools browser
+    if (subscription.url) {
+      try {
+        const domain = new URL(subscription.url).hostname;
+        return (
+          <div className="relative w-8 h-8 flex items-center justify-center flex-shrink-0">
+            <img
+              src={`https://www.google.com/s2/favicons?domain=${domain}&sz=64`}
+              alt={`${subscription.name} favicon`}
+              className="w-8 h-8 rounded-sm"
+              onError={(e) => {
+                // Fallback to emoji icon if favicon fails to load
+                const target = e.target as HTMLImageElement;
+                target.style.display = 'none';
+                const fallback = target.nextElementSibling as HTMLElement;
+                if (fallback) {
+                  fallback.style.display = 'block';
+                }
+              }}
+            />
+            <span className="text-lg hidden">
+              {subscription.fallbackIcon || subscription.name.charAt(0)}
+            </span>
+          </div>
+        );
+      } catch (error) {
+        // If URL parsing fails, fall back to emoji
+        return (
+          <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center text-lg">
+            {subscription.fallbackIcon || subscription.name.charAt(0)}
+          </div>
+        );
+      }
+    }
+
+    // For other subscriptions, try to use logoUrl if available
     if (subscription.logoUrl) {
       return (
         <img 
@@ -329,7 +366,7 @@ export default function SubscriptionsTable({
           <p className="text-gray-600 mb-4">Get started by adding your first subscription.</p>
           <Button 
             className="gradient-bg hover:opacity-90"
-            onClick={() => window.open('/ai-tool-form', '_blank')}
+            onClick={() => window.location.href = '/ai-tool-form'}
           >
             <Plus className="w-4 h-4 mr-2" />
             Add Subscription

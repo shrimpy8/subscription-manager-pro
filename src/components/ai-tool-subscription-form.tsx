@@ -12,11 +12,12 @@ import { validateSubscription } from '@/utils/validation';
 import { Badge } from '@/components/ui/badge';
 // import { Switch } from '@/components/ui/switch';
 import { ArrowLeft, FileText, DollarSign, Gift, Globe, Mail, Tag, Calendar, Key, Shield, Plus, Trash2 } from 'lucide-react';
+import { SubscriptionCategory } from '@/types/subscription';
 
 interface AIToolSubscriptionFormData {
   id: string;
   name: string;
-  category: string;
+  category: SubscriptionCategory;
   subcategory: string;
   description: string;
   url: string;
@@ -24,16 +25,16 @@ interface AIToolSubscriptionFormData {
   plan: string;
   cost: number;
   currency: string;
-  billingCycle: string;
-  status: string;
+  billingCycle: 'Monthly' | 'Yearly' | 'Weekly' | 'Quarterly' | 'Free';
+  status: 'active' | 'paused' | 'canceled';
   accountEmailInUse: string;
   notes: string;
-  renewalDate: string;
-  startDate: string;
+  renewalDate: Date;
+  startDate: Date;
   fallbackIcon: string;
   previouslyUsedPromotionCode: string[];
   latestPromotionCode: string;
-  usageFrequency: string;
+  usageFrequency: 'daily' | 'weekly' | 'monthly' | 'rarely';
   usageImportance: string;
   accountEmailsUsedPreviously: string[];
   apiAccessKeys: string[];
@@ -106,15 +107,15 @@ export default function AIToolSubscriptionForm() {
     cost: 0,
     currency: 'USD',
     billingCycle: 'Monthly',
-    status: 'Active',
+    status: 'active',
     accountEmailInUse: '',
     notes: '',
-    renewalDate: '',
-    startDate: '',
+    renewalDate: new Date(),
+    startDate: new Date(),
     fallbackIcon: '🤖',
     previouslyUsedPromotionCode: [],
     latestPromotionCode: '',
-    usageFrequency: 'Monthly',
+    usageFrequency: 'monthly',
     usageImportance: 'Medium',
     accountEmailsUsedPreviously: [],
     apiAccessKeys: [],
@@ -127,7 +128,11 @@ export default function AIToolSubscriptionForm() {
   const [apiKeyInput, setApiKeyInput] = useState('');
 
   const handleInputChange = (field: keyof AIToolSubscriptionFormData, value: string | number | boolean) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    if (field === 'startDate' || field === 'renewalDate') {
+      setFormData(prev => ({ ...prev, [field]: new Date(value as string) }));
+    } else {
+      setFormData(prev => ({ ...prev, [field]: value }));
+    }
   };
 
   const handleArrayAdd = (field: 'previouslyUsedPromotionCode' | 'accountEmailsUsedPreviously' | 'apiAccessKeys', input: string) => {
@@ -189,7 +194,10 @@ export default function AIToolSubscriptionForm() {
     // Validate form data
     const validation = validateSubscription(formData);
     if (!validation.isValid) {
-      alert(`Please fix the following errors:\n${validation.errors.join('\n')}`);
+      const errorMessages = Object.entries(validation.errors)
+        .map(([field, errors]) => `${field}: ${errors.join(', ')}`)
+        .join('\n');
+      alert(`Please fix the following errors:\n${errorMessages}`);
       return;
     }
     
@@ -199,23 +207,44 @@ export default function AIToolSubscriptionForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center">
-                <ArrowLeft className="w-5 h-5 mr-2 text-gray-600" />
-                <span className="text-gray-600 hover:text-gray-800 cursor-pointer">Back to AI Tools</span>
+        <header className="glass-card border-b border-orange-200/50 sticky top-0 z-30">
+          <div className="px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-16">
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center">
+                  <ArrowLeft className="w-5 h-5 mr-2 text-gray-600" />
+                  <button 
+                    onClick={() => window.location.href = '/'}
+                    className="text-gray-600 hover:text-gray-800 cursor-pointer"
+                  >
+                    Back to Subscriptions
+                  </button>
+                </div>
+              </div>
+              <div className="flex items-center space-x-4">
+                <h2 className="section-title">Add Subscription</h2>
+                <Badge variant="secondary" className="bg-orange-100 text-orange-800">
+                  New Entry
+                </Badge>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <h2 className="text-xl font-semibold text-gray-900">Add Subscription</h2>
-              <Badge variant="secondary" className="bg-orange-100 text-orange-800">
-                New Entry
-              </Badge>
-            </div>
+          </div>
+        </header>
+
+        {/* Workflow Note */}
+        <div className="px-4 sm:px-6 lg:px-8 mb-6">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <h4 className="text-sm font-medium text-blue-900 mb-2">
+              💡 Workflow Tip
+            </h4>
+            <p className="text-sm text-blue-800">
+              <strong>For AI Tools:</strong> First add the tool to your AI Tools list using &quot;Add AI Tool&quot;, 
+              then come back here to subscribe and track it. This ensures the tool appears in both your 
+              AI Tools browser and your subscription tracker.
+            </p>
           </div>
         </div>
 
@@ -540,7 +569,7 @@ export default function AIToolSubscriptionForm() {
                       <Input
                         id="startDate"
                         type="date"
-                        value={formData.startDate}
+                        value={formData.startDate.toISOString().split('T')[0]}
                         onChange={(e) => handleInputChange('startDate', e.target.value)}
                         className="pl-10"
                         required
@@ -555,7 +584,7 @@ export default function AIToolSubscriptionForm() {
                       <Input
                         id="renewalDate"
                         type="date"
-                        value={formData.renewalDate}
+                        value={formData.renewalDate.toISOString().split('T')[0]}
                         onChange={(e) => handleInputChange('renewalDate', e.target.value)}
                         className="pl-10"
                         required

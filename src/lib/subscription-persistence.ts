@@ -1,4 +1,4 @@
-import { Subscription, AIToolJsonData, SubscriptionApiResponse } from '@/types/subscription';
+import { Subscription, AIToolJsonData, SubscriptionApiResponse, SubscriptionCategory } from '@/types/subscription';
 import { handleApiError, handleSubscriptionError } from '@/utils/error-handler';
 import { getCurrentDateISO, toDate, getDefaultRenewalDate, getCurrentDate, formatDate } from '@/lib/utils';
 import { getAIToolByName } from '@/lib/ai-tools-data';
@@ -136,16 +136,16 @@ function transformJsonToSubscriptions(jsonData: AIToolJsonData[]): Subscription[
   return jsonData.map((item, index) => ({
     id: item.id || `sub-${index + 1}`,
     name: item.name || 'Unknown Service',
-    category: item.category || 'Other',
+    category: (item.category as SubscriptionCategory) || 'Other',
     subcategory: item.subcategory || '',
-    status: item.status?.toLowerCase() || 'active',
+    status: (item.status?.toLowerCase() as 'active' | 'paused' | 'canceled') || 'active',
     cost: item.cost || 0,
     currency: item.currency || 'USD',
-    billingCycle: item.billingCycle || 'Monthly',
+    billingCycle: (item.billingCycle as 'Monthly' | 'Yearly' | 'Weekly' | 'Quarterly' | 'Free') || 'Monthly',
     renewalDate: item.renewalDate ? toDate(item.renewalDate) : getDefaultRenewalDate(),
     startDate: item.startDate ? toDate(item.startDate) : getCurrentDate(),
     priority: mapUsageImportanceToPriority(item.usageImportance),
-    usageFrequency: item.usageFrequency?.toLowerCase() || 'monthly',
+    usageFrequency: (item.usageFrequency?.toLowerCase() as 'daily' | 'weekly' | 'monthly' | 'rarely') || 'monthly',
     url: item.url || '',
     description: item.description || '',
     notes: item.notes || '',

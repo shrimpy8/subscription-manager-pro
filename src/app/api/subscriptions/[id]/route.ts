@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Subscription } from '@/types/subscription';
 
 // Mock data store (in production, this would be a database)
-let subscriptions: Subscription[] = [];
+const subscriptions: Subscription[] = [];
 
 /**
  * GET /api/subscriptions/[id]
@@ -10,10 +10,11 @@ let subscriptions: Subscription[] = [];
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const subscription = subscriptions.find(sub => sub.id === params.id);
+    const resolvedParams = await params;
+    const subscription = subscriptions.find(sub => sub.id === resolvedParams.id);
 
     if (!subscription) {
       return NextResponse.json(
@@ -40,11 +41,12 @@ export async function GET(
  */
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const body = await request.json();
-    const subscriptionIndex = subscriptions.findIndex(sub => sub.id === params.id);
+    const resolvedParams = await params;
+    const subscriptionIndex = subscriptions.findIndex(sub => sub.id === resolvedParams.id);
 
     if (subscriptionIndex === -1) {
       return NextResponse.json(
@@ -56,7 +58,7 @@ export async function PUT(
     const updatedSubscription: Subscription = {
       ...subscriptions[subscriptionIndex],
       ...body,
-      id: params.id // Ensure ID doesn't change
+      id: resolvedParams.id // Ensure ID doesn't change
     };
 
     subscriptions[subscriptionIndex] = updatedSubscription;
@@ -80,10 +82,11 @@ export async function PUT(
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const subscriptionIndex = subscriptions.findIndex(sub => sub.id === params.id);
+    const resolvedParams = await params;
+    const subscriptionIndex = subscriptions.findIndex(sub => sub.id === resolvedParams.id);
 
     if (subscriptionIndex === -1) {
       return NextResponse.json(

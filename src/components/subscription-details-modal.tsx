@@ -188,7 +188,7 @@ export default function SubscriptionDetailsModal({
                   <span className="text-gray-600 block mb-1">Current Email</span>
                   <span className="font-medium">{subscription.accountEmail || 'Not set'}</span>
                 </div>
-                {subscription.accountEmailsUsedPreviously?.length > 0 && (
+                {subscription.accountEmailsUsedPreviously && subscription.accountEmailsUsedPreviously.length > 0 && (
                   <div>
                     <span className="text-gray-600 block mb-1">Previous Emails</span>
                     <div className="space-y-1">
@@ -219,7 +219,7 @@ export default function SubscriptionDetailsModal({
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {subscription.apiAccessKeys?.length > 0 && (
+                {subscription.apiAccessKeys && subscription.apiAccessKeys.length > 0 && (
                   <div>
                     <span className="text-gray-600 block mb-1">API Keys</span>
                     <div className="space-y-1">
@@ -271,7 +271,7 @@ export default function SubscriptionDetailsModal({
           )}
 
           {/* Promotion History */}
-          {subscription.previouslyUsedPromotionCode?.length > 0 && (
+          {subscription.previouslyUsedPromotionCode && subscription.previouslyUsedPromotionCode.length > 0 && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center text-lg">

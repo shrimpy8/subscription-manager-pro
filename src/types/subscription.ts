@@ -185,7 +185,7 @@ export interface ApiResponse<T> {
   message?: string;
 }
 
-export interface SubscriptionApiResponse extends ApiResponse<Subscription[]> {}
+export type SubscriptionApiResponse = ApiResponse<Subscription[]>;
 
 // Analysis interfaces for AI tool categorizer
 export interface NameAnalysis {

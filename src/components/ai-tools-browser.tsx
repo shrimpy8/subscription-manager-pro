@@ -10,6 +10,7 @@ import { AITool, AIToolFilters, AIToolCategory } from '@/types/ai-tools';
 import { aiTools, getAIToolsByCategory, searchAITools } from '@/lib/ai-tools-data';
 import { AI_TOOL_CATEGORY_ORDER, AI_TOOL_CATEGORY_LABEL, AI_TOOL_CATEGORY_COLORS } from '@/types/ai-tools';
 import { ErrorBoundary } from '@/components/error-boundary';
+import { LoadingInline } from '@/components/ui/loading-spinner';
 
 // Category icon mapping
 const CATEGORY_ICONS = {
@@ -189,12 +190,7 @@ export default function AIToolsBrowser({
 
   if (!mounted) {
     return (
-      <div className="flex items-center justify-center py-8">
-        <div className="flex items-center space-x-2 text-orange-600">
-          <div className="w-5 h-5 border-2 border-orange-600 border-t-transparent rounded-full animate-spin" />
-          <span>Loading AI tools...</span>
-        </div>
-      </div>
+      <LoadingInline message="Loading AI tools..." variant="primary" />
     );
   }
 

@@ -5,7 +5,7 @@
  * Provides functions to add new tools with automatic categorization
  */
 
-import { AITool } from '@/types/ai-tools';
+import { AITool, AIToolCategory, AIToolFlag } from '@/types/ai-tools';
 import { aiTools } from './ai-tools-data';
 import { categorizeAITool, suggestNewCategoryName, type CategorizationResult } from './ai-tool-categorizer';
 import { generateId } from './utils';
@@ -47,7 +47,7 @@ export function addNewAITool(
   );
   
   // Determine final category
-  let finalCategory = customCategory || categorization.suggestedCategory;
+  const finalCategory = customCategory || categorization.suggestedCategory;
   
   // If confidence is low and no custom category provided, suggest review
   const needsReview = categorization.confidence < 0.4 && !customCategory;
@@ -59,9 +59,9 @@ export function addNewAITool(
     name: toolData.name,
     url: toolData.url,
     fallbackIcon: toolData.fallbackIcon || '🤖',
-    category: finalCategory as any,
+    category: finalCategory as AIToolCategory,
     rank: 1, // Will be updated based on category
-    flags: toolData.flags || []
+    flags: (toolData.flags as AIToolFlag[]) || []
   };
   
   // Update rank within category

@@ -13,6 +13,8 @@ import { Subscription } from '@/types/subscription';
 import { handleSubscriptionError } from '@/utils/error-handler';
 import { toDate, formatDateForInput } from '@/lib/utils';
 import { validateSubscription } from '@/utils/validation';
+import { useLoadingState } from '@/hooks/use-loading-state';
+import { LoadingButton } from '@/components/ui/loading-spinner';
 
 interface EditSubscriptionModalProps {
   isOpen: boolean;
@@ -34,7 +36,7 @@ export default function EditSubscriptionModal({
   onSave
 }: EditSubscriptionModalProps) {
   const [formData, setFormData] = useState<Partial<Subscription>>({});
-  const [isLoading, setIsLoading] = useState(false);
+  const loadingState = useLoadingState();
 
   useEffect(() => {
     if (subscription) {
@@ -63,7 +65,7 @@ export default function EditSubscriptionModal({
       return;
     }
 
-    setIsLoading(true);
+    loadingState.setLoading(true, 'Saving subscription...');
     try {
       const updatedSubscription: Subscription = {
         ...subscription,
@@ -79,8 +81,9 @@ export default function EditSubscriptionModal({
         'updating',
         { component: 'edit-subscription-modal' }
       );
+      loadingState.setError('Failed to save subscription');
     } finally {
-      setIsLoading(false);
+      loadingState.setLoading(false);
     }
   };
 
@@ -343,17 +346,18 @@ export default function EditSubscriptionModal({
 
           {/* Action Buttons */}
           <div className="flex justify-end space-x-4 pt-6 border-t">
-            <Button variant="outline" onClick={onClose} disabled={isLoading}>
+            <Button variant="outline" onClick={onClose} disabled={loadingState.isLoading}>
               Cancel
             </Button>
-            <Button 
+            <LoadingButton 
               onClick={handleSave} 
-              disabled={isLoading}
+              isLoading={loadingState.isLoading}
+              loadingText={loadingState.loadingMessage || 'Saving...'}
               className="gradient-bg hover:opacity-90"
             >
               <Save className="w-4 h-4 mr-2" />
-              {isLoading ? 'Saving...' : 'Save Changes'}
-            </Button>
+              Save Changes
+            </LoadingButton>
           </div>
         </div>
       </DialogContent>

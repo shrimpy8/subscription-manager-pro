@@ -140,8 +140,8 @@ export interface CategorizationResult {
 /**
  * Analyze tool name for category keywords
  */
-function analyzeName(name: string): { category: string; score: number; keywords: string[] }[] {
-  const results: { category: string; score: number; keywords: string[] }[] = [];
+function analyzeName(name: string): { category: string; score: number; keywords: string[]; confidence: number }[] {
+  const results: { category: string; score: number; keywords: string[]; confidence: number }[] = [];
   const lowerName = name.toLowerCase();
   
   for (const [category, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
@@ -154,7 +154,8 @@ function analyzeName(name: string): { category: string; score: number; keywords:
       results.push({
         category,
         score,
-        keywords: matchedKeywords
+        keywords: matchedKeywords,
+        confidence: score
       });
     }
   }
@@ -165,8 +166,8 @@ function analyzeName(name: string): { category: string; score: number; keywords:
 /**
  * Analyze URL domain for category patterns
  */
-function analyzeDomain(url: string): { category: string; score: number }[] {
-  const results: { category: string; score: number }[] = [];
+function analyzeDomain(url: string): { category: string; score: number; domain: string; confidence: number }[] {
+  const results: { category: string; score: number; domain: string; confidence: number }[] = [];
   const domain = new URL(url).hostname.toLowerCase();
   
   for (const [category, patterns] of Object.entries(DOMAIN_PATTERNS)) {
@@ -175,9 +176,12 @@ function analyzeDomain(url: string): { category: string; score: number }[] {
     );
     
     if (matchedPatterns.length > 0) {
+      const score = matchedPatterns.length / patterns.length;
       results.push({
         category,
-        score: matchedPatterns.length / patterns.length
+        score,
+        domain,
+        confidence: score
       });
     }
   }
@@ -357,7 +361,7 @@ export function suggestNewCategoryName(
  */
 export function batchCategorizeTools(tools: Partial<AITool>[]): CategorizationResult[] {
   return tools.map(tool => 
-    categorizeAITool(tool.name || '', tool.url || '', tool.description)
+    categorizeAITool(tool.name || '', tool.url || '', undefined)
   );
 }
 

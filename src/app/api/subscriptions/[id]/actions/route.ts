@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Subscription } from '@/types/subscription';
 
 // Mock data store (in production, this would be a database)
-let subscriptions: Subscription[] = [];
+const subscriptions: Subscription[] = [];
 
 /**
  * POST /api/subscriptions/[id]/actions
@@ -10,12 +10,13 @@ let subscriptions: Subscription[] = [];
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const body = await request.json();
     const { action } = body;
-    const subscriptionIndex = subscriptions.findIndex(sub => sub.id === params.id);
+    const resolvedParams = await params;
+    const subscriptionIndex = subscriptions.findIndex(sub => sub.id === resolvedParams.id);
 
     if (subscriptionIndex === -1) {
       return NextResponse.json(

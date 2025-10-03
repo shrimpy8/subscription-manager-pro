@@ -22,10 +22,10 @@ export default function AddSubscriptionModal({ isOpen, onClose, onAdd }: AddSubs
     category: 'AI Tools' as const,
     status: 'active' as const,
     cost: '',
-    billingCycle: 'monthly' as const,
+    billingCycle: 'Monthly' as 'Monthly' | 'Yearly' | 'Weekly' | 'Quarterly' | 'Free',
     renewalDate: '',
     priority: 'medium' as const,
-    usageFrequency: 'regular' as const,
+    usageFrequency: 'monthly' as const,
     notes: '',
     url: '',
     email: ''
@@ -40,13 +40,20 @@ export default function AddSubscriptionModal({ isOpen, onClose, onAdd }: AddSubs
       category: formData.category,
       status: formData.status,
       cost: parseFloat(formData.cost) || 0,
-      billingCycle: formData.billingCycle,
+      billingCycle: formData.billingCycle as 'Monthly' | 'Yearly' | 'Weekly' | 'Quarterly' | 'Free',
       renewalDate: new Date(formData.renewalDate || Date.now() + 30 * 24 * 60 * 60 * 1000),
       priority: formData.priority,
-      usageFrequency: formData.usageFrequency,
+      usageFrequency: formData.usageFrequency as 'daily' | 'weekly' | 'monthly' | 'rarely',
       notes: formData.notes || undefined,
-      url: formData.url || undefined,
-      email: formData.email || undefined
+      url: formData.url || '',
+      accountEmail: formData.email || '',
+      plan: 'Free',
+      logo: '',
+      currency: 'USD',
+      description: '',
+      subcategory: '',
+      startDate: new Date(),
+      autoRenew: true
     };
 
     onAdd(subscription);
@@ -58,10 +65,10 @@ export default function AddSubscriptionModal({ isOpen, onClose, onAdd }: AddSubs
       category: 'AI Tools',
       status: 'active',
       cost: '',
-      billingCycle: 'monthly',
+      billingCycle: 'Monthly',
       renewalDate: '',
       priority: 'medium',
-      usageFrequency: 'regular',
+      usageFrequency: 'monthly',
       notes: '',
       url: '',
       email: ''
@@ -111,9 +118,11 @@ export default function AddSubscriptionModal({ isOpen, onClose, onAdd }: AddSubs
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="monthly">Monthly</SelectItem>
-                <SelectItem value="yearly">Yearly</SelectItem>
-                <SelectItem value="one-time">One-time</SelectItem>
+                <SelectItem value="Monthly">Monthly</SelectItem>
+                <SelectItem value="Yearly">Yearly</SelectItem>
+                <SelectItem value="Weekly">Weekly</SelectItem>
+                <SelectItem value="Quarterly">Quarterly</SelectItem>
+                <SelectItem value="Free">Free</SelectItem>
               </SelectContent>
             </Select>
           </div>

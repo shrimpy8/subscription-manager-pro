@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Subscription } from '@/types/subscription';
 
 // Mock data store (in production, this would be a database)
-let subscriptions: Subscription[] = [];
+const subscriptions: Subscription[] = [];
 
 /**
  * GET /api/subscriptions/export
