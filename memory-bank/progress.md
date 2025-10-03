@@ -162,6 +162,15 @@ The Subscription Manager Pro project is **fully implemented** with all core feat
 
 ## 🚧 What's Left to Build
 
+### Current Development (In Progress)
+1. **Enhanced CRUD Operations**: 
+   - ✅ Update existing subscription functionality (HH2-137)
+   - ✅ Delete subscription with confirmation dialog (HH2-138) 
+   - ✅ Duplicate subscription functionality (HH2-139)
+2. **Performance Optimizations**: 
+   - ✅ React memoization optimizations (HH2-41) - COMPLETED
+   - 🔄 Code splitting and lazy loading (HH2-44) - PENDING
+
 ### Future Enhancements (Not Required)
 1. **Database Integration**: Supabase or PostgreSQL
 2. **User Authentication**: Multi-user support

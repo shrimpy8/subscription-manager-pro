@@ -18,6 +18,7 @@ import { ErrorBoundary } from '@/components/error-boundary';
 import SubscriptionsTable from '@/components/subscriptions-table';
 import SubscriptionDetailsModal from '@/components/subscription-details-modal';
 import EditSubscriptionModal from '@/components/edit-subscription-modal';
+import DeleteConfirmationDialog from '@/components/delete-confirmation-dialog';
 import { useMultipleLoadingStates } from '@/hooks/use-loading-state';
 import { LoadingPage } from '@/components/ui/loading-spinner';
 
@@ -48,7 +49,9 @@ export default function HomePage() {
   const [currentTab, setCurrentTab] = useState<'subscriptions' | 'ai-tools'>('subscriptions');
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedSubscription, setSelectedSubscription] = useState<Subscription | null>(null);
+  const [subscriptionToDelete, setSubscriptionToDelete] = useState<Subscription | null>(null);
   
   // Handle URL parameters to set the current tab
   useEffect(() => {
@@ -433,7 +436,7 @@ export default function HomePage() {
                 const duplicated = {
                   ...subscription,
                   id: generateId(),
-                  name: `${subscription.name} (Copy)`,
+                  name: `${subscription.name}_Copy`,
                   status: 'active' as const,
                   startDate: getCurrentDate(),
                   renewalDate: getDefaultRenewalDate()
@@ -454,24 +457,9 @@ export default function HomePage() {
                   save.setLoading(false);
                 }
               }}
-              onDelete={async (subscription) => {
-                if (confirm(`Are you sure you want to delete ${subscription.name}?`)) {
-                  const updatedSubscriptions = subscriptions.filter(s => s.id !== subscription.id);
-                  setSubscriptions(updatedSubscriptions);
-                  save.setLoading(true, 'Saving subscription...');
-                  try {
-                    await saveSubscriptions(updatedSubscriptions);
-                  } catch (error) {
-                    deleteLoading.setError('Failed to delete subscription. Please try again.');
-                    handleSubscriptionError(
-                      error as Error,
-                      'deleting subscription',
-                      { component: 'main-page' }
-                    );
-                  } finally {
-                    save.setLoading(false);
-                  }
-                }
+              onDelete={(subscription) => {
+                setSubscriptionToDelete(subscription);
+                setIsDeleteDialogOpen(true);
               }}
               onPause={async (subscription) => {
                 const updatedSubscriptions = subscriptions.map(s => 
@@ -596,6 +584,39 @@ export default function HomePage() {
           setSubscriptions(updatedSubscriptions);
           await saveSubscriptions(updatedSubscriptions);
         }}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmationDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={() => {
+          setIsDeleteDialogOpen(false);
+          setSubscriptionToDelete(null);
+        }}
+        onConfirm={async () => {
+          if (!subscriptionToDelete) return;
+          
+          const updatedSubscriptions = subscriptions.filter(s => s.id !== subscriptionToDelete.id);
+          setSubscriptions(updatedSubscriptions);
+          deleteLoading.setLoading(true, 'Deleting subscription...');
+          
+          try {
+            await saveSubscriptions(updatedSubscriptions);
+            setIsDeleteDialogOpen(false);
+            setSubscriptionToDelete(null);
+          } catch (error) {
+            deleteLoading.setError('Failed to delete subscription. Please try again.');
+            handleSubscriptionError(
+              error as Error,
+              'deleting subscription',
+              { component: 'main-page' }
+            );
+          } finally {
+            deleteLoading.setLoading(false);
+          }
+        }}
+        subscription={subscriptionToDelete}
+        isLoading={deleteLoading.isLoading}
       />
       </ErrorBoundary>
     </div>
