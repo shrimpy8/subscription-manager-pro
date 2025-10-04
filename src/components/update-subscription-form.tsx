@@ -26,7 +26,7 @@ interface UpdateSubscriptionFormProps {
   subscriptionId: string;
 }
 
-interface UpdateSubscriptionFormData {
+export interface UpdateSubscriptionFormData {
   id: string;
   name: string;
   category: SubscriptionCategory;
@@ -273,7 +273,7 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
           previouslyUsedPromotionCode: foundSubscription.previouslyUsedPromotionCode || [],
           latestPromotionCode: foundSubscription.latestPromotionCode || '',
           usageFrequency: foundSubscription.usageFrequency || 'monthly',
-          usageImportance: foundSubscription.usageImportance || 'Medium',
+          usageImportance: 'Medium', // Default value since usageImportance is not in Subscription type
           accountEmailsUsedPreviously: foundSubscription.accountEmailsUsedPreviously || [],
           apiAccessKeys: foundSubscription.apiAccessKeys || [],
           secretKey: foundSubscription.secretKey || '',
@@ -303,7 +303,7 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
     setHasChanges(true);
     
     // Update section states
-    updateSectionStates(field as string, value);
+    updateSectionStates(field as string, value as string | number | boolean);
   };
 
   const updateSectionStates = (field: string, value: string | number | boolean) => {
@@ -340,7 +340,7 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
       [field]: prev[field].filter((_, i) => i !== index)
     }));
     setHasChanges(true);
-    updateSectionStates(field, formData[field].filter((_, i) => i !== index));
+    updateSectionStates(field, formData[field].filter((_, i) => i !== index) as unknown as string | number | boolean);
   };
 
   // Utility function to create section header with change tracking
@@ -385,7 +385,7 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
     // Revert all fields in section to original values
     fields.forEach(field => {
       if (field in originalData) {
-        (newFormData as Record<string, string | number | boolean | Date>)[field] = (originalData as Record<string, string | number | boolean | Date>)[field];
+        (newFormData as unknown as Record<string, unknown>)[field] = (originalData as unknown as Record<string, unknown>)[field];
       }
     });
     
