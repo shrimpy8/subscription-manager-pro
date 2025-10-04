@@ -9,7 +9,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/components/ui/toast';
-import { ArrowLeft, FileText, Save, RotateCcw, Undo2, Key, Shield, DollarSign, Gift, Globe } from 'lucide-react';
+import { ArrowLeft, FileText, Save, RotateCcw, Undo2, Key, Shield, DollarSign, Gift, Globe, Calendar, Mail } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Subscription } from '@/types/subscription';
 import { loadSubscriptions, saveSubscriptions } from '@/lib/subscription-persistence';
 import { validateSubscription } from '@/utils/validation';
@@ -86,6 +87,55 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
       </div>
     );
   };
+
+  // Constants from Add Subscription form
+  const MAIN_CATEGORIES = [
+    'AI Tools',
+    'Cloud Provider',
+    'Communication',
+    'Design Tools',
+    'Development Tools',
+    'Entertainment',
+    'Magazine',
+    'Newsletter',
+    'Online Learning',
+    'Other',
+    'Productivity',
+    'Security',
+    'Social Media',
+    'Storage',
+    'Utilities',
+    'Video Streaming',
+    'Web Hosting'
+  ];
+
+  const AI_TOOL_SUBCATEGORIES_WITH_EXAMPLES = [
+    { value: 'Language Model', example: 'ChatGPT, Claude' },
+    { value: 'Code Generation', example: 'GitHub Copilot, Tabnine' },
+    { value: 'Image Generation', example: 'DALL-E, Midjourney' },
+    { value: 'Video Generation', example: 'Runway, Pika' },
+    { value: 'Audio Generation', example: 'ElevenLabs, Murf' },
+    { value: 'Data Analysis', example: 'DataGPT, Julius' },
+    { value: 'Writing Assistant', example: 'Jasper, Copy.ai' },
+    { value: 'Research Assistant', example: 'Perplexity, Consensus' },
+    { value: 'Code Review', example: 'CodeRabbit, DeepCode' },
+    { value: 'Document Processing', example: 'DocuSign, PandaDoc' },
+    { value: 'Customer Support', example: 'Intercom, Zendesk' },
+    { value: 'Sales Assistant', example: 'Salesforce Einstein, HubSpot' },
+    { value: 'Marketing', example: 'Hootsuite, Buffer' },
+    { value: 'Design', example: 'Figma, Canva' },
+    { value: 'Translation', example: 'DeepL, Google Translate' },
+    { value: 'Summarization', example: 'SummarizeBot, TLDR' },
+    { value: 'Chatbot', example: 'Chatfuel, ManyChat' },
+    { value: 'Automation', example: 'Zapier, IFTTT' },
+    { value: 'Analytics', example: 'Mixpanel, Amplitude' },
+    { value: 'Testing', example: 'Testim, Applitools' },
+    { value: 'Other', example: 'Custom tools' }
+  ];
+
+  const PLAN_OPTIONS = ['Enterprise', 'Free', 'Max', 'Personal', 'Plus', 'Premium', 'Pro', 'Team', 'Ultra'];
+  const BILLING_CYCLES = ['Monthly', 'Yearly', 'One-time', 'Pay-per-use'];
+  const CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD', 'AUD', 'JPY'];
 
   // Initialize section states
   useEffect(() => {
@@ -396,42 +446,106 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
                       required
                     />
                   </div>
+
                   <div>
-                    <Label htmlFor="category" className="text-sm font-medium text-gray-700">Category</Label>
-                    <Input
-                      id="category"
-                      placeholder="e.g. AI Tools"
-                      value={(formData.category as string) || ''}
-                      onChange={(e) => handleInputChange('category', e.target.value)}
-                    />
+                    <Label htmlFor="category" className="text-sm font-medium text-gray-700">Category *</Label>
+                    <Select
+                      value={(formData.category as string) === 'AI Tools' && formData.subcategory ? `ai-tools-${formData.subcategory}` : (formData.category as string)}
+                      onValueChange={(value) => {
+                        if (value.startsWith('ai-tools-')) {
+                          // AI Tool subcategory selected
+                          const subcategory = value.replace('ai-tools-', '');
+                          handleInputChange('category', 'AI Tools');
+                          handleInputChange('subcategory', subcategory);
+                        } else {
+                          // Regular category selected
+                          handleInputChange('category', value);
+                          handleInputChange('subcategory', '');
+                        }
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select category">
+                          {(formData.category as string) === 'AI Tools' && formData.subcategory 
+                            ? `AI Tools: ${formData.subcategory}`
+                            : (formData.category as string) || 'Select category'}
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent className="max-h-96">
+                        {MAIN_CATEGORIES.map((category) => {
+                          if (category === 'AI Tools') {
+                            return (
+                              <div key={category}>
+                                {/* AI Tools Main Category */}
+                                <SelectItem value="AI Tools">
+                                  <div className="flex items-center">
+                                    <span className="font-medium">AI Tools</span>
+                                    <span className="ml-2 text-xs text-gray-500">(21 subcategories)</span>
+                                  </div>
+                                </SelectItem>
+                                
+                                {/* AI Tool Subcategories - Nested */}
+                                <div className="ml-4 border-l-2 border-orange-200 pl-2 space-y-1">
+                                  {AI_TOOL_SUBCATEGORIES_WITH_EXAMPLES.map((subcategory) => (
+                                    <SelectItem key={`ai-tools-${subcategory.value}`} value={`ai-tools-${subcategory.value}`} className="nested-dropdown-item">
+                                      <div className="flex items-center py-1">
+                                        <div className="w-2 h-2 bg-orange-400 rounded-full mr-3 flex-shrink-0"></div>
+                                        <div className="flex flex-col">
+                                          <span className="font-medium text-sm">{subcategory.value}</span>
+                                          <span className="text-xs text-gray-500">e.g., {subcategory.example}</span>
+                                        </div>
+                                      </div>
+                                    </SelectItem>
+                                  ))}
+                                </div>
+                                {/* Separator after AI Tools */}
+                                <div className="my-2 border-t border-gray-200"></div>
+                              </div>
+                            );
+                          } else {
+                            // Add header for first non-AI Tools category
+                            const isFirstOtherCategory = category === 'Cloud Provider';
+                            return (
+                              <div key={category}>
+                                {isFirstOtherCategory && (
+                                  <div className="px-2 py-1.5 text-xs font-semibold text-gray-500 bg-gray-50">
+                                    Other Categories
+                                  </div>
+                                )}
+                                <SelectItem value={category}>
+                                  {category}
+                                </SelectItem>
+                              </div>
+                            );
+                          }
+                        })}
+                      </SelectContent>
+                    </Select>
                   </div>
+
                   <div>
-                    <Label htmlFor="subcategory" className="text-sm font-medium text-gray-700">Subcategory</Label>
-                    <Input
-                      id="subcategory"
-                      placeholder="e.g. Language Model"
-                      value={(formData.subcategory as string) || ''}
-                      onChange={(e) => handleInputChange('subcategory', e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="description" className="text-sm font-medium text-gray-700">Description</Label>
-                    <Input
+                    <Label htmlFor="description" className="text-sm font-medium text-gray-700">Description (optional)</Label>
+                    <Textarea
                       id="description"
-                      placeholder="Brief description of the tool"
+                      placeholder="Brief description of the AI tool and its capabilities..."
                       value={(formData.description as string) || ''}
                       onChange={(e) => handleInputChange('description', e.target.value)}
+                      rows={3}
                     />
                   </div>
+
                   <div>
-                    <Label htmlFor="url" className="text-sm font-medium text-gray-700">Website URL</Label>
-                    <Input
-                      id="url"
-                      type="url"
-                      placeholder="https://example.com"
-                      value={(formData.url as string) || ''}
-                      onChange={(e) => handleInputChange('url', e.target.value)}
-                    />
+                    <Label htmlFor="url" className="text-sm font-medium text-gray-700">Website URL (optional)</Label>
+                    <div className="relative">
+                      <Globe className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                      <Input
+                        id="url"
+                        placeholder="https://example.com"
+                        value={(formData.url as string) || ''}
+                        onChange={(e) => handleInputChange('url', e.target.value)}
+                        className="pl-10"
+                      />
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -610,76 +724,110 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="plan" className="text-sm font-medium text-gray-700">Plan</Label>
-                      <Input
-                        id="plan"
-                        placeholder="e.g. Pro Plan"
-                        value={(formData.plan as string) || ''}
-                        onChange={(e) => handleInputChange('plan', e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="cost" className="text-sm font-medium text-gray-700">Cost</Label>
-                      <Input
-                        id="cost"
-                        type="number"
-                        step="0.01"
-                        placeholder="0.00"
-                        value={(formData.cost as string) || ''}
-                        onChange={(e) => handleInputChange('cost', e.target.value)}
-                      />
-                    </div>
+                  <div>
+                    <Label htmlFor="plan" className="text-sm font-medium text-gray-700">Plan Name *</Label>
+                    <Select value={(formData.plan as string) || ''} onValueChange={(value) => handleInputChange('plan', value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select plan" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {PLAN_OPTIONS.map((plan) => (
+                          <SelectItem key={plan} value={plan}>{plan}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="cost" className="text-sm font-medium text-gray-700">Cost *</Label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-3 text-gray-500">$</span>
+                        <Input
+                          id="cost"
+                          type="number"
+                          step="0.01"
+                          placeholder="0.00"
+                          value={(formData.cost as string) || ''}
+                          onChange={(e) => handleInputChange('cost', parseFloat(e.target.value) || 0)}
+                          className="pl-8"
+                          required
+                        />
+                      </div>
+                    </div>
+
                     <div>
                       <Label htmlFor="currency" className="text-sm font-medium text-gray-700">Currency</Label>
-                      <Input
-                        id="currency"
-                        placeholder="USD, EUR, GBP"
-                        value={(formData.currency as string) || ''}
-                        onChange={(e) => handleInputChange('currency', e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="billingCycle" className="text-sm font-medium text-gray-700">Billing Cycle</Label>
-                      <Input
-                        id="billingCycle"
-                        placeholder="Monthly, Yearly"
-                        value={(formData.billingCycle as string) || ''}
-                        onChange={(e) => handleInputChange('billingCycle', e.target.value)}
-                      />
+                      <Select value={(formData.currency as string) || ''} onValueChange={(value) => handleInputChange('currency', value)}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {CURRENCIES.map((currency) => (
+                            <SelectItem key={currency} value={currency}>{currency}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="startDate" className="text-sm font-medium text-gray-700">Start Date</Label>
+
+                  <OptionGridControl
+                    label="Billing Cycle"
+                    value={(formData.billingCycle as string) || ''}
+                    options={BILLING_CYCLES}
+                    onChange={(value) => handleInputChange('billingCycle', value)}
+                  />
+
+                  <div>
+                    <Label htmlFor="startDate" className="text-sm font-medium text-gray-700">Start Date *</Label>
+                    <div className="relative">
+                      <Calendar className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
                       <Input
                         id="startDate"
                         type="date"
                         value={(formData.startDate as string) || ''}
                         onChange={(e) => handleInputChange('startDate', e.target.value)}
+                        className="pl-10"
+                        required
                       />
                     </div>
-                    <div>
-                      <Label htmlFor="renewalDate" className="text-sm font-medium text-gray-700">Renewal Date</Label>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="renewalDate" className="text-sm font-medium text-gray-700">Next Renewal Date *</Label>
+                    <div className="relative">
+                      <Calendar className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
                       <Input
                         id="renewalDate"
                         type="date"
                         value={(formData.renewalDate as string) || ''}
                         onChange={(e) => handleInputChange('renewalDate', e.target.value)}
+                        className="pl-10"
+                        required
                       />
                     </div>
                   </div>
+
+                  <OptionGridControl
+                    label="Status"
+                    value={(formData.status as string) || ''}
+                    options={['Active', 'Paused', 'Canceled', 'Trial']}
+                    onChange={(value) => handleInputChange('status', value)}
+                  />
+
                   <div>
-                    <Label htmlFor="status" className="text-sm font-medium text-gray-700">Status</Label>
-                    <Input
-                      id="status"
-                      placeholder="Active, Paused, Canceled"
-                      value={(formData.status as string) || ''}
-                      onChange={(e) => handleInputChange('status', e.target.value)}
-                    />
+                    <Label htmlFor="accountEmailInUse" className="text-sm font-medium text-gray-700">Account Email (optional)</Label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                      <Input
+                        id="accountEmailInUse"
+                        type="email"
+                        placeholder="email@example.com"
+                        value={(formData.accountEmailInUse as string) || ''}
+                        onChange={(e) => handleInputChange('accountEmailInUse', e.target.value)}
+                        className="pl-10"
+                      />
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -781,33 +929,45 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div>
+                  <div className="flex items-center justify-between">
                     <Label htmlFor="chinaRegionOnly" className="text-sm font-medium text-gray-700">China Region Only</Label>
-                    <Input
-                      id="chinaRegionOnly"
-                      placeholder="Yes/No"
-                      value={(formData.chinaRegionOnly as string) || ''}
-                      onChange={(e) => handleInputChange('chinaRegionOnly', e.target.value)}
-                    />
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        id="chinaRegionOnly"
+                        checked={Boolean(formData.chinaRegionOnly)}
+                        onChange={(e) => handleInputChange('chinaRegionOnly', e.target.checked)}
+                        className="sr-only"
+                      />
+                      <div className={`relative w-20 h-7 rounded-full transition-colors ${formData.chinaRegionOnly ? 'bg-orange-500' : 'bg-gray-200'}`}>
+                        <div className={`absolute inset-0 flex items-center justify-center text-xs font-medium transition-colors ${formData.chinaRegionOnly ? 'text-white' : 'text-gray-600'}`}>
+                          {formData.chinaRegionOnly ? 'YES' : 'NO'}
+                        </div>
+                        <div className={`absolute top-[2px] w-6 h-6 bg-white border border-gray-300 rounded-full transition-transform ${formData.chinaRegionOnly ? 'translate-x-[52px]' : 'translate-x-[2px]'}`}></div>
+                      </div>
+                    </label>
                   </div>
+
                   <div>
-                    <Label htmlFor="logoUrl" className="text-sm font-medium text-gray-700">Logo URL</Label>
+                    <Label htmlFor="logoUrl" className="text-sm font-medium text-gray-700">Logo URL (optional)</Label>
                     <Input
                       id="logoUrl"
-                      type="url"
                       placeholder="https://example.com/logo.png"
                       value={(formData.logoUrl as string) || ''}
                       onChange={(e) => handleInputChange('logoUrl', e.target.value)}
                     />
+                    <p className="text-xs text-gray-500 mt-1">Leave blank for a default placeholder</p>
                   </div>
+
                   <div>
-                    <Label htmlFor="fallbackIcon" className="text-sm font-medium text-gray-700">Fallback Icon</Label>
+                    <Label htmlFor="fallbackIcon" className="text-sm font-medium text-gray-700">Fallback Icon (optional)</Label>
                     <Input
                       id="fallbackIcon"
                       placeholder="Icon name or URL"
                       value={(formData.fallbackIcon as string) || ''}
                       onChange={(e) => handleInputChange('fallbackIcon', e.target.value)}
                     />
+                    <p className="text-xs text-gray-500 mt-1">Used when logo URL fails to load</p>
                   </div>
                 </CardContent>
               </Card>
