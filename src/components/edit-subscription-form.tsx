@@ -5,10 +5,11 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/components/ui/toast';
-import { ArrowLeft, FileText, Save, RotateCcw, Undo2 } from 'lucide-react';
+import { ArrowLeft, FileText, Save, RotateCcw, Undo2, Key, Shield, DollarSign, Gift, Globe } from 'lucide-react';
 import { Subscription } from '@/types/subscription';
 import { loadSubscriptions, saveSubscriptions } from '@/lib/subscription-persistence';
 import { validateSubscription } from '@/utils/validation';
@@ -355,16 +356,467 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
                       required
                     />
                   </div>
-                  {/* Add other basic info fields */}
+                  <div>
+                    <Label htmlFor="category" className="text-sm font-medium text-gray-700">Category</Label>
+                    <Input
+                      id="category"
+                      placeholder="e.g. AI Tools"
+                      value={(formData.category as string) || ''}
+                      onChange={(e) => handleInputChange('category', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="subcategory" className="text-sm font-medium text-gray-700">Subcategory</Label>
+                    <Input
+                      id="subcategory"
+                      placeholder="e.g. Language Model"
+                      value={(formData.subcategory as string) || ''}
+                      onChange={(e) => handleInputChange('subcategory', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="description" className="text-sm font-medium text-gray-700">Description</Label>
+                    <Input
+                      id="description"
+                      placeholder="Brief description of the tool"
+                      value={(formData.description as string) || ''}
+                      onChange={(e) => handleInputChange('description', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="url" className="text-sm font-medium text-gray-700">Website URL</Label>
+                    <Input
+                      id="url"
+                      type="url"
+                      placeholder="https://example.com"
+                      value={(formData.url as string) || ''}
+                      onChange={(e) => handleInputChange('url', e.target.value)}
+                    />
+                  </div>
                 </CardContent>
               </Card>
 
-              {/* Add other sections here */}
+              {/* Key Management Section */}
+              <Card className="border border-gray-200 shadow-sm">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center text-lg font-semibold text-gray-900">
+                      <Key className="w-5 h-5 mr-2 text-orange-600" />
+                      Key Management
+                    </CardTitle>
+                    <div className="flex items-center space-x-2">
+                      {sectionStates[SECTIONS.KEY_MANAGEMENT]?.hasChanges && (
+                        <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
+                          Modified
+                        </Badge>
+                      )}
+                      {sectionStates[SECTIONS.KEY_MANAGEMENT]?.hasChanges && (
+                        <div className="flex space-x-1">
+                          <button
+                            type="button"
+                            onClick={() => revertSection(SECTIONS.KEY_MANAGEMENT, 'last')}
+                            className="p-1 hover:bg-gray-100 rounded"
+                            title="Revert Last Change"
+                          >
+                            <Undo2 className="w-4 h-4 text-gray-600" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => revertSection(SECTIONS.KEY_MANAGEMENT, 'all')}
+                            className="p-1 hover:bg-gray-100 rounded"
+                            title="Revert All Changes"
+                          >
+                            <RotateCcw className="w-4 h-4 text-gray-600" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="secretKey" className="text-sm font-medium text-gray-700">Secret Key</Label>
+                    <Input
+                      id="secretKey"
+                      type="password"
+                      placeholder="Enter secret key"
+                      value={(formData.secretKey as string) || ''}
+                      onChange={(e) => handleInputChange('secretKey', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="apiAccessKeys" className="text-sm font-medium text-gray-700">API Access Keys</Label>
+                    <Input
+                      id="apiAccessKeys"
+                      placeholder="Enter API keys"
+                      value={(formData.apiAccessKeys as string) || ''}
+                      onChange={(e) => handleInputChange('apiAccessKeys', e.target.value)}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Usage Section */}
+              <Card className="border border-gray-200 shadow-sm">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center text-lg font-semibold text-gray-900">
+                      <Shield className="w-5 h-5 mr-2 text-orange-600" />
+                      Usage
+                    </CardTitle>
+                    <div className="flex items-center space-x-2">
+                      {sectionStates[SECTIONS.USAGE]?.hasChanges && (
+                        <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
+                          Modified
+                        </Badge>
+                      )}
+                      {sectionStates[SECTIONS.USAGE]?.hasChanges && (
+                        <div className="flex space-x-1">
+                          <button
+                            type="button"
+                            onClick={() => revertSection(SECTIONS.USAGE, 'last')}
+                            className="p-1 hover:bg-gray-100 rounded"
+                            title="Revert Last Change"
+                          >
+                            <Undo2 className="w-4 h-4 text-gray-600" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => revertSection(SECTIONS.USAGE, 'all')}
+                            className="p-1 hover:bg-gray-100 rounded"
+                            title="Revert All Changes"
+                          >
+                            <RotateCcw className="w-4 h-4 text-gray-600" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="usageImportance" className="text-sm font-medium text-gray-700">Usage Importance</Label>
+                    <Input
+                      id="usageImportance"
+                      placeholder="High, Medium, Low"
+                      value={(formData.usageImportance as string) || ''}
+                      onChange={(e) => handleInputChange('usageImportance', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="usageFrequency" className="text-sm font-medium text-gray-700">Usage Frequency</Label>
+                    <Input
+                      id="usageFrequency"
+                      placeholder="Daily, Weekly, Monthly"
+                      value={(formData.usageFrequency as string) || ''}
+                      onChange={(e) => handleInputChange('usageFrequency', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="safeForWork" className="text-sm font-medium text-gray-700">Safe for Work</Label>
+                    <Input
+                      id="safeForWork"
+                      placeholder="Yes/No"
+                      value={(formData.safeForWork as string) || ''}
+                      onChange={(e) => handleInputChange('safeForWork', e.target.value)}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
             </div>
 
             {/* Right Column */}
             <div className="space-y-6">
-              {/* Add right column sections */}
+              {/* Billing Information Section */}
+              <Card className="border border-gray-200 shadow-sm">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center text-lg font-semibold text-gray-900">
+                      <DollarSign className="w-5 h-5 mr-2 text-orange-600" />
+                      Billing Information
+                    </CardTitle>
+                    <div className="flex items-center space-x-2">
+                      {sectionStates[SECTIONS.BILLING]?.hasChanges && (
+                        <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
+                          Modified
+                        </Badge>
+                      )}
+                      {sectionStates[SECTIONS.BILLING]?.hasChanges && (
+                        <div className="flex space-x-1">
+                          <button
+                            type="button"
+                            onClick={() => revertSection(SECTIONS.BILLING, 'last')}
+                            className="p-1 hover:bg-gray-100 rounded"
+                            title="Revert Last Change"
+                          >
+                            <Undo2 className="w-4 h-4 text-gray-600" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => revertSection(SECTIONS.BILLING, 'all')}
+                            className="p-1 hover:bg-gray-100 rounded"
+                            title="Revert All Changes"
+                          >
+                            <RotateCcw className="w-4 h-4 text-gray-600" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="plan" className="text-sm font-medium text-gray-700">Plan</Label>
+                      <Input
+                        id="plan"
+                        placeholder="e.g. Pro Plan"
+                        value={(formData.plan as string) || ''}
+                        onChange={(e) => handleInputChange('plan', e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="cost" className="text-sm font-medium text-gray-700">Cost</Label>
+                      <Input
+                        id="cost"
+                        type="number"
+                        step="0.01"
+                        placeholder="0.00"
+                        value={(formData.cost as string) || ''}
+                        onChange={(e) => handleInputChange('cost', e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="currency" className="text-sm font-medium text-gray-700">Currency</Label>
+                      <Input
+                        id="currency"
+                        placeholder="USD, EUR, GBP"
+                        value={(formData.currency as string) || ''}
+                        onChange={(e) => handleInputChange('currency', e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="billingCycle" className="text-sm font-medium text-gray-700">Billing Cycle</Label>
+                      <Input
+                        id="billingCycle"
+                        placeholder="Monthly, Yearly"
+                        value={(formData.billingCycle as string) || ''}
+                        onChange={(e) => handleInputChange('billingCycle', e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="startDate" className="text-sm font-medium text-gray-700">Start Date</Label>
+                      <Input
+                        id="startDate"
+                        type="date"
+                        value={(formData.startDate as string) || ''}
+                        onChange={(e) => handleInputChange('startDate', e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="renewalDate" className="text-sm font-medium text-gray-700">Renewal Date</Label>
+                      <Input
+                        id="renewalDate"
+                        type="date"
+                        value={(formData.renewalDate as string) || ''}
+                        onChange={(e) => handleInputChange('renewalDate', e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <Label htmlFor="status" className="text-sm font-medium text-gray-700">Status</Label>
+                    <Input
+                      id="status"
+                      placeholder="Active, Paused, Canceled"
+                      value={(formData.status as string) || ''}
+                      onChange={(e) => handleInputChange('status', e.target.value)}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Promo Details Section */}
+              <Card className="border border-gray-200 shadow-sm">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center text-lg font-semibold text-gray-900">
+                      <Gift className="w-5 h-5 mr-2 text-orange-600" />
+                      Promo Details
+                    </CardTitle>
+                    <div className="flex items-center space-x-2">
+                      {sectionStates[SECTIONS.PROMO]?.hasChanges && (
+                        <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
+                          Modified
+                        </Badge>
+                      )}
+                      {sectionStates[SECTIONS.PROMO]?.hasChanges && (
+                        <div className="flex space-x-1">
+                          <button
+                            type="button"
+                            onClick={() => revertSection(SECTIONS.PROMO, 'last')}
+                            className="p-1 hover:bg-gray-100 rounded"
+                            title="Revert Last Change"
+                          >
+                            <Undo2 className="w-4 h-4 text-gray-600" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => revertSection(SECTIONS.PROMO, 'all')}
+                            className="p-1 hover:bg-gray-100 rounded"
+                            title="Revert All Changes"
+                          >
+                            <RotateCcw className="w-4 h-4 text-gray-600" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="latestPromotionCode" className="text-sm font-medium text-gray-700">Latest Promotion Code</Label>
+                    <Input
+                      id="latestPromotionCode"
+                      placeholder="e.g. SAVE20"
+                      value={(formData.latestPromotionCode as string) || ''}
+                      onChange={(e) => handleInputChange('latestPromotionCode', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="previouslyUsedPromotionCode" className="text-sm font-medium text-gray-700">Previously Used Promotion Code</Label>
+                    <Input
+                      id="previouslyUsedPromotionCode"
+                      placeholder="e.g. WELCOME10"
+                      value={(formData.previouslyUsedPromotionCode as string) || ''}
+                      onChange={(e) => handleInputChange('previouslyUsedPromotionCode', e.target.value)}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Miscellaneous Section */}
+              <Card className="border border-gray-200 shadow-sm">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center text-lg font-semibold text-gray-900">
+                      <Globe className="w-5 h-5 mr-2 text-orange-600" />
+                      Miscellaneous
+                    </CardTitle>
+                    <div className="flex items-center space-x-2">
+                      {sectionStates[SECTIONS.MISCELLANEOUS]?.hasChanges && (
+                        <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
+                          Modified
+                        </Badge>
+                      )}
+                      {sectionStates[SECTIONS.MISCELLANEOUS]?.hasChanges && (
+                        <div className="flex space-x-1">
+                          <button
+                            type="button"
+                            onClick={() => revertSection(SECTIONS.MISCELLANEOUS, 'last')}
+                            className="p-1 hover:bg-gray-100 rounded"
+                            title="Revert Last Change"
+                          >
+                            <Undo2 className="w-4 h-4 text-gray-600" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => revertSection(SECTIONS.MISCELLANEOUS, 'all')}
+                            className="p-1 hover:bg-gray-100 rounded"
+                            title="Revert All Changes"
+                          >
+                            <RotateCcw className="w-4 h-4 text-gray-600" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="chinaRegionOnly" className="text-sm font-medium text-gray-700">China Region Only</Label>
+                    <Input
+                      id="chinaRegionOnly"
+                      placeholder="Yes/No"
+                      value={(formData.chinaRegionOnly as string) || ''}
+                      onChange={(e) => handleInputChange('chinaRegionOnly', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="logoUrl" className="text-sm font-medium text-gray-700">Logo URL</Label>
+                    <Input
+                      id="logoUrl"
+                      type="url"
+                      placeholder="https://example.com/logo.png"
+                      value={(formData.logoUrl as string) || ''}
+                      onChange={(e) => handleInputChange('logoUrl', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="fallbackIcon" className="text-sm font-medium text-gray-700">Fallback Icon</Label>
+                    <Input
+                      id="fallbackIcon"
+                      placeholder="Icon name or URL"
+                      value={(formData.fallbackIcon as string) || ''}
+                      onChange={(e) => handleInputChange('fallbackIcon', e.target.value)}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Personal Notes Section */}
+              <Card className="border border-gray-200 shadow-sm">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center text-lg font-semibold text-gray-900">
+                      <FileText className="w-5 h-5 mr-2 text-orange-600" />
+                      Personal Notes
+                    </CardTitle>
+                    <div className="flex items-center space-x-2">
+                      {sectionStates[SECTIONS.NOTES]?.hasChanges && (
+                        <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
+                          Modified
+                        </Badge>
+                      )}
+                      {sectionStates[SECTIONS.NOTES]?.hasChanges && (
+                        <div className="flex space-x-1">
+                          <button
+                            type="button"
+                            onClick={() => revertSection(SECTIONS.NOTES, 'last')}
+                            className="p-1 hover:bg-gray-100 rounded"
+                            title="Revert Last Change"
+                          >
+                            <Undo2 className="w-4 h-4 text-gray-600" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => revertSection(SECTIONS.NOTES, 'all')}
+                            className="p-1 hover:bg-gray-100 rounded"
+                            title="Revert All Changes"
+                          >
+                            <RotateCcw className="w-4 h-4 text-gray-600" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="notes" className="text-sm font-medium text-gray-700">Notes</Label>
+                    <Textarea
+                      id="notes"
+                      placeholder="Additional notes about this subscription..."
+                      value={(formData.notes as string) || ''}
+                      onChange={(e) => handleInputChange('notes', e.target.value)}
+                      rows={4}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
 
