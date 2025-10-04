@@ -6,15 +6,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Subscription } from '@/types/subscription';
+import { Textarea } from '@/components/ui/textarea';
+import { Subscription, SubscriptionCategory } from '@/types/subscription';
 import { handleSubscriptionError } from '@/utils/error-handler';
-import { toDate, formatDateForInput } from '@/lib/utils';
+import { formatDateForInput } from '@/lib/utils';
 import { validateSubscription } from '@/utils/validation';
 import { useLoadingState } from '@/hooks/use-loading-state';
-import { LoadingButton } from '@/components/ui/loading-spinner';
 import { useToast } from '@/components/ui/toast';
 import { getUserFriendlyMessage } from '@/utils/error-messages';
 
@@ -25,68 +23,95 @@ interface EditSubscriptionModalProps {
   onSave: (updatedSubscription: Subscription) => Promise<void>;
 }
 
-const STATUS_OPTIONS = ['active', 'paused', 'canceled'];
-const PRIORITY_OPTIONS = ['low', 'medium', 'high'];
-const USAGE_FREQUENCY_OPTIONS = ['daily', 'weekly', 'monthly', 'rarely'];
-const BILLING_CYCLE_OPTIONS = ['Monthly', 'Yearly', 'Free'];
-const PLAN_OPTIONS = ['Free', 'Personal', 'Pro', 'Premium', 'Plus', 'Team', 'Enterprise', 'Max', 'Ultra'];
-
 export default function EditSubscriptionModal({
   isOpen,
   onClose,
   subscription,
   onSave
 }: EditSubscriptionModalProps) {
-  const [formData, setFormData] = useState<Partial<Subscription>>({});
+  
   const loadingState = useLoadingState();
   const toast = useToast();
+
+  const [formData, setFormData] = useState({
+    name: '',
+    category: 'AI Tools' as SubscriptionCategory,
+    status: 'active' as 'active' | 'paused' | 'canceled',
+    cost: '',
+    billingCycle: 'Monthly' as 'Monthly' | 'Yearly' | 'Weekly' | 'Quarterly' | 'Free',
+    renewalDate: '',
+    priority: 'medium' as 'low' | 'medium' | 'high',
+    usageFrequency: 'monthly' as 'daily' | 'weekly' | 'monthly' | 'rarely',
+    notes: '',
+    url: '',
+    email: ''
+  });
 
   useEffect(() => {
     if (subscription) {
       setFormData({
-        ...subscription,
-        startDate: subscription.startDate,
-        renewalDate: subscription.renewalDate
+        name: subscription.name || '',
+        category: subscription.category || 'AI Tools',
+        status: subscription.status || 'active',
+        cost: subscription.cost?.toString() || '',
+        billingCycle: subscription.billingCycle || 'Monthly',
+        renewalDate: subscription.renewalDate ? formatDateForInput(subscription.renewalDate) : '',
+        priority: subscription.priority || 'medium',
+        usageFrequency: subscription.usageFrequency || 'monthly',
+        notes: subscription.notes || '',
+        url: subscription.url || '',
+        email: subscription.accountEmail || ''
       });
     }
   }, [subscription]);
 
-  const handleInputChange = (field: keyof Subscription, value: string | number | boolean | Date) => {
+  const handleInputChange = (field: string, value: string | number | boolean | Date) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
     }));
   };
 
-  const handleSave = async () => {
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
     if (!subscription) return;
-
-    // Validate form data
-    const validation = validateSubscription(formData);
-    if (!validation.isValid) {
-      const errorMessage = getUserFriendlyMessage('VALIDATION_ERROR');
-      toast.error(errorMessage);
-      return;
-    }
-
+    
     loadingState.setLoading(true, 'Saving subscription...');
+    
     try {
       const updatedSubscription: Subscription = {
         ...subscription,
-        ...formData,
-        id: subscription.id // Ensure ID doesn't change
-      } as Subscription;
+        name: formData.name,
+        category: formData.category,
+        status: formData.status,
+        cost: parseFloat(formData.cost) || 0,
+        billingCycle: formData.billingCycle,
+        renewalDate: new Date(formData.renewalDate || Date.now() + 30 * 24 * 60 * 60 * 1000),
+        priority: formData.priority,
+        usageFrequency: formData.usageFrequency as 'daily' | 'weekly' | 'monthly' | 'rarely',
+        notes: formData.notes || undefined,
+        url: formData.url || '',
+        accountEmail: formData.email || ''
+      };
+
+      // Validate subscription
+      const validation = validateSubscription(updatedSubscription);
+      if (!validation.isValid) {
+        const errorMessage = getUserFriendlyMessage('VALIDATION_ERROR');
+        toast.error(errorMessage);
+        return;
+      }
 
       await onSave(updatedSubscription);
-      toast.success(`Successfully updated "${subscription.name}"!`);
+      toast.success(`Successfully updated "${updatedSubscription.name}"!`);
       onClose();
     } catch (error) {
       const errorMessage = getUserFriendlyMessage('SAVE_ERROR');
-      loadingState.setError(errorMessage);
       toast.error(errorMessage);
       handleSubscriptionError(
         error as Error,
-        'updating',
+        'updating subscription',
         { component: 'edit-subscription-modal' }
       );
     } finally {
@@ -94,16 +119,14 @@ export default function EditSubscriptionModal({
     }
   };
 
-  // Using centralized date utility function
-
   if (!subscription) return null;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="!max-w-[75vw] !w-[75vw] max-h-[90vh] overflow-y-auto sm:!max-w-[75vw] glass-card">
+      <DialogContent className="max-w-md mx-4">
         <DialogHeader>
           <div className="flex items-center justify-between">
-            <DialogTitle className="modal-title text-2xl">
+            <DialogTitle className="text-lg font-semibold">
               Edit Subscription
             </DialogTitle>
             <Button variant="ghost" size="sm" onClick={onClose}>
@@ -112,261 +135,101 @@ export default function EditSubscriptionModal({
           </div>
         </DialogHeader>
 
-        <div className="space-y-6">
-          {/* Basic Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="card-title">Basic Information</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="name" className="form-label">Name *</Label>
-                  <Input
-                    id="name"
-                    value={formData.name || ''}
-                    onChange={(e) => handleInputChange('name', e.target.value)}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="plan" className="form-label">Plan</Label>
-                  <Select value={formData.plan || ''} onValueChange={(value) => handleInputChange('plan', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select plan" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {PLAN_OPTIONS.map((plan) => (
-                        <SelectItem key={plan} value={plan}>{plan}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
+        <form onSubmit={handleSave} className="space-y-4">
+          <div>
+            <Label htmlFor="name">Name *</Label>
+            <Input
+              id="name"
+              value={formData.name}
+              onChange={(e) => handleInputChange('name', e.target.value)}
+              placeholder="e.g., ChatGPT Plus"
+              required
+            />
+          </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="category" className="form-label">Category *</Label>
-                  <Input
-                    id="category"
-                    value={formData.category || ''}
-                    onChange={(e) => handleInputChange('category', e.target.value)}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="subcategory" className="form-label">Subcategory</Label>
-                  <Input
-                    id="subcategory"
-                    value={formData.subcategory || ''}
-                    onChange={(e) => handleInputChange('subcategory', e.target.value)}
-                  />
-                </div>
-              </div>
+          <div>
+            <Label htmlFor="cost">Monthly Cost ($)</Label>
+            <Input
+              id="cost"
+              type="number"
+              step="0.01"
+              value={formData.cost}
+              onChange={(e) => handleInputChange('cost', e.target.value)}
+              placeholder="0.00"
+            />
+          </div>
 
-              <div>
-                <Label htmlFor="description" className="form-label">Description</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description || ''}
-                  onChange={(e) => handleInputChange('description', e.target.value)}
-                  rows={3}
-                />
-              </div>
-            </CardContent>
-          </Card>
+          <div>
+            <Label htmlFor="billingCycle">Billing Cycle</Label>
+            <Select value={formData.billingCycle} onValueChange={(value) => handleInputChange('billingCycle', value)}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Monthly">Monthly</SelectItem>
+                <SelectItem value="Yearly">Yearly</SelectItem>
+                <SelectItem value="Weekly">Weekly</SelectItem>
+                <SelectItem value="Quarterly">Quarterly</SelectItem>
+                <SelectItem value="Free">Free</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
-          {/* Billing Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="card-title">Billing Information</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label htmlFor="cost" className="form-label">Cost *</Label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-3 text-gray-500">$</span>
-                    <Input
-                      id="cost"
-                      type="number"
-                      step="0.01"
-                      placeholder="0.00"
-                      value={formData.cost || 0}
-                      onChange={(e) => handleInputChange('cost', parseFloat(e.target.value) || 0)}
-                      className="pl-8"
-                      required
-                    />
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="currency" className="form-label">Currency</Label>
-                  <Select value={formData.currency || 'USD'} onValueChange={(value) => handleInputChange('currency', value)}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="USD">USD</SelectItem>
-                      <SelectItem value="EUR">EUR</SelectItem>
-                      <SelectItem value="GBP">GBP</SelectItem>
-                      <SelectItem value="CAD">CAD</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="billingCycle" className="form-label">Billing Cycle</Label>
-                  <Select value={formData.billingCycle || 'Monthly'} onValueChange={(value) => handleInputChange('billingCycle', value)}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {BILLING_CYCLE_OPTIONS.map((cycle) => (
-                        <SelectItem key={cycle} value={cycle}>{cycle}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
+          <div>
+            <Label htmlFor="renewalDate">Renewal Date</Label>
+            <Input
+              id="renewalDate"
+              type="date"
+              value={formData.renewalDate}
+              onChange={(e) => handleInputChange('renewalDate', e.target.value)}
+            />
+          </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="startDate" className="form-label">Start Date</Label>
-                  <Input
-                    id="startDate"
-                    type="date"
-                    value={formData.startDate ? formatDateForInput(formData.startDate) : ''}
-                    onChange={(e) => handleInputChange('startDate', toDate(e.target.value))}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="renewalDate" className="form-label">Renewal Date</Label>
-                  <Input
-                    id="renewalDate"
-                    type="date"
-                    value={formData.renewalDate ? formatDateForInput(formData.renewalDate) : ''}
-                    onChange={(e) => handleInputChange('renewalDate', toDate(e.target.value))}
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <div>
+            <Label htmlFor="url">Website URL</Label>
+            <Input
+              id="url"
+              type="url"
+              value={formData.url}
+              onChange={(e) => handleInputChange('url', e.target.value)}
+              placeholder="https://example.com"
+            />
+          </div>
 
-          {/* Status & Usage */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="card-title">Status & Usage</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label htmlFor="status" className="form-label">Status</Label>
-                  <Select value={formData.status || 'active'} onValueChange={(value) => handleInputChange('status', value)}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {STATUS_OPTIONS.map((status) => (
-                        <SelectItem key={status} value={status}>{status}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="priority" className="form-label">Priority</Label>
-                  <Select value={formData.priority || 'medium'} onValueChange={(value) => handleInputChange('priority', value)}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {PRIORITY_OPTIONS.map((priority) => (
-                        <SelectItem key={priority} value={priority}>{priority}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="usageFrequency" className="form-label">Usage Frequency</Label>
-                  <Select value={formData.usageFrequency || 'monthly'} onValueChange={(value) => handleInputChange('usageFrequency', value)}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {USAGE_FREQUENCY_OPTIONS.map((frequency) => (
-                        <SelectItem key={frequency} value={frequency}>{frequency}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
+          <div>
+            <Label htmlFor="notes">Notes</Label>
+            <Textarea
+              id="notes"
+              value={formData.notes}
+              onChange={(e) => handleInputChange('notes', e.target.value)}
+              placeholder="Additional notes..."
+              rows={3}
+            />
+          </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="url" className="form-label">Website URL</Label>
-                  <Input
-                    id="url"
-                    type="url"
-                    value={formData.url || ''}
-                    onChange={(e) => handleInputChange('url', e.target.value)}
-                    placeholder="https://example.com"
-                  />
+          <div className="flex space-x-3 pt-4">
+            <Button
+              type="submit"
+              disabled={loadingState.isLoading}
+              className="flex-1 gradient-bg hover:opacity-90"
+            >
+              {loadingState.isLoading ? (
+                <div className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  Saving...
                 </div>
-                <div>
-                  <Label htmlFor="accountEmail" className="form-label">Account Email</Label>
-                  <Input
-                    id="accountEmail"
-                    type="email"
-                    value={formData.accountEmail || ''}
-                    onChange={(e) => handleInputChange('accountEmail', e.target.value)}
-                    placeholder="user@example.com"
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-4">
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    checked={formData.autoRenew || false}
-                    onChange={(e) => handleInputChange('autoRenew', e.target.checked)}
-                    className="rounded border-gray-300"
-                  />
-                  <span className="form-label">Auto Renew</span>
-                </label>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Personal Notes */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="card-title">Personal Notes</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Textarea
-                value={formData.notes || ''}
-                onChange={(e) => handleInputChange('notes', e.target.value)}
-                rows={4}
-                placeholder="Add any personal notes about this subscription..."
-              />
-            </CardContent>
-          </Card>
-
-          {/* Action Buttons */}
-          <div className="flex justify-end space-x-4 pt-6 border-t">
-            <Button variant="outline" onClick={onClose} disabled={loadingState.isLoading}>
+              ) : (
+                <>
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Changes
+                </>
+              )}
+            </Button>
+            <Button type="button" variant="outline" onClick={onClose} className="flex-1">
               Cancel
             </Button>
-            <LoadingButton 
-              onClick={handleSave} 
-              isLoading={loadingState.isLoading}
-              loadingText={loadingState.loadingMessage || 'Saving...'}
-              className="gradient-bg hover:opacity-90"
-            >
-              <Save className="w-4 h-4 mr-2" />
-              Save Changes
-            </LoadingButton>
           </div>
-        </div>
+        </form>
       </DialogContent>
     </Dialog>
   );
