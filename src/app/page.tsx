@@ -1,106 +1,27 @@
 "use client";
 
-import { useState, useEffect, memo, useMemo, useCallback } from 'react';
-import { Plus, Search, Grid, List, BarChart3, Download } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { Plus, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { Subscription, SubscriptionFilters, ViewMode } from '@/types/subscription';
 import { loadSubscriptions, saveSubscriptions, exportSubscriptionsToCSV, downloadCSV } from '@/lib/subscription-persistence';
 import { handleSubscriptionError } from '@/utils/error-handler';
-import { formatCurrency, getDaysUntilRenewal, getStatusColor, getPriorityColor, generateId, toDate, getDefaultRenewalDate, getCurrentDate, formatDate } from '@/lib/utils';
-import { AdvancedFilters } from '@/components/advanced-filters';
+import { generateId, toDate, getDefaultRenewalDate, getCurrentDate, formatDate, getDaysUntilRenewal } from '@/lib/utils';
 import AIToolsBrowser from '@/components/ai-tools-browser';
 import Sidebar from '@/components/sidebar';
 import { ErrorBoundary } from '@/components/error-boundary';
-import SubscriptionsTable from '@/components/subscriptions-table';
 import SubscriptionDetailsModal from '@/components/subscription-details-modal';
 import DeleteConfirmationDialog from '@/components/delete-confirmation-dialog';
 import { useMultipleLoadingStates } from '@/hooks/use-loading-state';
 import { LoadingPage } from '@/components/ui/loading-spinner';
 import { ToastContainer, useToast } from '@/components/ui/toast';
-import { getErrorMessage, getUserFriendlyMessage } from '@/utils/error-messages';
+import { getUserFriendlyMessage } from '@/utils/error-messages';
+import { PremiumDashboard } from '@/components/dashboard/premium-dashboard';
 
 export default function HomePage() {
   const toast = useToast();
 
-  // Subscription icon function - same as in subscriptions-table.tsx
-  const getSubscriptionIcon = (subscription: Subscription) => {
-    // Use Google's favicon service for ALL subscriptions with URLs, just like the AI tools browser
-    if (subscription.url) {
-      try {
-        const domain = new URL(subscription.url).hostname;
-        const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
-        
-        return (
-          <img 
-            src={faviconUrl} 
-            alt={subscription.name}
-            className="w-10 h-10 rounded-lg object-cover"
-            onError={(e) => {
-              // Fallback to fallback icon or first letter
-              const target = e.target as HTMLImageElement;
-              target.style.display = 'none';
-              const parent = target.parentElement;
-              if (parent) {
-                if (subscription.fallbackIcon) {
-                  parent.innerHTML = `<div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center text-lg">${subscription.fallbackIcon}</div>`;
-                } else {
-                  parent.innerHTML = `<div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center"><span class="text-orange-600 font-semibold text-sm">${subscription.name.charAt(0)}</span></div>`;
-                }
-              }
-            }}
-          />
-        );
-      } catch {
-          // If URL parsing fails, fall through to other methods
-        }
-      }
-
-      // For other subscriptions, try to use logoUrl if available
-      if (subscription.logoUrl) {
-        return (
-          <img 
-            src={subscription.logoUrl} 
-            alt={subscription.name}
-            className="w-10 h-10 rounded-lg object-cover"
-            onError={(e) => {
-              // Fallback to fallback icon or first letter
-              const target = e.target as HTMLImageElement;
-              target.style.display = 'none';
-              const parent = target.parentElement;
-              if (parent) {
-                if (subscription.fallbackIcon) {
-                  parent.innerHTML = `<div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center text-lg">${subscription.fallbackIcon}</div>`;
-                } else {
-                  parent.innerHTML = `<div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center"><span class="text-orange-600 font-semibold text-sm">${subscription.name.charAt(0)}</span></div>`;
-                }
-              }
-            }}
-          />
-        );
-      }
-
-      // Use fallback icon if available
-      if (subscription.fallbackIcon) {
-        return (
-          <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center text-lg">
-            {subscription.fallbackIcon}
-          </div>
-        );
-      }
-
-      // Default to first letter
-      return (
-        <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-          <span className="text-orange-600 font-semibold text-sm">
-            {subscription.name.charAt(0)}
-          </span>
-        </div>
-      );
-    };
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [filters, setFilters] = useState<SubscriptionFilters>({
     search: '',
@@ -235,20 +156,8 @@ export default function HomePage() {
     });
   }, [subscriptions, filters, viewMode]);
 
-  const totalMonthlyCost = useMemo(() => {
-    return subscriptions
-      .filter(sub => sub.status === 'active')
-      .reduce((sum, sub) => sum + sub.cost, 0);
-  }, [subscriptions]);
-
   const activeSubscriptions = useMemo(() => {
     return subscriptions.filter(sub => sub.status === 'active').length;
-  }, [subscriptions]);
-
-  const expiringSoon = useMemo(() => {
-    return subscriptions.filter(sub => 
-      sub.status === 'active' && getDaysUntilRenewal(sub.renewalDate) <= 7
-    ).length;
   }, [subscriptions]);
 
   if (initial.isLoading) {
@@ -376,148 +285,14 @@ export default function HomePage() {
         {/* Main Content */}
         {currentTab === 'subscriptions' ? (
           <ErrorBoundary>
-            <div className="px-4 sm:px-6 lg:px-8 py-8">
-              <ErrorBanner />
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 section-spacing">
-          <Card className="subscription-card">
-            <CardHeader className="pb-2">
-              <CardTitle className="card-subtitle">Monthly Cost</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-orange-600">
-                {formatCurrency(totalMonthlyCost)}
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="subscription-card">
-            <CardHeader className="pb-2">
-              <CardTitle className="card-subtitle">Active Subscriptions</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-600">{activeSubscriptions}</div>
-            </CardContent>
-          </Card>
-          
-          <Card className="subscription-card">
-            <CardHeader className="pb-2">
-              <CardTitle className="card-subtitle">Expiring Soon</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-yellow-600">{expiringSoon}</div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Search and View Controls */}
-        <Card className="subscription-card card-spacing">
-          <CardContent className="pt-6">
-            <div className="flex flex-col lg:flex-row gap-4">
-              {/* Search */}
-              <div className="flex-1">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <Input
-                    placeholder="Search subscriptions..."
-                    value={filters.search}
-                    onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
-                    className="pl-10"
-                  />
-                </div>
-              </div>
-              
-              {/* View Mode Toggle */}
-              <div className="flex items-center space-x-2">
-                <Button
-                  variant={viewMode.type === 'grid' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setViewMode(prev => ({ ...prev, type: 'grid' }))}
-                >
-                  <Grid className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant={viewMode.type === 'list' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setViewMode(prev => ({ ...prev, type: 'list' }))}
-                >
-                  <List className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant={viewMode.type === 'analytics' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setViewMode(prev => ({ ...prev, type: 'analytics' }))}
-                >
-                  <BarChart3 className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Advanced Filters - AI Tools Tracker Feature */}
-        <AdvancedFilters
-          filters={filters}
-          onFiltersChange={(newFilters) => setFilters(prev => ({ ...prev, ...newFilters }))}
-          onClearFilters={() => setFilters({
-            search: '',
-            category: 'all',
-            subcategory: 'all',
-            status: 'all',
-            billingCycle: 'all',
-            priority: 'all',
-            usageFrequency: 'all',
-            costRange: { min: 0, max: 1000 },
-            tags: [],
-            showExpiringSoon: false,
-            showUnused: false
-          })}
-        />
-
-        {/* Main Content */}
-        <Tabs value={viewMode.type} onValueChange={(value) => setViewMode(prev => ({ ...prev, type: value as "grid" | "list" | "analytics" }))}>
-          <TabsContent value="grid" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredSubscriptions.map((subscription) => (
-                <Card key={subscription.id} className="subscription-card">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center space-x-3">
-                        {getSubscriptionIcon(subscription)}
-                        <div>
-                          <CardTitle className="text-lg">{subscription.name}</CardTitle>
-                          <p className="text-sm text-gray-600">{subscription.plan}</p>
-                        </div>
-                      </div>
-                      <Badge className={getStatusColor(subscription.status)}>
-                        {subscription.status}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  
-                  <CardContent className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold text-orange-600">
-                        {formatCurrency(subscription.cost, subscription.currency)}
-                      </span>
-                      <Badge className={getPriorityColor(subscription.priority)}>
-                        {subscription.priority}
-                      </Badge>
-                    </div>
-                    
-                    <div className="text-sm text-gray-600">
-                      <p>Renews in {getDaysUntilRenewal(subscription.renewalDate)} days</p>
-                      <p>Category: {subscription.category}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="list" className="space-y-4">
-            <SubscriptionsTable
-              subscriptions={filteredSubscriptions}
+            <PremiumDashboard
+              subscriptions={subscriptions}
+              filteredSubscriptions={filteredSubscriptions}
+              filters={filters}
+              viewMode={viewMode}
+              loadingStates={loadingStates}
+              onFiltersChange={setFilters}
+              onViewModeChange={(mode) => setViewMode(prev => ({ ...prev, type: mode }))}
               onEdit={(subscription) => {
                 window.location.href = `/update-subscription/${subscription.id}`;
               }}
@@ -596,21 +371,27 @@ export default function HomePage() {
                 setSelectedSubscription(subscription);
                 setIsDetailsModalOpen(true);
               }}
+              onExport={async () => {
+                try {
+                  exportLoading.setLoading(true, 'Exporting subscriptions...');
+                  exportLoading.clearError();
+                  const csvContent = exportSubscriptionsToCSV(subscriptions);
+                  downloadCSV(csvContent, `subscriptions-${formatDate(getCurrentDate(), 'input')}.csv`);
+                  toast.success(`Successfully exported ${subscriptions.length} subscriptions!`);
+                } catch (error) {
+                  const errorMessage = getUserFriendlyMessage('EXPORT_ERROR');
+                  exportLoading.setError(errorMessage);
+                  toast.error(errorMessage);
+                  handleSubscriptionError(
+                    error as Error,
+                    'exporting subscriptions',
+                    { component: 'main-page' }
+                  );
+                } finally {
+                  exportLoading.setLoading(false);
+                }
+              }}
             />
-          </TabsContent>
-          
-          <TabsContent value="analytics" className="space-y-4">
-            <Card className="subscription-card">
-              <CardHeader>
-                <CardTitle>Analytics Dashboard</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600">Analytics features coming soon...</p>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          </Tabs>
-          </div>
           </ErrorBoundary>
         ) : (
           <ErrorBoundary>

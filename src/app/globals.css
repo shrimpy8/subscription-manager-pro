@@ -1,9 +1,12 @@
+/* Import Design Tokens */
+@import '../styles/design-tokens.css';
+
+/* Import Animations */
+@import '../styles/animations.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Import Design Tokens */
-@import '../styles/design-tokens.css';
 
 @layer base {
   :root {

@@ -64,9 +64,9 @@ export const MetricsOverview = ({ subscriptions, className }: MetricsOverviewPro
   );
 
   // Priority breakdown
-  const highPrioritySubscriptions = subscriptions.filter(sub => sub.priority === 'High').length;
-  const mediumPrioritySubscriptions = subscriptions.filter(sub => sub.priority === 'Medium').length;
-  const lowPrioritySubscriptions = subscriptions.filter(sub => sub.priority === 'Low').length;
+  const highPrioritySubscriptions = subscriptions.filter(sub => sub.priority === 'high').length;
+  const mediumPrioritySubscriptions = subscriptions.filter(sub => sub.priority === 'medium').length;
+  const lowPrioritySubscriptions = subscriptions.filter(sub => sub.priority === 'low').length;
 
   return (
     <div className={`space-y-6 ${className}`}>

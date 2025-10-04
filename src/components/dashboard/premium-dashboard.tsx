@@ -16,7 +16,7 @@ import { AdvancedFilters } from '@/components/advanced-filters';
 import AIToolsBrowser from '@/components/ai-tools-browser';
 import Sidebar from '@/components/sidebar';
 import { ErrorBoundary } from '@/components/error-boundary';
-import SubscriptionsTable from '@/components/subscriptions-table';
+import EnhancedSubscriptionsTable from '@/components/enhanced-subscriptions-table';
 import SubscriptionDetailsModal from '@/components/subscription-details-modal';
 import DeleteConfirmationDialog from '@/components/delete-confirmation-dialog';
 import { useMultipleLoadingStates } from '@/hooks/use-loading-state';
@@ -24,31 +24,71 @@ import { LoadingPage } from '@/components/ui/loading-spinner';
 import { ToastContainer, useToast } from '@/components/ui/toast';
 import { getErrorMessage, getUserFriendlyMessage } from '@/utils/error-messages';
 
-export default function PremiumDashboard() {
+interface PremiumDashboardProps {
+  subscriptions: Subscription[];
+  filteredSubscriptions: Subscription[];
+  filters: SubscriptionFilters;
+  viewMode: ViewMode;
+  loadingStates: any;
+  onFiltersChange: (filters: SubscriptionFilters) => void;
+  onViewModeChange: (mode: 'list' | 'grid' | 'analytics') => void;
+  onEdit: (subscription: Subscription) => void;
+  onDuplicate: (subscription: Subscription) => Promise<void>;
+  onDelete: (subscription: Subscription) => void;
+  onPause: (subscription: Subscription) => Promise<void>;
+  onViewDetails: (subscription: Subscription) => void;
+  onExport: () => Promise<void>;
+}
+
+export default function PremiumDashboard({
+  subscriptions,
+  filteredSubscriptions,
+  filters,
+  viewMode,
+  loadingStates,
+  onFiltersChange,
+  onViewModeChange,
+  onEdit,
+  onDuplicate,
+  onDelete,
+  onPause,
+  onViewDetails,
+  onExport
+}: PremiumDashboardProps) {
   const toast = useToast();
 
-  // State management
-  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
-  const [filteredSubscriptions, setFilteredSubscriptions] = useState<Subscription[]>([]);
-  const [currentTab, setCurrentTab] = useState<'subscriptions' | 'ai-tools'>('subscriptions');
-  const [viewMode, setViewMode] = useState<ViewMode>({ type: 'list' });
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filters, setFilters] = useState<SubscriptionFilters>({
-    category: '',
-    status: '',
-    priority: '',
-    costRange: { min: 0, max: 1000 }
-  });
-  const [showFilters, setShowFilters] = useState(false);
+  // Local state for UI
   const [selectedSubscription, setSelectedSubscription] = useState<Subscription | null>(null);
   const [subscriptionToDelete, setSubscriptionToDelete] = useState<Subscription | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
 
-  // Loading states
-  const initial = useMultipleLoadingStates();
-  const add = useMultipleLoadingStates();
-  const save = useMultipleLoadingStates();
-  const deleteLoading = useMultipleLoadingStates();
-  const exportLoading = useMultipleLoadingStates();
+  // Destructure loading states
+  const { initial, add, save, delete: deleteLoading, export: exportLoading } = loadingStates;
+
+  // Helper function to get subscription icon
+  const getSubscriptionIcon = (subscription: Subscription) => {
+    if (subscription.logoUrl) {
+      return (
+        <img
+          src={subscription.logoUrl}
+          alt={`${subscription.name} logo`}
+          className="w-8 h-8 rounded-lg object-cover"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.style.display = 'none';
+            const fallback = target.nextElementSibling as HTMLElement;
+            if (fallback) fallback.style.display = 'flex';
+          }}
+        />
+      );
+    }
+    
+    return (
+      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm">
+        {subscription.fallbackIcon || subscription.name.charAt(0).toUpperCase()}
+      </div>
+    );
+  };
 
   // Calculate metrics
   const totalSubscriptions = subscriptions.length;
@@ -73,7 +113,7 @@ export default function PremiumDashboard() {
         const loadedSubscriptions = await loadSubscriptions();
         setSubscriptions(loadedSubscriptions);
       } catch (error) {
-        const errorMessage = getErrorMessage(error as Error);
+        const errorMessage = (error as Error).message || 'An unexpected error occurred';
         initial.setError(errorMessage);
         toast.error(errorMessage);
         setSubscriptions([]);
@@ -146,7 +186,7 @@ export default function PremiumDashboard() {
 
   // Handle view mode change
   const handleViewModeChange = (mode: 'list' | 'grid' | 'analytics') => {
-    setViewMode({ type: mode });
+    setViewMode(prev => ({ ...prev, type: mode }));
   };
 
   // Handle subscription actions
@@ -191,7 +231,7 @@ export default function PremiumDashboard() {
       
       toast.success(`Successfully duplicated "${subscription.name}"!`);
     } catch (error) {
-      const errorMessage = getErrorMessage(error as Error);
+        const errorMessage = (error as Error).message || 'An unexpected error occurred';
       save.setError(errorMessage);
       toast.error(errorMessage);
     } finally {
@@ -215,7 +255,7 @@ export default function PremiumDashboard() {
       toast.success(`Successfully deleted "${subscription.name}"!`);
       setSubscriptionToDelete(null);
     } catch (error) {
-      const errorMessage = getErrorMessage(error as Error);
+        const errorMessage = (error as Error).message || 'An unexpected error occurred';
       deleteLoading.setError(errorMessage);
       toast.error(errorMessage);
     } finally {
@@ -246,7 +286,7 @@ export default function PremiumDashboard() {
       
       toast.success(`Successfully updated "${subscription.name}" status!`);
     } catch (error) {
-      const errorMessage = getErrorMessage(error as Error);
+        const errorMessage = (error as Error).message || 'An unexpected error occurred';
       save.setError(errorMessage);
       toast.error(errorMessage);
     } finally {
@@ -261,7 +301,7 @@ export default function PremiumDashboard() {
       downloadCSV(csvContent, `subscriptions-${formatDate(getCurrentDate(), 'input')}.csv`);
       toast.success(`Successfully exported ${subscriptions.length} subscriptions!`);
     } catch (error) {
-      const errorMessage = getErrorMessage(error as Error);
+        const errorMessage = (error as Error).message || 'An unexpected error occurred';
       exportLoading.setError(errorMessage);
       toast.error(errorMessage);
     } finally {
@@ -370,7 +410,7 @@ export default function PremiumDashboard() {
               </div>
 
               {viewMode.type === 'list' && (
-                <SubscriptionsTable
+                <EnhancedSubscriptionsTable
                   subscriptions={filteredSubscriptions}
                   onEdit={handleEditSubscription}
                   onDuplicate={handleDuplicateSubscription}
@@ -437,6 +477,7 @@ export default function PremiumDashboard() {
       {/* Modals */}
       {selectedSubscription && (
         <SubscriptionDetailsModal
+          isOpen={!!selectedSubscription}
           subscription={selectedSubscription}
           onClose={() => setSelectedSubscription(null)}
         />
@@ -444,6 +485,7 @@ export default function PremiumDashboard() {
 
       {subscriptionToDelete && (
         <DeleteConfirmationDialog
+          isOpen={!!subscriptionToDelete}
           subscription={subscriptionToDelete}
           onClose={() => setSubscriptionToDelete(null)}
           onConfirm={() => handleDeleteSubscription(subscriptionToDelete)}
@@ -455,3 +497,5 @@ export default function PremiumDashboard() {
     </div>
   );
 }
+
+export { PremiumDashboard };
