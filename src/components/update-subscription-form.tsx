@@ -185,7 +185,7 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
   
   // Section-level change tracking
-  const [sectionStates, setSectionStates] = useState<Record<string, { hasChanges: boolean; changeHistory: any[] }>>({
+  const [sectionStates, setSectionStates] = useState<Record<string, { hasChanges: boolean; changeHistory: Array<{ field: string; value: string | number | boolean; timestamp: number }> }>>({
     'BASIC_INFO': { hasChanges: false, changeHistory: [] },
     'KEY_MANAGEMENT': { hasChanges: false, changeHistory: [] },
     'USAGE': { hasChanges: false, changeHistory: [] },
@@ -306,7 +306,7 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
     updateSectionStates(field as string, value);
   };
 
-  const updateSectionStates = (field: string, value: any) => {
+  const updateSectionStates = (field: string, value: string | number | boolean) => {
     setSectionStates(prevStates => {
       const newStates = { ...prevStates };
       
@@ -385,7 +385,7 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
     // Revert all fields in section to original values
     fields.forEach(field => {
       if (field in originalData) {
-        (newFormData as any)[field] = (originalData as any)[field];
+        (newFormData as Record<string, string | number | boolean | Date>)[field] = (originalData as Record<string, string | number | boolean | Date>)[field];
       }
     });
     
