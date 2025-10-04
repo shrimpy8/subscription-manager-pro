@@ -269,34 +269,36 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
     // Don't update if original data is not loaded yet
     if (!originalData) return;
     
-    const updatedStates = { ...sectionStates };
-    let anyChanges = false;
+    setSectionStates(prevStates => {
+      const updatedStates = { ...prevStates };
+      let anyChanges = false;
 
-    // Check each section for changes
-    Object.entries(SECTIONS).forEach(([sectionKey, sectionId]) => {
-      const sectionFields = getSectionFields(sectionKey as SectionKey);
-      const originalSectionData = extractSectionData(originalData as unknown as Record<string, unknown>, sectionFields);
-      const currentSectionData = extractSectionData(newFormData, sectionFields);
-      
-      // Normalize the data for comparison - handle different data types
-      const normalizedOriginal = normalizeSectionData(originalSectionData);
-      const normalizedCurrent = normalizeSectionData(currentSectionData);
-      
-      const hasChanges = !isEqual(normalizedOriginal, normalizedCurrent);
-      
-      updatedStates[sectionId] = {
-        hasChanges,
-        originalData: normalizedOriginal,
-        currentData: normalizedCurrent,
-        changeHistory: hasChanges ? [...(updatedStates[sectionId]?.changeHistory || []), normalizedCurrent] : []
-      };
-      
-      if (hasChanges) anyChanges = true;
+      // Check each section for changes
+      Object.entries(SECTIONS).forEach(([sectionKey, sectionId]) => {
+        const sectionFields = getSectionFields(sectionKey as SectionKey);
+        const originalSectionData = extractSectionData(originalData as unknown as Record<string, unknown>, sectionFields);
+        const currentSectionData = extractSectionData(newFormData, sectionFields);
+        
+        // Normalize the data for comparison - handle different data types
+        const normalizedOriginal = normalizeSectionData(originalSectionData);
+        const normalizedCurrent = normalizeSectionData(currentSectionData);
+        
+        const hasChanges = !isEqual(normalizedOriginal, normalizedCurrent);
+        
+        updatedStates[sectionId] = {
+          hasChanges,
+          originalData: normalizedOriginal,
+          currentData: normalizedCurrent,
+          changeHistory: hasChanges ? [...(prevStates[sectionId]?.changeHistory || []), normalizedCurrent] : []
+        };
+        
+        if (hasChanges) anyChanges = true;
+      });
+
+      setHasAnyChanges(anyChanges);
+      return updatedStates;
     });
-
-    setSectionStates(updatedStates);
-    setHasAnyChanges(anyChanges);
-  }, [sectionStates]);
+  }, []);
 
   // Get fields for each section
   const getSectionFields = (sectionKey: SectionKey): string[] => {
