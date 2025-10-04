@@ -270,6 +270,47 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
     updateSectionStates(field, formData[field].filter((_, i) => i !== index));
   };
 
+  // Utility function to create section header with change tracking
+  const createSectionHeader = (sectionKey: string, icon: React.ReactNode, title: string) => {
+    return (
+      <CardTitle className="flex items-center justify-between text-lg font-semibold text-gray-900">
+        <div className="flex items-center">
+          {icon}
+          {title}
+          {sectionStates[sectionKey]?.hasChanges && (
+            <Badge variant="secondary" className="ml-2 bg-orange-100 text-orange-800">
+              Modified
+            </Badge>
+          )}
+        </div>
+        {sectionStates[sectionKey]?.hasChanges && (
+          <div className="flex items-center space-x-2">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => revertSection(sectionKey, 'last')}
+              className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 p-2"
+              title="Revert Last Change"
+            >
+              <Undo2 className="w-5 h-5" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => revertSection(sectionKey, 'all')}
+              className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 p-2"
+              title="Revert All Changes"
+            >
+              <RotateCcw className="w-5 h-5" />
+            </Button>
+          </div>
+        )}
+      </CardTitle>
+    );
+  };
+
   const revertSection = (section: string, type: 'all' | 'last') => {
     if (!originalData) return;
     
@@ -438,41 +479,7 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
               {/* Basic Information */}
               <Card className="border border-gray-200 shadow-sm">
                 <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center justify-between text-lg font-semibold text-gray-900">
-                    <div className="flex items-center">
-                      <FileText className="w-5 h-5 mr-2 text-orange-600" />
-                      Basic Information
-                      {sectionStates.BASIC_INFO?.hasChanges && (
-                        <Badge variant="secondary" className="ml-2 bg-orange-100 text-orange-800">
-                          Modified
-                        </Badge>
-                      )}
-                    </div>
-                    {sectionStates.BASIC_INFO?.hasChanges && (
-                      <div className="flex items-center space-x-2">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => revertSection('BASIC_INFO', 'last')}
-                          className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 p-2"
-                          title="Revert Last Change"
-                        >
-                          <Undo2 className="w-5 h-5" />
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => revertSection('BASIC_INFO', 'all')}
-                          className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 p-2"
-                          title="Revert All Changes"
-                        >
-                          <RotateCcw className="w-5 h-5" />
-                        </Button>
-                      </div>
-                    )}
-                  </CardTitle>
+                  {createSectionHeader('BASIC_INFO', <FileText className="w-5 h-5 mr-2 text-orange-600" />, 'Basic Information')}
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
@@ -592,41 +599,7 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
               {/* Key Management */}
               <Card className="border border-gray-200 shadow-sm">
                 <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center justify-between text-lg font-semibold text-gray-900">
-                    <div className="flex items-center">
-                      <Key className="w-5 h-5 mr-2 text-orange-600" />
-                      Key Management
-                      {sectionStates.KEY_MANAGEMENT?.hasChanges && (
-                        <Badge variant="secondary" className="ml-2 bg-orange-100 text-orange-800">
-                          Modified
-                        </Badge>
-                      )}
-                    </div>
-                    {sectionStates.KEY_MANAGEMENT?.hasChanges && (
-                      <div className="flex items-center space-x-2">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => revertSection('KEY_MANAGEMENT', 'last')}
-                          className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 p-2"
-                          title="Revert Last Change"
-                        >
-                          <Undo2 className="w-5 h-5" />
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => revertSection('KEY_MANAGEMENT', 'all')}
-                          className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 p-2"
-                          title="Revert All Changes"
-                        >
-                          <RotateCcw className="w-5 h-5" />
-                        </Button>
-                      </div>
-                    )}
-                  </CardTitle>
+                  {createSectionHeader('KEY_MANAGEMENT', <Key className="w-5 h-5 mr-2 text-orange-600" />, 'Key Management')}
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
@@ -698,41 +671,7 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
               {/* Usage */}
               <Card className="border border-gray-200 shadow-sm">
                 <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center justify-between text-lg font-semibold text-gray-900">
-                    <div className="flex items-center">
-                      <Shield className="w-5 h-5 mr-2 text-orange-600" />
-                      Usage
-                      {sectionStates.USAGE?.hasChanges && (
-                        <Badge variant="secondary" className="ml-2 bg-orange-100 text-orange-800">
-                          Modified
-                        </Badge>
-                      )}
-                    </div>
-                    {sectionStates.USAGE?.hasChanges && (
-                      <div className="flex items-center space-x-2">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => revertSection('USAGE', 'last')}
-                          className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 p-2"
-                          title="Revert Last Change"
-                        >
-                          <Undo2 className="w-5 h-5" />
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => revertSection('USAGE', 'all')}
-                          className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 p-2"
-                          title="Revert All Changes"
-                        >
-                          <RotateCcw className="w-5 h-5" />
-                        </Button>
-                      </div>
-                    )}
-                  </CardTitle>
+                  {createSectionHeader('USAGE', <Shield className="w-5 h-5 mr-2 text-orange-600" />, 'Usage')}
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <OptionGridControl
@@ -776,41 +715,7 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
               {/* Billing Information */}
               <Card className="border border-gray-200 shadow-sm">
                 <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center justify-between text-lg font-semibold text-gray-900">
-                    <div className="flex items-center">
-                      <DollarSign className="w-5 h-5 mr-2 text-orange-600" />
-                      Billing Information
-                      {sectionStates.BILLING?.hasChanges && (
-                        <Badge variant="secondary" className="ml-2 bg-orange-100 text-orange-800">
-                          Modified
-                        </Badge>
-                      )}
-                    </div>
-                    {sectionStates.BILLING?.hasChanges && (
-                      <div className="flex items-center space-x-2">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => revertSection('BILLING', 'last')}
-                          className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 p-2"
-                          title="Revert Last Change"
-                        >
-                          <Undo2 className="w-5 h-5" />
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => revertSection('BILLING', 'all')}
-                          className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 p-2"
-                          title="Revert All Changes"
-                        >
-                          <RotateCcw className="w-5 h-5" />
-                        </Button>
-                      </div>
-                    )}
-                  </CardTitle>
+                  {createSectionHeader('BILLING', <DollarSign className="w-5 h-5 mr-2 text-orange-600" />, 'Billing Information')}
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
@@ -924,41 +829,7 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
               {/* Promo Details */}
               <Card className="border border-gray-200 shadow-sm">
                 <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center justify-between text-lg font-semibold text-gray-900">
-                    <div className="flex items-center">
-                      <Gift className="w-5 h-5 mr-2 text-orange-600" />
-                      Promo Details (optional)
-                      {sectionStates.PROMO?.hasChanges && (
-                        <Badge variant="secondary" className="ml-2 bg-orange-100 text-orange-800">
-                          Modified
-                        </Badge>
-                      )}
-                    </div>
-                    {sectionStates.PROMO?.hasChanges && (
-                      <div className="flex items-center space-x-2">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => revertSection('PROMO', 'last')}
-                          className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 p-2"
-                          title="Revert Last Change"
-                        >
-                          <Undo2 className="w-5 h-5" />
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => revertSection('PROMO', 'all')}
-                          className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 p-2"
-                          title="Revert All Changes"
-                        >
-                          <RotateCcw className="w-5 h-5" />
-                        </Button>
-                      </div>
-                    )}
-                  </CardTitle>
+                  {createSectionHeader('PROMO', <Gift className="w-5 h-5 mr-2 text-orange-600" />, 'Promo Details (optional)')}
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
@@ -1024,41 +895,7 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
               {/* Miscellaneous */}
               <Card className="border border-gray-200 shadow-sm">
                 <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center justify-between text-lg font-semibold text-gray-900">
-                    <div className="flex items-center">
-                      <Shield className="w-5 h-5 mr-2 text-orange-600" />
-                      Miscellaneous
-                      {sectionStates.MISCELLANEOUS?.hasChanges && (
-                        <Badge variant="secondary" className="ml-2 bg-orange-100 text-orange-800">
-                          Modified
-                        </Badge>
-                      )}
-                    </div>
-                    {sectionStates.MISCELLANEOUS?.hasChanges && (
-                      <div className="flex items-center space-x-2">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => revertSection('MISCELLANEOUS', 'last')}
-                          className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 p-2"
-                          title="Revert Last Change"
-                        >
-                          <Undo2 className="w-5 h-5" />
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => revertSection('MISCELLANEOUS', 'all')}
-                          className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 p-2"
-                          title="Revert All Changes"
-                        >
-                          <RotateCcw className="w-5 h-5" />
-                        </Button>
-                      </div>
-                    )}
-                  </CardTitle>
+                  {createSectionHeader('MISCELLANEOUS', <Shield className="w-5 h-5 mr-2 text-orange-600" />, 'Miscellaneous')}
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
@@ -1106,41 +943,7 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
               {/* Personal Notes */}
               <Card className="border border-gray-200 shadow-sm">
                 <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center justify-between text-lg font-semibold text-gray-900">
-                    <div className="flex items-center">
-                      <FileText className="w-5 h-5 mr-2 text-orange-600" />
-                      Personal Notes (optional)
-                      {sectionStates.NOTES?.hasChanges && (
-                        <Badge variant="secondary" className="ml-2 bg-orange-100 text-orange-800">
-                          Modified
-                        </Badge>
-                      )}
-                    </div>
-                    {sectionStates.NOTES?.hasChanges && (
-                      <div className="flex items-center space-x-2">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => revertSection('NOTES', 'last')}
-                          className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 p-2"
-                          title="Revert Last Change"
-                        >
-                          <Undo2 className="w-5 h-5" />
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => revertSection('NOTES', 'all')}
-                          className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 p-2"
-                          title="Revert All Changes"
-                        >
-                          <RotateCcw className="w-5 h-5" />
-                        </Button>
-                      </div>
-                    )}
-                  </CardTitle>
+                  {createSectionHeader('NOTES', <FileText className="w-5 h-5 mr-2 text-orange-600" />, 'Personal Notes (optional)')}
                 </CardHeader>
                 <CardContent>
                   <Textarea
