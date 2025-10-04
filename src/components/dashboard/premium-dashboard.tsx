@@ -235,8 +235,8 @@ export default function PremiumDashboard({
                             {getSubscriptionIcon(subscription)}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h3 className="text-h4 text-neutral-900 truncate">{subscription.name}</h3>
-                            <p className="text-body-sm text-neutral-600">{subscription.category}</p>
+                            <h3 className="text-h4 text-neutral-900 truncate leading-tight">{subscription.name}</h3>
+                            <p className="text-body-sm text-neutral-600 leading-tight">{subscription.category}</p>
                           </div>
                         </div>
                         <div className="space-y-2">
