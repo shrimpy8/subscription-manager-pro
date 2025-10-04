@@ -224,11 +224,11 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
         setFormData(newFormData);
         
         // Focus the name input after a short delay to ensure it's rendered
-        setTimeout(() => {
-          if (nameInputRef.current) {
-            nameInputRef.current.focus();
-          }
-        }, 100);
+        // setTimeout(() => {
+        //   if (nameInputRef.current) {
+        //     nameInputRef.current.focus();
+        //   }
+        // }, 100);
         
         // Initialize section states without triggering change detection
         const initialSectionStates: Record<string, SectionState> = {};
@@ -261,6 +261,7 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
 
   // Update section states when form data changes
   const updateSectionStates = useCallback((newFormData: Record<string, unknown>, originalData: Subscription | null) => {
+    console.log('updateSectionStates called');
     // Don't update if original data is not loaded yet
     if (!originalData) return;
     
@@ -325,6 +326,7 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
 
   // Handle input changes
   const handleInputChange = (field: string, value: unknown) => {
+    console.log('handleInputChange called:', { field, value });
     const newFormData = { ...formData, [field]: value };
     setFormData(newFormData);
     updateSectionStates(newFormData, subscription);
@@ -520,7 +522,7 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
                       value={(formData.name as string) || ''}
                       onChange={(e) => handleInputChange('name', e.target.value)}
                       required
-                      className="ring-2 ring-orange-500 focus:ring-orange-600"
+                      className=""
                     />
                   </div>
 
