@@ -186,9 +186,11 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
           safeForWork: foundSubscription.safeForWork || true
         };
 
+        console.log('Setting form data:', subscriptionFormData);
         setFormData(subscriptionFormData);
         setOriginalData(subscriptionFormData);
         setLoading(false);
+        console.log('Form data set, loading complete');
       } catch (error) {
         console.error('Error loading subscription:', error);
         toast.error('Failed to load subscription');
@@ -200,12 +202,14 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
   }, [subscriptionId, router, toast]);
 
   const handleInputChange = (field: keyof UpdateSubscriptionFormData, value: string | number | boolean) => {
+    console.log('handleInputChange called:', { field, value, currentFormData: formData });
     if (field === 'startDate' || field === 'renewalDate') {
       setFormData(prev => ({ ...prev, [field]: new Date(value as string) }));
     } else {
       setFormData(prev => ({ ...prev, [field]: value }));
     }
     setHasChanges(true);
+    console.log('Form data updated, hasChanges set to true');
   };
 
   const handleArrayAdd = (field: 'previouslyUsedPromotionCode' | 'accountEmailsUsedPreviously' | 'apiAccessKeys', input: string) => {
@@ -347,6 +351,12 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
               Changes will be saved when you click &quot;Save Changes&quot;. 
               Make sure all information is correct before proceeding.
             </p>
+            <button 
+              onClick={() => console.log('TEST BUTTON CLICKED! Form data:', formData)}
+              className="mt-2 px-4 py-2 bg-blue-500 text-white rounded text-sm"
+            >
+              TEST: Click to verify form is responsive
+            </button>
           </div>
         </div>
 
