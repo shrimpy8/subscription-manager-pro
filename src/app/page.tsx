@@ -532,13 +532,20 @@ export default function HomePage() {
                 };
                 const updatedSubscriptions = [...subscriptions, duplicated];
                 console.log('Duplicating subscription:', { original: subscription, duplicated, updatedCount: updatedSubscriptions.length });
+                
+                // Update state and force re-render
                 setSubscriptions(updatedSubscriptions);
+                setViewMode(prev => ({ ...prev, type: 'list' }));
+                
                 save.setLoading(true, 'Saving subscription...');
                 try {
                   await saveSubscriptions(updatedSubscriptions);
                   toast.success(`Successfully duplicated "${subscription.name}"!`);
-                  // Ensure we're in list view after duplication
-                  setViewMode('list');
+                  
+                  // Force a state refresh to ensure UI updates
+                  setTimeout(() => {
+                    setSubscriptions(prev => [...prev]);
+                  }, 100);
                 } catch (error) {
                   const errorMessage = getUserFriendlyMessage('SAVE_ERROR');
                   save.setError(errorMessage);
@@ -563,12 +570,16 @@ export default function HomePage() {
                     : s
                 );
                 setSubscriptions(updatedSubscriptions);
+                setViewMode(prev => ({ ...prev, type: 'list' }));
                 save.setLoading(true, 'Saving subscription...');
                 try {
                   await saveSubscriptions(updatedSubscriptions);
                   toast.success(`Successfully updated "${subscription.name}" status!`);
-                  // Ensure we're in list view after status change
-                  setViewMode('list');
+                  
+                  // Force a state refresh to ensure UI updates
+                  setTimeout(() => {
+                    setSubscriptions(prev => [...prev]);
+                  }, 100);
                 } catch (error) {
                   const errorMessage = getUserFriendlyMessage('SAVE_ERROR');
                   save.setError(errorMessage);
@@ -686,6 +697,7 @@ export default function HomePage() {
           
           const updatedSubscriptions = subscriptions.filter(s => s.id !== subscriptionToDelete.id);
           setSubscriptions(updatedSubscriptions);
+          setViewMode(prev => ({ ...prev, type: 'list' }));
           deleteLoading.setLoading(true, 'Deleting subscription...');
           
           try {
@@ -693,8 +705,11 @@ export default function HomePage() {
             setIsDeleteDialogOpen(false);
             setSubscriptionToDelete(null);
             toast.success(`Successfully deleted "${subscriptionToDelete.name}"!`);
-            // Ensure we're in list view after deletion
-            setViewMode('list');
+            
+            // Force a state refresh to ensure UI updates
+            setTimeout(() => {
+              setSubscriptions(prev => [...prev]);
+            }, 100);
           } catch (error) {
             const errorMessage = getUserFriendlyMessage('DELETE_ERROR');
             deleteLoading.setError(errorMessage);
