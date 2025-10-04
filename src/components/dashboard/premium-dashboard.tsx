@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { Plus, Grid, List, BarChart3, Download, DollarSign, CheckCircle, PiggyBank } from 'lucide-react';
+import { Plus, Grid, List, BarChart3, Download, DollarSign, CheckCircle, PiggyBank, TrendingUp } from 'lucide-react';
 import { EnhancedCard, MetricsCard } from '@/components/ui/enhanced-card';
 import { PremiumButton, ButtonGroup } from '@/components/ui/premium-button';
 import { SearchInput } from '@/components/ui/enhanced-input';
@@ -58,8 +58,6 @@ export default function PremiumDashboard({
   // Local state for UI
   const [selectedSubscription, setSelectedSubscription] = useState<Subscription | null>(null);
   const [subscriptionToDelete, setSubscriptionToDelete] = useState<Subscription | null>(null);
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [filteredSubscriptions, setFilteredSubscriptions] = useState<Subscription[]>([]);
 
   // Destructure loading states
   const { initial, delete: deleteLoading, export: exportLoading } = loadingStates;
@@ -102,94 +100,18 @@ export default function PremiumDashboard({
     return sum;
   }, 0);
 
-  // Initialize filtered subscriptions
-  useEffect(() => {
-    setFilteredSubscriptions(subscriptions);
-  }, [subscriptions]);
+  // Note: filteredSubscriptions is managed by parent component
 
-  // Handle URL parameters
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const urlParams = new URLSearchParams(window.location.search);
-      const tab = urlParams.get('tab');
-      const view = urlParams.get('view');
-      
-      if (tab === 'ai-tools') {
-        setCurrentTab('ai-tools');
-      } else {
-        setCurrentTab('subscriptions');
-      }
-      
-      if (view === 'list') {
-        setViewMode(prev => ({ ...prev, type: 'list' }));
-      } else if (view === 'grid') {
-        setViewMode(prev => ({ ...prev, type: 'grid' }));
-      } else if (view === 'analytics') {
-        setViewMode(prev => ({ ...prev, type: 'analytics' }));
-      }
-    }
-  }, []);
+  // Note: URL parameters are handled by parent component
 
   // Filter subscriptions
-  useEffect(() => {
-    let filtered = subscriptions;
+  // Note: Filtering is handled by parent component
 
-    if (searchQuery) {
-      filtered = filtered.filter(sub => 
-        sub.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        sub.category.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
+  // Note: Search is handled by parent component
 
-    if (filters.category) {
-      filtered = filtered.filter(sub => sub.category === filters.category);
-    }
+  // Note: View mode changes are handled by parent component
 
-    if (filters.status) {
-      filtered = filtered.filter(sub => sub.status === filters.status);
-    }
-
-    if (filters.priority) {
-      filtered = filtered.filter(sub => sub.priority === filters.priority);
-    }
-
-    if (filters.costRange.min > 0 || filters.costRange.max < 1000) {
-      filtered = filtered.filter(sub => 
-        sub.cost >= filters.costRange.min && sub.cost <= filters.costRange.max
-      );
-    }
-
-    setFilteredSubscriptions(filtered);
-  }, [subscriptions, searchQuery, filters]);
-
-  // Handle search
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-  };
-
-  // Handle view mode change
-  const handleViewModeChange = (mode: 'list' | 'grid' | 'analytics') => {
-    setViewMode(prev => ({ ...prev, type: mode }));
-  };
-
-  // Handle subscription actions
-  const handleAddSubscription = (subscription: Subscription) => {
-    const newSubscription = {
-      ...subscription,
-      id: generateId(),
-      startDate: getCurrentDate(),
-      renewalDate: getDefaultRenewalDate()
-    };
-
-    const updatedSubscriptions = [...subscriptions, newSubscription];
-    setSubscriptions(updatedSubscriptions);
-    saveSubscriptions(updatedSubscriptions);
-    toast.success(`Successfully added "${subscription.name}" to your subscriptions!`);
-  };
-
-  const handleEditSubscription = (subscription: Subscription) => {
-    window.location.href = `/update-subscription/${subscription.id}`;
-  };
+  // Note: All subscription actions are handled by parent component
 
   // Note: Subscription operations are now handled by parent component
 
@@ -216,11 +138,6 @@ export default function PremiumDashboard({
               </p>
             </div>
             <div className="flex items-center space-x-4">
-              <SearchInput
-                placeholder="Search subscriptions..."
-                onSearch={handleSearch}
-                className="w-64"
-              />
               <PremiumButton variant="gradient" size="lg">
                 <Plus className="h-5 w-5 mr-2" />
                 Add Subscription
@@ -273,7 +190,7 @@ export default function PremiumDashboard({
                   <PremiumButton
                     variant={viewMode.type === 'list' ? 'primary' : 'ghost'}
                     size="sm"
-                    onClick={() => handleViewModeChange('list')}
+                    onClick={() => onViewModeChange('list')}
                   >
                     <List className="h-4 w-4 mr-2" />
                     List
@@ -281,7 +198,7 @@ export default function PremiumDashboard({
                   <PremiumButton
                     variant={viewMode.type === 'grid' ? 'primary' : 'ghost'}
                     size="sm"
-                    onClick={() => handleViewModeChange('grid')}
+                    onClick={() => onViewModeChange('grid')}
                   >
                     <Grid className="h-4 w-4 mr-2" />
                     Grid
@@ -289,7 +206,7 @@ export default function PremiumDashboard({
                   <PremiumButton
                     variant={viewMode.type === 'analytics' ? 'primary' : 'ghost'}
                     size="sm"
-                    onClick={() => handleViewModeChange('analytics')}
+                    onClick={() => onViewModeChange('analytics')}
                   >
                     <BarChart3 className="h-4 w-4 mr-2" />
                     Analytics
@@ -376,7 +293,7 @@ export default function PremiumDashboard({
           isOpen={!!subscriptionToDelete}
           subscription={subscriptionToDelete}
           onClose={() => setSubscriptionToDelete(null)}
-          onConfirm={() => handleDeleteSubscription(subscriptionToDelete)}
+          onConfirm={() => onDelete(subscriptionToDelete)}
           isLoading={deleteLoading.isLoading}
         />
       )}
