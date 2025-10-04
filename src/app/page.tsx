@@ -525,6 +525,8 @@ export default function HomePage() {
                 try {
                   await saveSubscriptions(updatedSubscriptions);
                   toast.success(`Successfully duplicated "${subscription.name}"!`);
+                  // Ensure we're in list view after duplication
+                  setViewMode('list');
                 } catch (error) {
                   const errorMessage = getUserFriendlyMessage('SAVE_ERROR');
                   save.setError(errorMessage);
@@ -553,6 +555,8 @@ export default function HomePage() {
                 try {
                   await saveSubscriptions(updatedSubscriptions);
                   toast.success(`Successfully updated "${subscription.name}" status!`);
+                  // Ensure we're in list view after status change
+                  setViewMode('list');
                 } catch (error) {
                   const errorMessage = getUserFriendlyMessage('SAVE_ERROR');
                   save.setError(errorMessage);
@@ -677,6 +681,8 @@ export default function HomePage() {
             setIsDeleteDialogOpen(false);
             setSubscriptionToDelete(null);
             toast.success(`Successfully deleted "${subscriptionToDelete.name}"!`);
+            // Ensure we're in list view after deletion
+            setViewMode('list');
           } catch (error) {
             const errorMessage = getUserFriendlyMessage('DELETE_ERROR');
             deleteLoading.setError(errorMessage);
