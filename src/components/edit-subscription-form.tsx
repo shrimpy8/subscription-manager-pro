@@ -175,10 +175,14 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
   useEffect(() => {
     const loadSubscription = async () => {
       try {
+        console.log('Loading subscription with ID:', subscriptionId);
         const subscriptions = await loadSubscriptions();
+        console.log('Loaded subscriptions:', subscriptions.length);
         const foundSubscription = subscriptions.find(sub => sub.id === subscriptionId);
+        console.log('Found subscription:', foundSubscription);
         
         if (!foundSubscription) {
+          console.error('Subscription not found for ID:', subscriptionId);
           toast.error('Subscription not found');
           return;
         }
@@ -219,6 +223,7 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
           notes: foundSubscription.notes || '',
         };
         
+        console.log('Setting form data:', newFormData);
         setFormData(newFormData);
         
         // Initialize section states without triggering change detection
@@ -314,7 +319,9 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
 
   // Handle input changes
   const handleInputChange = (field: string, value: unknown) => {
+    console.log('handleInputChange called:', { field, value, currentFormData: formData });
     const newFormData = { ...formData, [field]: value };
+    console.log('newFormData:', newFormData);
     setFormData(newFormData);
     updateSectionStates(newFormData, subscription);
   };
@@ -409,10 +416,15 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading subscription...</p>
+          <p className="text-sm text-gray-500 mt-2">Subscription ID: {subscriptionId}</p>
         </div>
       </div>
     );
   }
+
+  console.log('Rendering form with subscription:', subscription);
+  console.log('Current formData:', formData);
+  console.log('Form data keys:', Object.keys(formData));
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
