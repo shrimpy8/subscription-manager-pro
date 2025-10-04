@@ -230,10 +230,12 @@ export default function PremiumDashboard({
                   {filteredSubscriptions.map((subscription) => (
                     <EnhancedCard key={subscription.id} variant="default" hover={true}>
                       <div className="p-4">
-                        <div className="flex items-center space-x-3 mb-3">
-                          {getSubscriptionIcon(subscription)}
-                          <div>
-                            <h3 className="text-h4 text-neutral-900">{subscription.name}</h3>
+                        <div className="flex items-start space-x-3 mb-3">
+                          <div className="flex-shrink-0">
+                            {getSubscriptionIcon(subscription)}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-h4 text-neutral-900 truncate">{subscription.name}</h3>
                             <p className="text-body-sm text-neutral-600">{subscription.category}</p>
                           </div>
                         </div>
