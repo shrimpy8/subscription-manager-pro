@@ -43,8 +43,8 @@ export async function loadSubscriptions(): Promise<Subscription[]> {
       const transformed = transformJsonToSubscriptions(jsonData);
       // Ensure dates are properly converted
       const withDateObjects = ensureDateObjects(transformed);
-      // Save to API for future use
-      await saveSubscriptionsToAPI(withDateObjects);
+      // Save to API for future use (disabled to prevent infinite loops)
+      // await saveSubscriptionsToAPI(withDateObjects);
       return withDateObjects;
     }
 
