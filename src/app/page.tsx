@@ -168,7 +168,7 @@ export default function HomePage() {
         initial.setLoading(true, 'Loading subscriptions...');
         const loadedSubscriptions = await loadSubscriptions();
         setSubscriptions(loadedSubscriptions);
-        toast.success('Subscriptions loaded successfully!');
+        // Removed success message to prevent multiple toasts on navigation
       } catch (error) {
         handleSubscriptionError(
           error as Error,

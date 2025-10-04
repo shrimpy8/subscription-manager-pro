@@ -432,6 +432,8 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
 
   const handleSave = async () => {
     try {
+      console.log('handleSave called - checking for multiple calls');
+      
       // Custom validation for Update Subscription form
       const validation = validateUpdateSubscription(formData);
       if (!validation.isValid) {
@@ -447,7 +449,10 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
       
       await saveSubscriptions(updatedSubscriptions);
       
+      console.log('About to show success message');
       toast.success('Subscription updated successfully!');
+      console.log('Success message shown, navigating...');
+      
       // Navigate to list view specifically
       router.push('/?view=list');
     } catch (error) {
