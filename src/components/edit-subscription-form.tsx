@@ -468,33 +468,33 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
                       <FileText className="w-5 h-5 mr-2 text-orange-600" />
                       Basic Information
                     </CardTitle>
-                    <div className="flex items-center space-x-2">
-                      {sectionStates[SECTIONS.BASIC_INFO]?.hasChanges && (
-                        <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
-                          Modified
-                        </Badge>
-                      )}
-                      {sectionStates[SECTIONS.BASIC_INFO]?.hasChanges && (
-                        <div className="flex space-x-1">
-                          <button
-                            type="button"
-                            onClick={() => revertSection(SECTIONS.BASIC_INFO, 'last')}
-                            className="p-1 hover:bg-gray-100 rounded"
-                            title="Revert Last Change"
-                          >
-                            <Undo2 className="w-4 h-4 text-gray-600" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => revertSection(SECTIONS.BASIC_INFO, 'all')}
-                            className="p-1 hover:bg-gray-100 rounded"
-                            title="Revert All Changes"
-                          >
-                            <RotateCcw className="w-4 h-4 text-gray-600" />
-                          </button>
-                        </div>
-                      )}
-                    </div>
+                            <div className="flex items-center space-x-2">
+                              {sectionStates[SECTIONS.BASIC_INFO]?.hasChanges && (
+                                <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
+                                  Modified
+                                </Badge>
+                              )}
+                              {(sectionStates[SECTIONS.BASIC_INFO]?.hasChanges || sectionStates[SECTIONS.BASIC_INFO]?.changeHistory?.length > 1) && (
+                                <div className="flex space-x-1">
+                                  <button
+                                    type="button"
+                                    onClick={() => revertSection(SECTIONS.BASIC_INFO, 'last')}
+                                    className="p-1 hover:bg-gray-100 rounded"
+                                    title="Revert Last Change"
+                                  >
+                                    <Undo2 className="w-4 h-4 text-gray-600" />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => revertSection(SECTIONS.BASIC_INFO, 'all')}
+                                    className="p-1 hover:bg-gray-100 rounded"
+                                    title="Revert All Changes"
+                                  >
+                                    <RotateCcw className="w-4 h-4 text-gray-600" />
+                                  </button>
+                                </div>
+                              )}
+                            </div>
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -626,7 +626,7 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
                           Modified
                         </Badge>
                       )}
-                      {sectionStates[SECTIONS.KEY_MANAGEMENT]?.hasChanges && (
+                      {(sectionStates[SECTIONS.KEY_MANAGEMENT]?.hasChanges || sectionStates[SECTIONS.KEY_MANAGEMENT]?.changeHistory?.length > 1) && (
                         <div className="flex space-x-1">
                           <button
                             type="button"
@@ -686,7 +686,7 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
                           Modified
                         </Badge>
                       )}
-                      {sectionStates[SECTIONS.USAGE]?.hasChanges && (
+                      {(sectionStates[SECTIONS.USAGE]?.hasChanges || sectionStates[SECTIONS.USAGE]?.changeHistory?.length > 1) && (
                         <div className="flex space-x-1">
                           <button
                             type="button"
@@ -762,7 +762,7 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
                           Modified
                         </Badge>
                       )}
-                      {sectionStates[SECTIONS.BILLING]?.hasChanges && (
+                      {(sectionStates[SECTIONS.BILLING]?.hasChanges || sectionStates[SECTIONS.BILLING]?.changeHistory?.length > 1) && (
                         <div className="flex space-x-1">
                           <button
                             type="button"
@@ -908,7 +908,7 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
                           Modified
                         </Badge>
                       )}
-                      {sectionStates[SECTIONS.PROMO]?.hasChanges && (
+                      {(sectionStates[SECTIONS.PROMO]?.hasChanges || sectionStates[SECTIONS.PROMO]?.changeHistory?.length > 1) && (
                         <div className="flex space-x-1">
                           <button
                             type="button"
@@ -967,7 +967,7 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
                           Modified
                         </Badge>
                       )}
-                      {sectionStates[SECTIONS.MISCELLANEOUS]?.hasChanges && (
+                      {(sectionStates[SECTIONS.MISCELLANEOUS]?.hasChanges || sectionStates[SECTIONS.MISCELLANEOUS]?.changeHistory?.length > 1) && (
                         <div className="flex space-x-1">
                           <button
                             type="button"
@@ -1048,7 +1048,7 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
                           Modified
                         </Badge>
                       )}
-                      {sectionStates[SECTIONS.NOTES]?.hasChanges && (
+                      {(sectionStates[SECTIONS.NOTES]?.hasChanges || sectionStates[SECTIONS.NOTES]?.changeHistory?.length > 1) && (
                         <div className="flex space-x-1">
                           <button
                             type="button"
