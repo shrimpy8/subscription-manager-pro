@@ -508,7 +508,7 @@ export default function HomePage() {
             <SubscriptionsTable
               subscriptions={filteredSubscriptions}
               onEdit={(subscription) => {
-                window.location.href = `/edit-subscription/${subscription.id}`;
+                window.location.href = `/update-subscription/${subscription.id}`;
               }}
               onDuplicate={async (subscription) => {
                 const duplicated = {
