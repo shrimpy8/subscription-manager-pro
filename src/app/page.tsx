@@ -17,7 +17,6 @@ import Sidebar from '@/components/sidebar';
 import { ErrorBoundary } from '@/components/error-boundary';
 import SubscriptionsTable from '@/components/subscriptions-table';
 import SubscriptionDetailsModal from '@/components/subscription-details-modal';
-import EditSubscriptionModal from '@/components/edit-subscription-modal';
 import DeleteConfirmationDialog from '@/components/delete-confirmation-dialog';
 import { useMultipleLoadingStates } from '@/hooks/use-loading-state';
 import { LoadingPage } from '@/components/ui/loading-spinner';
@@ -127,7 +126,6 @@ export default function HomePage() {
   const { initial, export: exportLoading, save, delete: deleteLoading, add } = loadingStates;
   const [currentTab, setCurrentTab] = useState<'subscriptions' | 'ai-tools'>('subscriptions');
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedSubscription, setSelectedSubscription] = useState<Subscription | null>(null);
   const [subscriptionToDelete, setSubscriptionToDelete] = useState<Subscription | null>(null);
@@ -510,8 +508,7 @@ export default function HomePage() {
             <SubscriptionsTable
               subscriptions={filteredSubscriptions}
               onEdit={(subscription) => {
-                setSelectedSubscription(subscription);
-                setIsEditModalOpen(true);
+                window.location.href = `/edit-subscription/${subscription.id}`;
               }}
               onDuplicate={async (subscription) => {
                 const duplicated = {
@@ -660,21 +657,6 @@ export default function HomePage() {
         subscription={selectedSubscription}
       />
 
-      <EditSubscriptionModal
-        isOpen={isEditModalOpen}
-        onClose={() => {
-          setIsEditModalOpen(false);
-          setSelectedSubscription(null);
-        }}
-        subscription={selectedSubscription}
-        onSave={async (updatedSubscription) => {
-          const updatedSubscriptions = subscriptions.map(s => 
-            s.id === updatedSubscription.id ? updatedSubscription : s
-          );
-          setSubscriptions(updatedSubscriptions);
-          await saveSubscriptions(updatedSubscriptions);
-        }}
-      />
 
       {/* Delete Confirmation Dialog */}
       <DeleteConfirmationDialog
