@@ -434,6 +434,8 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
   console.log('Rendering form with subscription:', subscription);
   console.log('Current formData:', formData);
   console.log('Form data keys:', Object.keys(formData));
+  console.log('Loading state:', loadingState.isLoading);
+  console.log('Has any changes:', hasAnyChanges);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
@@ -474,6 +476,13 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
               Changes will be saved immediately when you click &quot;Save Changes&quot;. 
               Make sure all information is correct before proceeding.
             </p>
+            {/* DEBUG: Test button */}
+            <button 
+              onClick={() => console.log('TEST BUTTON CLICKED!')}
+              className="mt-2 px-4 py-2 bg-red-500 text-white rounded"
+            >
+              TEST CLICK - Check Console
+            </button>
           </div>
         </div>
 
