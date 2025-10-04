@@ -16,6 +16,8 @@ import { ToastContainer } from '@/components/ui/toast';
 import { getUserFriendlyMessage } from '@/utils/error-messages';
 // import { Switch } from '@/components/ui/switch';
 import { ArrowLeft, FileText, DollarSign, Gift, Globe, Mail, Tag, Calendar, Key, Shield, Plus, Trash2, RotateCcw } from 'lucide-react';
+import SaveConfirmationDialog from './save-confirmation-dialog';
+import CancelConfirmationDialog from './cancel-confirmation-dialog';
 import { SubscriptionCategory } from '@/types/subscription';
 import { Subscription } from '@/types/subscription';
 import { loadSubscriptions, saveSubscriptions } from '@/lib/subscription-persistence';
@@ -178,6 +180,9 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
   const [loading, setLoading] = useState(true);
   const [hasChanges, setHasChanges] = useState(false);
   const [originalData, setOriginalData] = useState<UpdateSubscriptionFormData | null>(null);
+  const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
   
   // Section-level change tracking
   const [sectionStates, setSectionStates] = useState<Record<string, { hasChanges: boolean; changeHistory: any[] }>>({
@@ -430,26 +435,22 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
     );
   };
 
-  const handleSave = async () => {
-    // Show confirmation dialog before saving
-    const confirmed = confirm(
-      '⚠️ WARNING: Save Changes\n\n' +
-      'You are about to save changes to this subscription. These changes are IRREVERSIBLE and will permanently update the subscription data.\n\n' +
-      'Are you sure you want to proceed with saving these changes?'
-    );
-    
-    if (!confirmed) {
-      return; // User cancelled, don't save
-    }
+  const handleSave = () => {
+    // Show confirmation dialog
+    setIsSaveDialogOpen(true);
+  };
 
+  const handleSaveConfirm = async () => {
     try {
-      console.log('handleSave called - checking for multiple calls');
+      setIsSaving(true);
+      console.log('handleSaveConfirm called - checking for multiple calls');
       
       // Custom validation for Update Subscription form
       const validation = validateUpdateSubscription(formData);
       if (!validation.isValid) {
         const errorMessage = getUserFriendlyMessage('VALIDATION_ERROR');
         toast.error(errorMessage);
+        setIsSaveDialogOpen(false);
         return;
       }
 
@@ -469,17 +470,22 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
     } catch (error) {
       console.error('Error saving subscription:', error);
       toast.error('Failed to save subscription');
+    } finally {
+      setIsSaving(false);
+      setIsSaveDialogOpen(false);
     }
   };
 
   const handleCancel = () => {
     if (hasChanges) {
-      if (confirm('You have unsaved changes. Are you sure you want to cancel?')) {
-        router.push('/?view=list');
-      }
+      setIsCancelDialogOpen(true);
     } else {
       router.push('/?view=list');
     }
+  };
+
+  const handleCancelConfirm = () => {
+    router.push('/?view=list');
   };
 
   if (loading) {
@@ -1039,6 +1045,24 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
           </div>
         </form>
       </div>
+      
+      {/* Save Confirmation Dialog */}
+      <SaveConfirmationDialog
+        isOpen={isSaveDialogOpen}
+        onClose={() => setIsSaveDialogOpen(false)}
+        onConfirm={handleSaveConfirm}
+        subscriptionData={formData}
+        isLoading={isSaving}
+      />
+      
+      {/* Cancel Confirmation Dialog */}
+      <CancelConfirmationDialog
+        isOpen={isCancelDialogOpen}
+        onClose={() => setIsCancelDialogOpen(false)}
+        onConfirm={handleCancelConfirm}
+        isLoading={false}
+      />
+      
       <ToastContainer />
     </div>
   );
