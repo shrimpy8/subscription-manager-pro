@@ -431,6 +431,17 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
   };
 
   const handleSave = async () => {
+    // Show confirmation dialog before saving
+    const confirmed = confirm(
+      '⚠️ WARNING: Save Changes\n\n' +
+      'You are about to save changes to this subscription. These changes are IRREVERSIBLE and will permanently update the subscription data.\n\n' +
+      'Are you sure you want to proceed with saving these changes?'
+    );
+    
+    if (!confirmed) {
+      return; // User cancelled, don't save
+    }
+
     try {
       console.log('handleSave called - checking for multiple calls');
       
