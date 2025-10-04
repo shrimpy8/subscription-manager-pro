@@ -4,32 +4,30 @@
  */
 
 import { useState, useEffect } from 'react';
-import { Plus, Search, Grid, List, BarChart3, Download, TrendingUp, DollarSign, CheckCircle, PiggyBank } from 'lucide-react';
+import { Plus, Grid, List, BarChart3, Download, DollarSign, CheckCircle, PiggyBank } from 'lucide-react';
 import { EnhancedCard, MetricsCard } from '@/components/ui/enhanced-card';
 import { PremiumButton, ButtonGroup } from '@/components/ui/premium-button';
 import { SearchInput } from '@/components/ui/enhanced-input';
-import { LoadingState } from '@/components/ui/loading-states';
 import { Subscription, SubscriptionFilters, ViewMode } from '@/types/subscription';
-import { loadSubscriptions, saveSubscriptions, exportSubscriptionsToCSV, downloadCSV } from '@/lib/subscription-persistence';
 import { formatCurrency, getDaysUntilRenewal, getStatusColor, getPriorityColor, generateId, toDate, getDefaultRenewalDate, getCurrentDate, formatDate } from '@/lib/utils';
-import { AdvancedFilters } from '@/components/advanced-filters';
-import AIToolsBrowser from '@/components/ai-tools-browser';
-import Sidebar from '@/components/sidebar';
-import { ErrorBoundary } from '@/components/error-boundary';
 import EnhancedSubscriptionsTable from '@/components/enhanced-subscriptions-table';
 import SubscriptionDetailsModal from '@/components/subscription-details-modal';
 import DeleteConfirmationDialog from '@/components/delete-confirmation-dialog';
-import { useMultipleLoadingStates } from '@/hooks/use-loading-state';
 import { LoadingPage } from '@/components/ui/loading-spinner';
 import { ToastContainer, useToast } from '@/components/ui/toast';
-import { getErrorMessage, getUserFriendlyMessage } from '@/utils/error-messages';
 
 interface PremiumDashboardProps {
   subscriptions: Subscription[];
   filteredSubscriptions: Subscription[];
   filters: SubscriptionFilters;
   viewMode: ViewMode;
-  loadingStates: any;
+  loadingStates: {
+    initial: { isLoading: boolean; loadingMessage?: string | null; error?: string | null; setLoading: (loading: boolean, message?: string) => void; setError: (error: string) => void; clearError: () => void };
+    add: { isLoading: boolean; loadingMessage?: string | null; error?: string | null; setLoading: (loading: boolean, message?: string) => void; setError: (error: string) => void; clearError: () => void };
+    save: { isLoading: boolean; loadingMessage?: string | null; error?: string | null; setLoading: (loading: boolean, message?: string) => void; setError: (error: string) => void; clearError: () => void };
+    delete: { isLoading: boolean; loadingMessage?: string | null; error?: string | null; setLoading: (loading: boolean, message?: string) => void; setError: (error: string) => void; clearError: () => void };
+    export: { isLoading: boolean; loadingMessage?: string | null; error?: string | null; setLoading: (loading: boolean, message?: string) => void; setError: (error: string) => void; clearError: () => void };
+  };
   onFiltersChange: (filters: SubscriptionFilters) => void;
   onViewModeChange: (mode: 'list' | 'grid' | 'analytics') => void;
   onEdit: (subscription: Subscription) => void;
@@ -60,10 +58,9 @@ export default function PremiumDashboard({
   // Local state for UI
   const [selectedSubscription, setSelectedSubscription] = useState<Subscription | null>(null);
   const [subscriptionToDelete, setSubscriptionToDelete] = useState<Subscription | null>(null);
-  const [showFilters, setShowFilters] = useState(false);
 
   // Destructure loading states
-  const { initial, add, save, delete: deleteLoading, export: exportLoading } = loadingStates;
+  const { initial, delete: deleteLoading, export: exportLoading } = loadingStates;
 
   // Helper function to get subscription icon
   const getSubscriptionIcon = (subscription: Subscription) => {
@@ -103,26 +100,8 @@ export default function PremiumDashboard({
     return sum;
   }, 0);
 
-  // Load subscriptions
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    
-    const loadData = async () => {
-      try {
-        initial.setLoading(true, 'Loading subscriptions...');
-        const loadedSubscriptions = await loadSubscriptions();
-        setSubscriptions(loadedSubscriptions);
-      } catch (error) {
-        const errorMessage = (error as Error).message || 'An unexpected error occurred';
-        initial.setError(errorMessage);
-        toast.error(errorMessage);
-        setSubscriptions([]);
-      } finally {
-        initial.setLoading(false);
-      }
-    };
-    loadData();
-  }, [initial, toast]);
+  // Note: Subscriptions are now managed by the parent component
+  // This useEffect is kept for potential future initialization logic
 
   // Handle URL parameters
   useEffect(() => {
@@ -208,106 +187,11 @@ export default function PremiumDashboard({
     window.location.href = `/update-subscription/${subscription.id}`;
   };
 
-  const handleDuplicateSubscription = async (subscription: Subscription) => {
-    try {
-      save.setLoading(true, 'Duplicating subscription...');
-      
-      const duplicatedSubscription = {
-        ...subscription,
-        id: generateId(),
-        name: `${subscription.name} (Copy)`,
-        startDate: getCurrentDate(),
-        renewalDate: getDefaultRenewalDate()
-      };
+  // Note: Subscription operations are now handled by parent component
 
-      const updatedSubscriptions = [...subscriptions, duplicatedSubscription];
-      setSubscriptions(updatedSubscriptions);
-      await saveSubscriptions(updatedSubscriptions);
-      
-      setViewMode(prev => ({ ...prev, type: 'list' }));
-      setTimeout(() => {
-        setSubscriptions(prev => [...prev]);
-      }, 100);
-      
-      toast.success(`Successfully duplicated "${subscription.name}"!`);
-    } catch (error) {
-        const errorMessage = (error as Error).message || 'An unexpected error occurred';
-      save.setError(errorMessage);
-      toast.error(errorMessage);
-    } finally {
-      save.setLoading(false);
-    }
-  };
+  // Note: All subscription operations are now handled by parent component
 
-  const handleDeleteSubscription = async (subscription: Subscription) => {
-    try {
-      deleteLoading.setLoading(true, 'Deleting subscription...');
-      
-      const updatedSubscriptions = subscriptions.filter(sub => sub.id !== subscription.id);
-      setSubscriptions(updatedSubscriptions);
-      await saveSubscriptions(updatedSubscriptions);
-      
-      setViewMode(prev => ({ ...prev, type: 'list' }));
-      setTimeout(() => {
-        setSubscriptions(prev => [...prev]);
-      }, 100);
-      
-      toast.success(`Successfully deleted "${subscription.name}"!`);
-      setSubscriptionToDelete(null);
-    } catch (error) {
-        const errorMessage = (error as Error).message || 'An unexpected error occurred';
-      deleteLoading.setError(errorMessage);
-      toast.error(errorMessage);
-    } finally {
-      deleteLoading.setLoading(false);
-    }
-  };
-
-  const handlePauseSubscription = async (subscription: Subscription) => {
-    try {
-      save.setLoading(true, 'Updating subscription...');
-      
-      const updatedSubscription = {
-        ...subscription,
-        status: subscription.status === 'active' ? 'paused' : 'active' as 'active' | 'paused' | 'canceled'
-      };
-
-      const updatedSubscriptions = subscriptions.map(sub => 
-        sub.id === subscription.id ? updatedSubscription : sub
-      );
-      
-      setSubscriptions(updatedSubscriptions);
-      await saveSubscriptions(updatedSubscriptions);
-      
-      setViewMode(prev => ({ ...prev, type: 'list' }));
-      setTimeout(() => {
-        setSubscriptions(prev => [...prev]);
-      }, 100);
-      
-      toast.success(`Successfully updated "${subscription.name}" status!`);
-    } catch (error) {
-        const errorMessage = (error as Error).message || 'An unexpected error occurred';
-      save.setError(errorMessage);
-      toast.error(errorMessage);
-    } finally {
-      save.setLoading(false);
-    }
-  };
-
-  const handleExportSubscriptions = async () => {
-    try {
-      exportLoading.setLoading(true, 'Exporting subscriptions...');
-      const csvContent = await exportSubscriptionsToCSV(subscriptions);
-      downloadCSV(csvContent, `subscriptions-${formatDate(getCurrentDate(), 'input')}.csv`);
-      toast.success(`Successfully exported ${subscriptions.length} subscriptions!`);
-    } catch (error) {
-        const errorMessage = (error as Error).message || 'An unexpected error occurred';
-      exportLoading.setError(errorMessage);
-      toast.error(errorMessage);
-    } finally {
-      exportLoading.setLoading(false);
-    }
-  };
+  // Note: Export functionality is now handled by parent component
 
   if (initial.isLoading) {
     return <LoadingPage message="Loading your subscriptions..." />;
@@ -412,11 +296,11 @@ export default function PremiumDashboard({
               {viewMode.type === 'list' && (
                 <EnhancedSubscriptionsTable
                   subscriptions={filteredSubscriptions}
-                  onEdit={handleEditSubscription}
-                  onDuplicate={handleDuplicateSubscription}
+                  onEdit={onEdit}
+                  onDuplicate={onDuplicate}
                   onDelete={(sub) => setSubscriptionToDelete(sub)}
-                  onPause={handlePauseSubscription}
-                  onViewDetails={setSelectedSubscription}
+                  onPause={onPause}
+                  onViewDetails={onViewDetails}
                 />
               )}
 
