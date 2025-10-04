@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -50,6 +50,7 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
   const [formData, setFormData] = useState<Record<string, unknown>>({});
   const [sectionStates, setSectionStates] = useState<Record<string, SectionState>>({});
   const [hasAnyChanges, setHasAnyChanges] = useState(false);
+  const nameInputRef = useRef<HTMLInputElement>(null);
 
   // Option grid control component that shows all options at once
   const OptionGridControl = ({ 
@@ -225,6 +226,14 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
         
         console.log('Setting form data:', newFormData);
         setFormData(newFormData);
+        
+        // Focus the name input after a short delay to ensure it's rendered
+        setTimeout(() => {
+          if (nameInputRef.current) {
+            nameInputRef.current.focus();
+            console.log('Focused name input');
+          }
+        }, 100);
         
         // Initialize section states without triggering change detection
         const initialSectionStates: Record<string, SectionState> = {};
@@ -513,11 +522,13 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
                   <div>
                     <Label htmlFor="name" className="text-sm font-medium text-gray-700">Tool Name *</Label>
                     <Input
+                      ref={nameInputRef}
                       id="name"
                       placeholder="e.g. ChatGPT"
                       value={(formData.name as string) || ''}
                       onChange={(e) => handleInputChange('name', e.target.value)}
                       required
+                      className="ring-2 ring-orange-500 focus:ring-orange-600"
                     />
                   </div>
 
