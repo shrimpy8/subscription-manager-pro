@@ -10,6 +10,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FormField, FormValidation } from '@/components/ui/form-field';
 import { validateSubscription } from '@/utils/validation';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/components/ui/toast';
+import { ToastContainer } from '@/components/ui/toast';
+import { getUserFriendlyMessage } from '@/utils/error-messages';
 // import { Switch } from '@/components/ui/switch';
 import { ArrowLeft, FileText, DollarSign, Gift, Globe, Mail, Tag, Calendar, Key, Shield, Plus, Trash2 } from 'lucide-react';
 import { SubscriptionCategory } from '@/types/subscription';
@@ -95,6 +98,7 @@ const USAGE_FREQUENCY = ['Daily', 'Weekly', 'Monthly', 'Occasionally', 'Rarely']
 const USAGE_IMPORTANCE = ['Critical', 'High', 'Medium', 'Low'];
 
 export default function AIToolSubscriptionForm() {
+  const toast = useToast();
   const [formData, setFormData] = useState<AIToolSubscriptionFormData>({
     id: '',
     name: '',
@@ -194,16 +198,14 @@ export default function AIToolSubscriptionForm() {
     // Validate form data
     const validation = validateSubscription(formData);
     if (!validation.isValid) {
-      const errorMessages = Object.entries(validation.errors)
-        .map(([field, errors]) => `${field}: ${errors.join(', ')}`)
-        .join('\n');
-      alert(`Please fix the following errors:\n${errorMessages}`);
+      const errorMessage = getUserFriendlyMessage('VALIDATION_ERROR');
+      toast.error(errorMessage);
       return;
     }
     
     // Form data logged for debugging - remove in production
     // Here you would typically send the data to your API
-    alert('Form submitted! Check console for data.');
+    toast.success('Form submitted successfully! Check console for data.');
   };
 
   return (
@@ -771,6 +773,7 @@ export default function AIToolSubscriptionForm() {
           </div>
         </form>
       </div>
+      <ToastContainer />
     </div>
   );
 }

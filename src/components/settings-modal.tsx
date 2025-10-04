@@ -7,6 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Subscription } from '@/types/subscription';
 import { handleError } from '@/utils/error-handler';
 import { saveSubscriptions, loadSubscriptions } from '@/lib/subscription-storage';
+import { useToast } from '@/components/ui/toast';
+import { ToastContainer } from '@/components/ui/toast';
+import { getUserFriendlyMessage } from '@/utils/error-messages';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -16,6 +19,7 @@ interface SettingsModalProps {
 }
 
 export default function SettingsModal({ isOpen, onClose, subscriptions, onSubscriptionsChange }: SettingsModalProps) {
+  const toast = useToast();
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
 
@@ -35,7 +39,8 @@ export default function SettingsModal({ isOpen, onClose, subscriptions, onSubscr
         error as Error,
         { component: 'settings-modal', action: 'export data' }
       );
-      alert('Export failed. Please try again.');
+      const errorMessage = getUserFriendlyMessage('EXPORT_ERROR');
+      toast.error(errorMessage);
     } finally {
       setIsExporting(false);
     }
@@ -56,7 +61,7 @@ export default function SettingsModal({ isOpen, onClose, subscriptions, onSubscr
             if (Array.isArray(importedData)) {
               onSubscriptionsChange(importedData);
               saveSubscriptions(importedData);
-              alert(`Successfully imported ${importedData.length} subscriptions!`);
+              toast.success(`Successfully imported ${importedData.length} subscriptions!`);
             } else {
               throw new Error('Invalid file format');
             }
@@ -65,7 +70,8 @@ export default function SettingsModal({ isOpen, onClose, subscriptions, onSubscr
               error as Error,
               { component: 'settings-modal', action: 'import data' }
             );
-            alert('Import failed. Please check the file format.');
+            const errorMessage = getUserFriendlyMessage('IMPORT_ERROR');
+            toast.error(errorMessage);
           } finally {
             setIsImporting(false);
           }
@@ -80,7 +86,7 @@ export default function SettingsModal({ isOpen, onClose, subscriptions, onSubscr
     if (confirm('Are you sure you want to clear all subscriptions? This action cannot be undone.')) {
       onSubscriptionsChange([]);
       saveSubscriptions([]);
-      alert('All subscriptions have been cleared.');
+      toast.success('All subscriptions have been cleared.');
     }
   };
 
@@ -153,6 +159,7 @@ export default function SettingsModal({ isOpen, onClose, subscriptions, onSubscr
           </Button>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }

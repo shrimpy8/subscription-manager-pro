@@ -6,8 +6,12 @@ import { AITool } from '@/types/ai-tools';
 import { Subscription } from '@/types/subscription';
 import { generateId } from '@/lib/utils';
 import { saveSubscriptions, loadSubscriptions } from '@/lib/subscription-storage';
+import { useToast } from '@/components/ui/toast';
+import { ToastContainer } from '@/components/ui/toast';
+import { getUserFriendlyMessage } from '@/utils/error-messages';
 
 export default function AIToolsPage() {
+  const toast = useToast();
   const [selectedTools, setSelectedTools] = useState<Set<number>>(new Set());
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
 
@@ -24,7 +28,7 @@ export default function AIToolsPage() {
     );
 
     if (existingSubscription) {
-      alert(`${tool.name} is already being tracked in your subscriptions.`);
+      toast.warning(`${tool.name} is already being tracked in your subscriptions.`);
       return;
     }
 
@@ -59,13 +63,13 @@ export default function AIToolsPage() {
     saveSubscriptions(updatedSubscriptions);
 
     // Show success message
-    alert(`${tool.name} has been added to your subscription tracker!`);
+    toast.success(`${tool.name} has been added to your subscription tracker!`);
   };
 
   const handleMarkAsUsing = (tool: AITool) => {
     // This could be used to mark tools as currently using
     // For now, we'll just show a message
-    alert(`${tool.name} marked as currently using!`);
+    toast.success(`${tool.name} marked as currently using!`);
   };
 
   const handleToolSelectionChange = (newSelectedTools: Set<number>) => {
@@ -80,6 +84,7 @@ export default function AIToolsPage() {
         selectedTools={selectedTools}
         onToolSelectionChange={handleToolSelectionChange}
       />
+      <ToastContainer />
     </div>
   );
 }
