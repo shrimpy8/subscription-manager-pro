@@ -111,6 +111,17 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
   const [hasChanges, setHasChanges] = useState(false);
   const [originalData, setOriginalData] = useState<UpdateSubscriptionFormData | null>(null);
   
+  // Section-level change tracking
+  const [sectionStates, setSectionStates] = useState<Record<string, { hasChanges: boolean; changeHistory: any[] }>>({
+    'BASIC_INFO': { hasChanges: false, changeHistory: [] },
+    'KEY_MANAGEMENT': { hasChanges: false, changeHistory: [] },
+    'USAGE': { hasChanges: false, changeHistory: [] },
+    'BILLING': { hasChanges: false, changeHistory: [] },
+    'PROMO': { hasChanges: false, changeHistory: [] },
+    'MISCELLANEOUS': { hasChanges: false, changeHistory: [] },
+    'NOTES': { hasChanges: false, changeHistory: [] }
+  });
+  
   const [formData, setFormData] = useState<UpdateSubscriptionFormData>({
     id: '',
     name: '',
@@ -142,6 +153,17 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
 
   const [promoCodeInput, setPromoCodeInput] = useState('');
   const [apiKeyInput, setApiKeyInput] = useState('');
+
+  // Section field mapping
+  const sectionFieldMap: Record<string, string[]> = {
+    'BASIC_INFO': ['name', 'category', 'subcategory', 'description', 'url'],
+    'KEY_MANAGEMENT': ['secretKey', 'apiAccessKeys'],
+    'USAGE': ['usageFrequency', 'usageImportance', 'safeForWork'],
+    'BILLING': ['plan', 'cost', 'currency', 'billingCycle', 'startDate', 'renewalDate', 'status', 'accountEmailInUse'],
+    'PROMO': ['latestPromotionCode', 'previouslyUsedPromotionCode'],
+    'MISCELLANEOUS': ['chinaRegionOnly', 'logoUrl', 'fallbackIcon'],
+    'NOTES': ['notes']
+  };
 
   // Load subscription data
   useEffect(() => {
@@ -206,6 +228,27 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
       setFormData(prev => ({ ...prev, [field]: value }));
     }
     setHasChanges(true);
+    
+    // Update section states
+    updateSectionStates(field as string, value);
+  };
+
+  const updateSectionStates = (field: string, value: any) => {
+    setSectionStates(prevStates => {
+      const newStates = { ...prevStates };
+      
+      // Find which section this field belongs to
+      Object.entries(sectionFieldMap).forEach(([section, fields]) => {
+        if (fields.includes(field)) {
+          newStates[section] = {
+            hasChanges: true,
+            changeHistory: [...(newStates[section]?.changeHistory || []), { field, value, timestamp: Date.now() }]
+          };
+        }
+      });
+      
+      return newStates;
+    });
   };
 
   const handleArrayAdd = (field: 'previouslyUsedPromotionCode' | 'accountEmailsUsedPreviously' | 'apiAccessKeys', input: string) => {
@@ -224,6 +267,44 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
       [field]: prev[field].filter((_, i) => i !== index)
     }));
     setHasChanges(true);
+    updateSectionStates(field, formData[field].filter((_, i) => i !== index));
+  };
+
+  const revertSection = (section: string, type: 'all' | 'last') => {
+    if (!originalData) return;
+    
+    const fields = sectionFieldMap[section];
+    if (!fields) return;
+    
+    const newFormData = { ...formData };
+    
+    if (type === 'all') {
+      // Revert all fields in section to original values
+      fields.forEach(field => {
+        if (field in originalData) {
+          (newFormData as any)[field] = (originalData as any)[field];
+        }
+      });
+    } else if (type === 'last') {
+      // Revert only the last change
+      const sectionState = sectionStates[section];
+      if (sectionState?.changeHistory.length > 0) {
+        const lastChange = sectionState.changeHistory[sectionState.changeHistory.length - 1];
+        const previousValue = sectionState.changeHistory.length > 1 
+          ? sectionState.changeHistory[sectionState.changeHistory.length - 2].value
+          : (originalData as any)[lastChange.field];
+        
+        (newFormData as any)[lastChange.field] = previousValue;
+      }
+    }
+    
+    setFormData(newFormData);
+    
+    // Reset section state
+    setSectionStates(prev => ({
+      ...prev,
+      [section]: { hasChanges: false, changeHistory: [] }
+    }));
   };
 
   // Option grid control component that shows all options at once
@@ -357,9 +438,40 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
               {/* Basic Information */}
               <Card className="border border-gray-200 shadow-sm">
                 <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center text-lg font-semibold text-gray-900">
-                    <FileText className="w-5 h-5 mr-2 text-orange-600" />
-                    Basic Information
+                  <CardTitle className="flex items-center justify-between text-lg font-semibold text-gray-900">
+                    <div className="flex items-center">
+                      <FileText className="w-5 h-5 mr-2 text-orange-600" />
+                      Basic Information
+                      {sectionStates.BASIC_INFO?.hasChanges && (
+                        <Badge variant="secondary" className="ml-2 bg-orange-100 text-orange-800">
+                          Modified
+                        </Badge>
+                      )}
+                    </div>
+                    {sectionStates.BASIC_INFO?.hasChanges && (
+                      <div className="flex items-center space-x-2">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => revertSection('BASIC_INFO', 'last')}
+                          className="text-gray-500 hover:text-gray-700"
+                          title="Revert Last Change"
+                        >
+                          ↶
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => revertSection('BASIC_INFO', 'all')}
+                          className="text-gray-500 hover:text-gray-700"
+                          title="Revert All Changes"
+                        >
+                          ↺
+                        </Button>
+                      </div>
+                    )}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
