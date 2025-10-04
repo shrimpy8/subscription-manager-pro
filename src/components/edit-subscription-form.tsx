@@ -176,11 +176,8 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
   useEffect(() => {
     const loadSubscription = async () => {
       try {
-        console.log('Loading subscription with ID:', subscriptionId);
         const subscriptions = await loadSubscriptions();
-        console.log('Loaded subscriptions:', subscriptions.length);
         const foundSubscription = subscriptions.find(sub => sub.id === subscriptionId);
-        console.log('Found subscription:', foundSubscription);
         
         if (!foundSubscription) {
           console.error('Subscription not found for ID:', subscriptionId);
@@ -224,14 +221,12 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
           notes: foundSubscription.notes || '',
         };
         
-        console.log('Setting form data:', newFormData);
         setFormData(newFormData);
         
         // Focus the name input after a short delay to ensure it's rendered
         setTimeout(() => {
           if (nameInputRef.current) {
             nameInputRef.current.focus();
-            console.log('Focused name input');
           }
         }, 100);
         
@@ -330,9 +325,7 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
 
   // Handle input changes
   const handleInputChange = (field: string, value: unknown) => {
-    console.log('handleInputChange called:', { field, value, currentFormData: formData });
     const newFormData = { ...formData, [field]: value };
-    console.log('newFormData:', newFormData);
     setFormData(newFormData);
     updateSectionStates(newFormData, subscription);
   };
@@ -433,11 +426,6 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
     );
   }
 
-  console.log('Rendering form with subscription:', subscription);
-  console.log('Current formData:', formData);
-  console.log('Form data keys:', Object.keys(formData));
-  console.log('Loading state:', loadingState.isLoading);
-  console.log('Has any changes:', hasAnyChanges);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
@@ -478,13 +466,6 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
               Changes will be saved immediately when you click &quot;Save Changes&quot;. 
               Make sure all information is correct before proceeding.
             </p>
-            {/* DEBUG: Test button */}
-            <button 
-              onClick={() => console.log('TEST BUTTON CLICKED!')}
-              className="mt-2 px-4 py-2 bg-red-500 text-white rounded"
-            >
-              TEST CLICK - Check Console
-            </button>
           </div>
         </div>
 
