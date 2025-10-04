@@ -50,6 +50,43 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
   const [sectionStates, setSectionStates] = useState<Record<string, SectionState>>({});
   const [hasAnyChanges, setHasAnyChanges] = useState(false);
 
+  // Option grid control component that shows all options at once
+  const OptionGridControl = ({ 
+    label, 
+    value, 
+    options, 
+    onChange, 
+    className = "" 
+  }: { 
+    label: string; 
+    value: string; 
+    options: string[]; 
+    onChange: (value: string) => void;
+    className?: string;
+  }) => {
+    return (
+      <div className={`space-y-2 ${className}`}>
+        <Label className="text-sm font-medium text-gray-700">{label}</Label>
+        <div className="grid grid-cols-2 gap-2">
+          {options.map((option) => (
+            <button
+              key={option}
+              type="button"
+              onClick={() => onChange(option)}
+              className={`px-3 py-2 text-sm font-medium rounded-md border transition-colors ${
+                value === option
+                  ? 'bg-orange-500 text-white border-orange-500'
+                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400'
+              }`}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   // Initialize section states
   useEffect(() => {
     const initialSectionStates: Record<string, SectionState> = {};
@@ -107,13 +144,16 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
 
   // Update section states when form data changes
   const updateSectionStates = useCallback((newFormData: Record<string, unknown>, originalData: Subscription | null) => {
+    // Don't update if original data is not loaded yet
+    if (!originalData) return;
+    
     const updatedStates = { ...sectionStates };
     let anyChanges = false;
 
     // Check each section for changes
     Object.entries(SECTIONS).forEach(([sectionKey, sectionId]) => {
       const sectionFields = getSectionFields(sectionKey as SectionKey);
-      const originalSectionData = originalData ? extractSectionData(originalData as unknown as Record<string, unknown>, sectionFields) : {};
+      const originalSectionData = extractSectionData(originalData as unknown as Record<string, unknown>, sectionFields);
       const currentSectionData = extractSectionData(newFormData, sectionFields);
       
       const hasChanges = !isEqual(originalSectionData, currentSectionData);
@@ -494,32 +534,37 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="usageImportance" className="text-sm font-medium text-gray-700">Usage Importance</Label>
-                    <Input
-                      id="usageImportance"
-                      placeholder="High, Medium, Low"
-                      value={(formData.usageImportance as string) || ''}
-                      onChange={(e) => handleInputChange('usageImportance', e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="usageFrequency" className="text-sm font-medium text-gray-700">Usage Frequency</Label>
-                    <Input
-                      id="usageFrequency"
-                      placeholder="Daily, Weekly, Monthly"
-                      value={(formData.usageFrequency as string) || ''}
-                      onChange={(e) => handleInputChange('usageFrequency', e.target.value)}
-                    />
-                  </div>
-                  <div>
+                  <OptionGridControl
+                    label="Usage Importance"
+                    value={(formData.usageImportance as string) || ''}
+                    options={['High', 'Medium', 'Low']}
+                    onChange={(value) => handleInputChange('usageImportance', value)}
+                  />
+
+                  <OptionGridControl
+                    label="Usage Frequency"
+                    value={(formData.usageFrequency as string) || ''}
+                    options={['Daily', 'Weekly', 'Monthly', 'Rarely']}
+                    onChange={(value) => handleInputChange('usageFrequency', value)}
+                  />
+
+                  <div className="flex items-center justify-between">
                     <Label htmlFor="safeForWork" className="text-sm font-medium text-gray-700">Safe for Work</Label>
-                    <Input
-                      id="safeForWork"
-                      placeholder="Yes/No"
-                      value={(formData.safeForWork as string) || ''}
-                      onChange={(e) => handleInputChange('safeForWork', e.target.value)}
-                    />
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        id="safeForWork"
+                        checked={Boolean(formData.safeForWork)}
+                        onChange={(e) => handleInputChange('safeForWork', e.target.checked)}
+                        className="sr-only"
+                      />
+                      <div className={`relative w-20 h-7 rounded-full transition-colors ${formData.safeForWork ? 'bg-orange-500' : 'bg-gray-200'}`}>
+                        <div className={`absolute inset-0 flex items-center justify-center text-xs font-medium transition-colors ${formData.safeForWork ? 'text-white' : 'text-gray-600'}`}>
+                          {formData.safeForWork ? 'YES' : 'NO'}
+                        </div>
+                        <div className={`absolute top-[2px] w-6 h-6 bg-white border border-gray-300 rounded-full transition-transform ${formData.safeForWork ? 'translate-x-[52px]' : 'translate-x-[2px]'}`}></div>
+                      </div>
+                    </label>
                   </div>
                 </CardContent>
               </Card>
