@@ -58,6 +58,8 @@ export default function PremiumDashboard({
   // Local state for UI
   const [selectedSubscription, setSelectedSubscription] = useState<Subscription | null>(null);
   const [subscriptionToDelete, setSubscriptionToDelete] = useState<Subscription | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [filteredSubscriptions, setFilteredSubscriptions] = useState<Subscription[]>([]);
 
   // Destructure loading states
   const { initial, delete: deleteLoading, export: exportLoading } = loadingStates;
@@ -100,8 +102,10 @@ export default function PremiumDashboard({
     return sum;
   }, 0);
 
-  // Note: Subscriptions are now managed by the parent component
-  // This useEffect is kept for potential future initialization logic
+  // Initialize filtered subscriptions
+  useEffect(() => {
+    setFilteredSubscriptions(subscriptions);
+  }, [subscriptions]);
 
   // Handle URL parameters
   useEffect(() => {
