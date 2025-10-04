@@ -15,7 +15,7 @@ import { useToast } from '@/components/ui/toast';
 import { ToastContainer } from '@/components/ui/toast';
 import { getUserFriendlyMessage } from '@/utils/error-messages';
 // import { Switch } from '@/components/ui/switch';
-import { ArrowLeft, FileText, DollarSign, Gift, Globe, Mail, Tag, Calendar, Key, Shield, Plus, Trash2, Undo2, RotateCcw } from 'lucide-react';
+import { ArrowLeft, FileText, DollarSign, Gift, Globe, Mail, Tag, Calendar, Key, Shield, Plus, Trash2, RotateCcw } from 'lucide-react';
 import { SubscriptionCategory } from '@/types/subscription';
 import { Subscription } from '@/types/subscription';
 import { loadSubscriptions, saveSubscriptions } from '@/lib/subscription-persistence';
@@ -289,17 +289,7 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
               type="button"
               variant="ghost"
               size="sm"
-              onClick={() => revertSection(sectionKey, 'last')}
-              className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 p-2"
-              title="Revert Last Change"
-            >
-              <Undo2 className="w-5 h-5" />
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => revertSection(sectionKey, 'all')}
+              onClick={() => revertSection(sectionKey)}
               className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 p-2"
               title="Revert All Changes"
             >
@@ -311,7 +301,7 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
     );
   };
 
-  const revertSection = (section: string, type: 'all' | 'last') => {
+  const revertSection = (section: string) => {
     if (!originalData) return;
     
     const fields = sectionFieldMap[section];
@@ -319,25 +309,12 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
     
     const newFormData = { ...formData };
     
-    if (type === 'all') {
-      // Revert all fields in section to original values
-      fields.forEach(field => {
-        if (field in originalData) {
-          (newFormData as any)[field] = (originalData as any)[field];
-        }
-      });
-    } else if (type === 'last') {
-      // Revert only the last change
-      const sectionState = sectionStates[section];
-      if (sectionState?.changeHistory.length > 0) {
-        const lastChange = sectionState.changeHistory[sectionState.changeHistory.length - 1];
-        const previousValue = sectionState.changeHistory.length > 1 
-          ? sectionState.changeHistory[sectionState.changeHistory.length - 2].value
-          : (originalData as any)[lastChange.field];
-        
-        (newFormData as any)[lastChange.field] = previousValue;
+    // Revert all fields in section to original values
+    fields.forEach(field => {
+      if (field in originalData) {
+        (newFormData as any)[field] = (originalData as any)[field];
       }
-    }
+    });
     
     setFormData(newFormData);
     
