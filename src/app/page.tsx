@@ -26,6 +26,82 @@ import { getErrorMessage, getUserFriendlyMessage } from '@/utils/error-messages'
 
 export default function HomePage() {
   const toast = useToast();
+
+  // Subscription icon function - same as in subscriptions-table.tsx
+  const getSubscriptionIcon = (subscription: Subscription) => {
+    // Use Google's favicon service for ALL subscriptions with URLs, just like the AI tools browser
+    if (subscription.url) {
+      try {
+        const domain = new URL(subscription.url).hostname;
+        const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+        
+        return (
+          <img 
+            src={faviconUrl} 
+            alt={subscription.name}
+            className="w-10 h-10 rounded-lg object-cover"
+            onError={(e) => {
+              // Fallback to fallback icon or first letter
+              const target = e.target as HTMLImageElement;
+              target.style.display = 'none';
+              const parent = target.parentElement;
+              if (parent) {
+                if (subscription.fallbackIcon) {
+                  parent.innerHTML = `<div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center text-lg">${subscription.fallbackIcon}</div>`;
+                } else {
+                  parent.innerHTML = `<div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center"><span class="text-orange-600 font-semibold text-sm">${subscription.name.charAt(0)}</span></div>`;
+                }
+              }
+            }}
+          />
+        );
+      } catch {
+          // If URL parsing fails, fall through to other methods
+        }
+      }
+
+      // For other subscriptions, try to use logoUrl if available
+      if (subscription.logoUrl) {
+        return (
+          <img 
+            src={subscription.logoUrl} 
+            alt={subscription.name}
+            className="w-10 h-10 rounded-lg object-cover"
+            onError={(e) => {
+              // Fallback to fallback icon or first letter
+              const target = e.target as HTMLImageElement;
+              target.style.display = 'none';
+              const parent = target.parentElement;
+              if (parent) {
+                if (subscription.fallbackIcon) {
+                  parent.innerHTML = `<div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center text-lg">${subscription.fallbackIcon}</div>`;
+                } else {
+                  parent.innerHTML = `<div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center"><span class="text-orange-600 font-semibold text-sm">${subscription.name.charAt(0)}</span></div>`;
+                }
+              }
+            }}
+          />
+        );
+      }
+
+      // Use fallback icon if available
+      if (subscription.fallbackIcon) {
+        return (
+          <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center text-lg">
+            {subscription.fallbackIcon}
+          </div>
+        );
+      }
+
+      // Default to first letter
+      return (
+        <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+          <span className="text-orange-600 font-semibold text-sm">
+            {subscription.name.charAt(0)}
+          </span>
+        </div>
+      );
+    };
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [filters, setFilters] = useState<SubscriptionFilters>({
     search: '',
@@ -398,11 +474,7 @@ export default function HomePage() {
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-                          <span className="text-orange-600 font-semibold text-sm">
-                            {subscription.name.charAt(0)}
-                          </span>
-                        </div>
+                        {getSubscriptionIcon(subscription)}
                         <div>
                           <CardTitle className="text-lg">{subscription.name}</CardTitle>
                           <p className="text-sm text-gray-600">{subscription.plan}</p>
