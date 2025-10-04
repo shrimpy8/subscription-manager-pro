@@ -185,14 +185,38 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
 
         setSubscription(foundSubscription);
         
-        // Initialize form data
+        // Initialize form data with all required fields
         const newFormData = {
           name: foundSubscription.name || '',
           category: foundSubscription.category || 'AI Tools',
           subcategory: foundSubscription.subcategory || '',
           description: foundSubscription.description || '',
           url: foundSubscription.url || '',
-          // Add all other fields...
+          // Key Management
+          secretKey: (foundSubscription as unknown as Record<string, unknown>).secretKey as string || '',
+          apiAccessKeys: (foundSubscription as unknown as Record<string, unknown>).apiAccessKeys as string || '',
+          // Usage
+          usageImportance: (foundSubscription as unknown as Record<string, unknown>).usageImportance as string || 'Medium',
+          usageFrequency: foundSubscription.usageFrequency || 'Monthly',
+          safeForWork: (foundSubscription as unknown as Record<string, unknown>).safeForWork as boolean || false,
+          // Billing
+          plan: (foundSubscription as unknown as Record<string, unknown>).plan as string || 'Free',
+          cost: foundSubscription.cost?.toString() || '0',
+          currency: foundSubscription.currency || 'USD',
+          billingCycle: foundSubscription.billingCycle || 'Monthly',
+          startDate: foundSubscription.startDate ? foundSubscription.startDate.toISOString().split('T')[0] : '',
+          renewalDate: foundSubscription.renewalDate ? foundSubscription.renewalDate.toISOString().split('T')[0] : '',
+          status: foundSubscription.status || 'active',
+          accountEmailInUse: (foundSubscription as unknown as Record<string, unknown>).accountEmailInUse as string || '',
+          // Promo
+          latestPromotionCode: (foundSubscription as unknown as Record<string, unknown>).latestPromotionCode as string || '',
+          previouslyUsedPromotionCode: (foundSubscription as unknown as Record<string, unknown>).previouslyUsedPromotionCode as string || '',
+          // Miscellaneous
+          chinaRegionOnly: (foundSubscription as unknown as Record<string, unknown>).chinaRegionOnly as boolean || false,
+          logoUrl: (foundSubscription as unknown as Record<string, unknown>).logoUrl as string || '',
+          fallbackIcon: (foundSubscription as unknown as Record<string, unknown>).fallbackIcon as string || '',
+          // Notes
+          notes: foundSubscription.notes || '',
         };
         
         setFormData(newFormData);
