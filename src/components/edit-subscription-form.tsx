@@ -261,7 +261,7 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
 
   // Update section states when form data changes
   const updateSectionStates = useCallback((newFormData: Record<string, unknown>, originalData: Subscription | null) => {
-    console.log('updateSectionStates called');
+    console.log('updateSectionStates called with:', { newFormData, originalData: !!originalData });
     // Don't update if original data is not loaded yet
     if (!originalData) return;
     
@@ -326,8 +326,9 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
 
   // Handle input changes
   const handleInputChange = (field: string, value: unknown) => {
-    console.log('handleInputChange called:', { field, value });
+    console.log('handleInputChange called:', { field, value, currentFormData: formData });
     const newFormData = { ...formData, [field]: value };
+    console.log('newFormData after update:', newFormData);
     setFormData(newFormData);
     updateSectionStates(newFormData, subscription);
   };
@@ -468,6 +469,12 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
               Changes will be saved immediately when you click &quot;Save Changes&quot;. 
               Make sure all information is correct before proceeding.
             </p>
+            <button 
+              onClick={() => console.log('Current formData:', formData)}
+              className="mt-2 px-4 py-2 bg-blue-500 text-white rounded text-sm"
+            >
+              DEBUG: Show Current Form Data
+            </button>
           </div>
         </div>
 
