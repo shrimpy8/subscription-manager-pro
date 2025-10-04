@@ -130,15 +130,26 @@ export default function HomePage() {
   const [selectedSubscription, setSelectedSubscription] = useState<Subscription | null>(null);
   const [subscriptionToDelete, setSubscriptionToDelete] = useState<Subscription | null>(null);
   
-  // Handle URL parameters to set the current tab
+  // Handle URL parameters to set the current tab and view mode
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
       const tab = urlParams.get('tab');
+      const view = urlParams.get('view');
+      
       if (tab === 'ai-tools') {
         setCurrentTab('ai-tools');
       } else {
         setCurrentTab('subscriptions');
+      }
+      
+      // Set view mode based on URL parameter
+      if (view === 'list') {
+        setViewMode(prev => ({ ...prev, type: 'list' }));
+      } else if (view === 'grid') {
+        setViewMode(prev => ({ ...prev, type: 'grid' }));
+      } else if (view === 'analytics') {
+        setViewMode(prev => ({ ...prev, type: 'analytics' }));
       }
     }
   }, []);

@@ -432,28 +432,23 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
 
   const handleSave = async () => {
     try {
-      console.log('Save Changes clicked, form data:', formData);
-      
       // Custom validation for Update Subscription form
       const validation = validateUpdateSubscription(formData);
       if (!validation.isValid) {
-        console.log('Validation failed:', validation);
         const errorMessage = getUserFriendlyMessage('VALIDATION_ERROR');
         toast.error(errorMessage);
         return;
       }
 
-      console.log('Validation passed, loading subscriptions...');
       const subscriptions = await loadSubscriptions();
       const updatedSubscriptions = subscriptions.map(sub => 
         sub.id === subscriptionId ? { ...sub, ...formData } : sub
       );
       
-      console.log('Saving updated subscriptions:', updatedSubscriptions.length);
       await saveSubscriptions(updatedSubscriptions);
-      console.log('Save successful, showing success message and redirecting...');
       
       toast.success('Subscription updated successfully!');
+      // Navigate to list view specifically
       router.push('/?view=list');
     } catch (error) {
       console.error('Error saving subscription:', error);
