@@ -104,6 +104,74 @@ const STATUS_OPTIONS = ['Active', 'Paused', 'Canceled', 'Trial'];
 const USAGE_FREQUENCY = ['Daily', 'Weekly', 'Monthly', 'Occasionally', 'Rarely'];
 const USAGE_IMPORTANCE = ['Critical', 'High', 'Medium', 'Low'];
 
+// Custom validation for Update Subscription form
+const validateUpdateSubscription = (data: UpdateSubscriptionFormData) => {
+  const errors: Record<string, string[]> = {};
+
+  // Required fields
+  if (!data.name || data.name.trim() === '') {
+    errors.name = ['Tool name is required'];
+  }
+  
+  if (!data.category) {
+    errors.category = ['Category is required'];
+  }
+  
+  if (!data.plan) {
+    errors.plan = ['Plan is required'];
+  }
+  
+  if (data.cost === undefined || data.cost === null) {
+    errors.cost = ['Cost is required'];
+  }
+  
+  if (data.cost < 0) {
+    errors.cost = ['Cost cannot be negative'];
+  }
+  
+  if (!data.currency) {
+    errors.currency = ['Currency is required'];
+  }
+  
+  if (!data.billingCycle) {
+    errors.billingCycle = ['Billing cycle is required'];
+  }
+  
+  if (!data.status) {
+    errors.status = ['Status is required'];
+  }
+  
+  if (!data.startDate) {
+    errors.startDate = ['Start date is required'];
+  }
+  
+  if (!data.renewalDate) {
+    errors.renewalDate = ['Renewal date is required'];
+  }
+
+  // Email validation (if provided)
+  if (data.accountEmailInUse && data.accountEmailInUse.trim() !== '') {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(data.accountEmailInUse)) {
+      errors.accountEmailInUse = ['Invalid email format'];
+    }
+  }
+
+  // URL validation (if provided)
+  if (data.url && data.url.trim() !== '') {
+    try {
+      new URL(data.url);
+    } catch {
+      errors.url = ['Invalid URL format'];
+    }
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  };
+};
+
 export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscriptionFormProps) {
   const router = useRouter();
   const toast = useToast();
@@ -366,8 +434,8 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
     try {
       console.log('Save Changes clicked, form data:', formData);
       
-      // Validate form data
-      const validation = validateSubscription(formData);
+      // Custom validation for Update Subscription form
+      const validation = validateUpdateSubscription(formData);
       if (!validation.isValid) {
         console.log('Validation failed:', validation);
         const errorMessage = getUserFriendlyMessage('VALIDATION_ERROR');
