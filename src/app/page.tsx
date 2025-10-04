@@ -531,7 +531,6 @@ export default function HomePage() {
                   renewalDate: getDefaultRenewalDate()
                 };
                 const updatedSubscriptions = [...subscriptions, duplicated];
-                console.log('Duplicating subscription:', { original: subscription, duplicated, updatedCount: updatedSubscriptions.length });
                 
                 // Update state and force re-render
                 setSubscriptions(updatedSubscriptions);
