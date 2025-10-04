@@ -15,16 +15,16 @@ export interface SubscriptionData {
  */
 export async function loadSubscriptions(): Promise<Subscription[]> {
   try {
-    // First try API
-    const apiResponse = await fetch('/api/subscriptions');
-    if (apiResponse.ok) {
-      const apiData: SubscriptionApiResponse = await apiResponse.json();
-      if (apiData.success && apiData.data.length > 0) {
-        return ensureDateObjects(apiData.data);
-      }
-    }
+    // Use localStorage directly (API calls disabled for now)
+    // const apiResponse = await fetch('/api/subscriptions');
+    // if (apiResponse.ok) {
+    //   const apiData: SubscriptionApiResponse = await apiResponse.json();
+    //   if (apiData.success && apiData.data.length > 0) {
+    //     return ensureDateObjects(apiData.data);
+    //   }
+    // }
 
-    // Fallback to localStorage
+    // Use localStorage
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
@@ -64,10 +64,10 @@ export async function loadSubscriptions(): Promise<Subscription[]> {
  */
 export async function saveSubscriptions(subscriptions: Subscription[]): Promise<void> {
   try {
-    // Save to API first
-    await saveSubscriptionsToAPI(subscriptions);
+    // Use localStorage directly (API calls disabled for now)
+    // await saveSubscriptionsToAPI(subscriptions);
     
-    // Also save to localStorage as backup
+    // Save to localStorage
     if (typeof window !== 'undefined') {
       const data: SubscriptionData = {
         subscriptions,
