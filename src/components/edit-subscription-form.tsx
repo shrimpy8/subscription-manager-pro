@@ -137,6 +137,26 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
   const BILLING_CYCLES = ['Monthly', 'Yearly', 'One-time', 'Pay-per-use'];
   const CURRENCIES = ['USD', 'EUR', 'GBP', 'CAD', 'AUD', 'JPY'];
 
+  // Normalize section data for comparison
+  const normalizeSectionData = (data: Record<string, unknown>) => {
+    const normalized: Record<string, unknown> = {};
+    Object.entries(data).forEach(([key, value]) => {
+      // Convert all values to strings for consistent comparison
+      if (value === null || value === undefined) {
+        normalized[key] = '';
+      } else if (typeof value === 'boolean') {
+        normalized[key] = value;
+      } else if (typeof value === 'number') {
+        normalized[key] = value.toString();
+      } else if (value instanceof Date) {
+        normalized[key] = value.toISOString().split('T')[0];
+      } else {
+        normalized[key] = String(value);
+      }
+    });
+    return normalized;
+  };
+
   // Initialize section states
   useEffect(() => {
     const initialSectionStates: Record<string, SectionState> = {};
@@ -177,8 +197,22 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
         
         setFormData(newFormData);
         
-        // Initialize section states with original data
-        updateSectionStates(newFormData, foundSubscription);
+        // Initialize section states without triggering change detection
+        const initialSectionStates: Record<string, SectionState> = {};
+        Object.entries(SECTIONS).forEach(([sectionKey, sectionId]) => {
+          const sectionFields = getSectionFields(sectionKey as SectionKey);
+          const originalSectionData = extractSectionData(foundSubscription as unknown as Record<string, unknown>, sectionFields);
+          const normalizedOriginal = normalizeSectionData(originalSectionData);
+          
+          initialSectionStates[sectionId] = {
+            hasChanges: false,
+            originalData: normalizedOriginal,
+            currentData: normalizedOriginal,
+            changeHistory: [normalizedOriginal]
+          };
+        });
+        setSectionStates(initialSectionStates);
+        setHasAnyChanges(false);
       } catch (error) {
         handleSubscriptionError(
           error as Error,
@@ -206,13 +240,17 @@ export default function EditSubscriptionForm({ subscriptionId }: EditSubscriptio
       const originalSectionData = extractSectionData(originalData as unknown as Record<string, unknown>, sectionFields);
       const currentSectionData = extractSectionData(newFormData, sectionFields);
       
-      const hasChanges = !isEqual(originalSectionData, currentSectionData);
+      // Normalize the data for comparison - handle different data types
+      const normalizedOriginal = normalizeSectionData(originalSectionData);
+      const normalizedCurrent = normalizeSectionData(currentSectionData);
+      
+      const hasChanges = !isEqual(normalizedOriginal, normalizedCurrent);
       
       updatedStates[sectionId] = {
         hasChanges,
-        originalData: originalSectionData,
-        currentData: currentSectionData,
-        changeHistory: hasChanges ? [...(updatedStates[sectionId]?.changeHistory || []), currentSectionData] : []
+        originalData: normalizedOriginal,
+        currentData: normalizedCurrent,
+        changeHistory: hasChanges ? [...(updatedStates[sectionId]?.changeHistory || []), normalizedCurrent] : []
       };
       
       if (hasChanges) anyChanges = true;
