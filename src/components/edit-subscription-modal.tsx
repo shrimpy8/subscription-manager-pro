@@ -127,7 +127,7 @@ export default function EditSubscriptionModal({
         <DialogHeader>
           <div className="flex items-center justify-between">
             <DialogTitle className="text-lg font-semibold">
-              Edit Subscription
+              Update Subscription
             </DialogTitle>
             <Button variant="ghost" size="sm" onClick={onClose}>
               <X className="w-4 h-4" />

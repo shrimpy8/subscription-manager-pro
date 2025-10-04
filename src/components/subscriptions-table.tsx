@@ -322,7 +322,7 @@ const SubscriptionsTable = memo(function SubscriptionsTable({
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => onEdit?.(subscription)}>
                         <Edit className="mr-2 h-4 w-4" />
-                        Edit Subscription
+                        Update Subscription
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => onDuplicate?.(subscription)}>
                         <Copy className="mr-2 h-4 w-4" />
