@@ -520,6 +520,7 @@ export default function HomePage() {
                   renewalDate: getDefaultRenewalDate()
                 };
                 const updatedSubscriptions = [...subscriptions, duplicated];
+                console.log('Duplicating subscription:', { original: subscription, duplicated, updatedCount: updatedSubscriptions.length });
                 setSubscriptions(updatedSubscriptions);
                 save.setLoading(true, 'Saving subscription...');
                 try {
