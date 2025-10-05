@@ -233,8 +233,8 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
       <div className="space-y-4">
         {/* Enhanced Table Header */}
         <EnhancedCard variant="outlined" className="overflow-hidden">
-          <div className="grid grid-cols-12 gap-6 px-8 py-4 bg-gradient-to-r from-orange-50 to-amber-50 border-b border-orange-200">
-            <div className="col-span-5">
+          <div className="grid grid-cols-12 gap-8 px-12 py-4 bg-gradient-to-r from-orange-50 to-amber-50 border-b border-orange-200">
+            <div className="col-span-6">
               <SortButton field="name">
                 <span className="font-semibold text-orange-800">Subscription</span>
               </SortButton>
@@ -259,20 +259,17 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
                 <span className="font-semibold text-orange-800">Status</span>
               </SortButton>
             </div>
-            <div className="col-span-1">
-              <span className="font-semibold text-orange-800">Actions</span>
-            </div>
           </div>
 
           {/* Enhanced Table Body */}
           <div className="divide-y divide-orange-100">
             {sortedSubscriptions.map((subscription) => (
-              <div key={subscription.id} className="grid grid-cols-12 gap-6 px-8 py-4 hover:bg-orange-50/50 transition-colors duration-200">
+              <div key={subscription.id} className="grid grid-cols-12 gap-8 px-12 py-4 hover:bg-orange-50/50 transition-colors duration-200">
                 {/* Subscription Info */}
-                <div className="col-span-5 flex items-center space-x-4">
+                <div className="col-span-6 flex items-center space-x-6">
                   {getSubscriptionIcon(subscription)}
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center space-x-2 mb-1">
+                    <div className="flex items-center space-x-3 mb-2">
                       <h3 className="text-sm font-semibold text-gray-900">
                         {subscription.name}
                       </h3>
@@ -323,7 +320,7 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
                 </div>
 
                 {/* Actions */}
-                <div className="col-span-1 flex items-center justify-end">
+                <div className="col-span-0 flex items-center justify-end">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
