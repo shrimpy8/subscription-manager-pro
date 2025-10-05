@@ -239,22 +239,22 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
                 <span className="font-semibold text-orange-800">Subscription</span>
               </SortButton>
             </div>
-            <div className="w-1/6 pr-4 pl-4">
+            <div className="w-1/6 pr-4 pl-4 flex justify-start">
               <SortButton field="plan">
                 <span className="font-semibold text-orange-800">Plan</span>
               </SortButton>
             </div>
-            <div className="w-1/6 pr-4 pl-4">
+            <div className="w-1/6 pr-4 pl-4 flex justify-start">
               <SortButton field="cost">
                 <span className="font-semibold text-orange-800">Cost</span>
               </SortButton>
             </div>
-            <div className="w-1/12 pr-2 pl-4">
+            <div className="w-1/12 pr-2 pl-4 flex justify-start">
               <SortButton field="billingCycle">
                 <span className="font-semibold text-orange-800">Billing</span>
               </SortButton>
             </div>
-            <div className="w-1/12 pl-4">
+            <div className="w-1/12 pl-4 flex justify-start">
               <SortButton field="status">
                 <span className="font-semibold text-orange-800">Status</span>
               </SortButton>
@@ -269,7 +269,7 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
                 <div className="w-1/2 pr-8 pl-2 flex items-center space-x-8">
                   {getSubscriptionIcon(subscription)}
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center space-x-4 mb-2">
+                    <div className="flex items-center justify-between mb-2">
                       <h3 className="text-sm font-semibold text-gray-900">
                         {subscription.name}
                       </h3>
@@ -289,35 +289,35 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
                   </div>
                 </div>
 
-                {/* Plan */}
-                <div className="w-1/6 pr-4 pl-4 flex items-center">
-                  <span className="text-sm text-gray-900">{subscription.plan}</span>
-                </div>
+                    {/* Plan */}
+                    <div className="w-1/6 pr-4 pl-4 flex items-center justify-start">
+                      <span className="text-sm text-gray-900">{subscription.plan}</span>
+                    </div>
 
-                {/* Cost */}
-                <div className="w-1/6 pr-4 pl-4 flex items-center">
-                  <div className="flex items-center space-x-1">
-                    <DollarSign className="w-3 h-3 text-green-600" />
-                    <span className="text-sm font-semibold text-gray-900">
-                      {formatCurrency(subscription.cost, subscription.currency)}
-                    </span>
-                  </div>
-                </div>
+                    {/* Cost */}
+                    <div className="w-1/6 pr-4 pl-4 flex items-center justify-start">
+                      <div className="flex items-center space-x-1">
+                        <DollarSign className="w-3 h-3 text-green-600" />
+                        <span className="text-sm font-semibold text-gray-900">
+                          {formatCurrency(subscription.cost, subscription.currency)}
+                        </span>
+                      </div>
+                    </div>
 
-                {/* Billing Cycle */}
-                <div className="w-1/12 pr-2 pl-4 flex items-center">
-                  <div className="flex items-center space-x-1">
-                    <Clock className="w-3 h-3 text-blue-600" />
-                    <span className="text-sm text-gray-600">{subscription.billingCycle}</span>
-                  </div>
-                </div>
+                    {/* Billing Cycle */}
+                    <div className="w-1/12 pr-2 pl-4 flex items-center justify-start">
+                      <div className="flex items-center space-x-1">
+                        <Clock className="w-3 h-3 text-blue-600" />
+                        <span className="text-sm text-gray-600">{subscription.billingCycle}</span>
+                      </div>
+                    </div>
 
-                {/* Status */}
-                <div className="w-1/12 pl-4 flex items-center">
-                  <Badge className={getStatusColor(subscription.status)}>
-                    {subscription.status}
-                  </Badge>
-                </div>
+                    {/* Status */}
+                    <div className="w-1/12 pl-4 flex items-center justify-start">
+                      <Badge className={getStatusColor(subscription.status)}>
+                        {subscription.status}
+                      </Badge>
+                    </div>
 
                 {/* Actions */}
                 <div className="ml-4 flex items-center justify-end">

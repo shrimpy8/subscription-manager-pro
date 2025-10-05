@@ -263,7 +263,7 @@ export default function PremiumDashboard({
             <EnhancedCard variant="elevated" padding="lg">
               <h3 className="text-h3 text-neutral-900 mb-4">Quick Actions</h3>
               <div className="space-y-3">
-                <PremiumButton variant="gradient" className="w-full h-12 text-base font-semibold">
+                <PremiumButton variant="gradient" className="w-full h-12 text-base font-semibold text-white">
                   <Plus className="h-5 w-5 mr-3" />
                   Add New Subscription
                 </PremiumButton>
