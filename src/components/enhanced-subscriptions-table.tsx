@@ -239,24 +239,24 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
                 <span className="font-semibold text-orange-800">Subscription</span>
               </SortButton>
             </div>
-            <div className="w-1/6 pr-4 pl-4">
-              <SortButton field="plan" className="justify-start">
-                <span className="font-semibold text-orange-800">Plan</span>
+            <div className="w-1/6 pr-4 pl-4 text-left">
+              <SortButton field="plan" className="justify-start w-full text-left">
+                <span className="font-semibold text-orange-800 text-left">Plan</span>
               </SortButton>
             </div>
-            <div className="w-1/6 pr-4 pl-4">
-              <SortButton field="cost" className="justify-start">
-                <span className="font-semibold text-orange-800">Cost</span>
+            <div className="w-1/6 pr-4 pl-4 text-left">
+              <SortButton field="cost" className="justify-start w-full text-left">
+                <span className="font-semibold text-orange-800 text-left">Cost</span>
               </SortButton>
             </div>
-            <div className="w-1/12 pr-2 pl-4">
-              <SortButton field="billingCycle" className="justify-start">
-                <span className="font-semibold text-orange-800">Billing</span>
+            <div className="w-1/12 pr-2 pl-4 text-left">
+              <SortButton field="billingCycle" className="justify-start w-full text-left">
+                <span className="font-semibold text-orange-800 text-left">Billing</span>
               </SortButton>
             </div>
-            <div className="w-1/12 pl-4">
-              <SortButton field="status" className="justify-start">
-                <span className="font-semibold text-orange-800">Status</span>
+            <div className="w-1/12 pl-4 text-left">
+              <SortButton field="status" className="justify-start w-full text-left">
+                <span className="font-semibold text-orange-800 text-left">Status</span>
               </SortButton>
             </div>
           </div>
@@ -269,11 +269,11 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
                 <div className="w-1/2 pr-8 pl-2 flex items-center space-x-8">
                   {getSubscriptionIcon(subscription)}
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-sm font-semibold text-gray-900">
+                    <div className="flex items-center mb-2">
+                      <h3 className="text-sm font-semibold text-gray-900 flex-1">
                         {subscription.name}
                       </h3>
-                      <Badge className={getPriorityColor(subscription.priority)}>
+                      <Badge className={`${getPriorityColor(subscription.priority)} ml-2`}>
                         {subscription.priority}
                       </Badge>
                     </div>
@@ -290,12 +290,12 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
                 </div>
 
                     {/* Plan */}
-                    <div className="w-1/6 pr-4 pl-4 flex items-center justify-start">
+                    <div className="w-1/6 pr-4 pl-4 text-left">
                       <span className="text-sm text-gray-900">{subscription.plan}</span>
                     </div>
 
                     {/* Cost */}
-                    <div className="w-1/6 pr-4 pl-4 flex items-center justify-start">
+                    <div className="w-1/6 pr-4 pl-4 text-left">
                       <div className="flex items-center space-x-1">
                         <DollarSign className="w-3 h-3 text-green-600" />
                         <span className="text-sm font-semibold text-gray-900">
@@ -305,7 +305,7 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
                     </div>
 
                     {/* Billing Cycle */}
-                    <div className="w-1/12 pr-2 pl-4 flex items-center justify-start">
+                    <div className="w-1/12 pr-2 pl-4 text-left">
                       <div className="flex items-center space-x-1">
                         <Clock className="w-3 h-3 text-blue-600" />
                         <span className="text-sm text-gray-600">{subscription.billingCycle}</span>
@@ -313,7 +313,7 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
                     </div>
 
                     {/* Status */}
-                    <div className="w-1/12 pl-4 flex items-center justify-start">
+                    <div className="w-1/12 pl-4 text-left">
                       <Badge className={getStatusColor(subscription.status)}>
                         {subscription.status}
                       </Badge>
