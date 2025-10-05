@@ -233,28 +233,28 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
       <div className="space-y-4">
         {/* Enhanced Table Header */}
         <EnhancedCard variant="outlined" className="overflow-hidden">
-          <div className="grid grid-cols-12 gap-8 px-12 py-4 bg-gradient-to-r from-orange-50 to-amber-50 border-b border-orange-200">
-            <div className="col-span-6">
+          <div className="flex items-center px-16 py-4 bg-gradient-to-r from-orange-50 to-amber-50 border-b border-orange-200">
+            <div className="w-1/2 pr-8">
               <SortButton field="name">
                 <span className="font-semibold text-orange-800">Subscription</span>
               </SortButton>
             </div>
-            <div className="col-span-2">
+            <div className="w-1/6 pr-4">
               <SortButton field="plan">
                 <span className="font-semibold text-orange-800">Plan</span>
               </SortButton>
             </div>
-            <div className="col-span-2">
+            <div className="w-1/6 pr-4">
               <SortButton field="cost">
                 <span className="font-semibold text-orange-800">Cost</span>
               </SortButton>
             </div>
-            <div className="col-span-1">
+            <div className="w-1/12 pr-2">
               <SortButton field="billingCycle">
                 <span className="font-semibold text-orange-800">Billing</span>
               </SortButton>
             </div>
-            <div className="col-span-1">
+            <div className="w-1/12">
               <SortButton field="status">
                 <span className="font-semibold text-orange-800">Status</span>
               </SortButton>
@@ -264,12 +264,12 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
           {/* Enhanced Table Body */}
           <div className="divide-y divide-orange-100">
             {sortedSubscriptions.map((subscription) => (
-              <div key={subscription.id} className="grid grid-cols-12 gap-8 px-12 py-4 hover:bg-orange-50/50 transition-colors duration-200">
+              <div key={subscription.id} className="flex items-center px-16 py-4 hover:bg-orange-50/50 transition-colors duration-200">
                 {/* Subscription Info */}
-                <div className="col-span-6 flex items-center space-x-6">
+                <div className="w-1/2 pr-8 flex items-center space-x-8">
                   {getSubscriptionIcon(subscription)}
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center space-x-3 mb-2">
+                    <div className="flex items-center space-x-4 mb-2">
                       <h3 className="text-sm font-semibold text-gray-900">
                         {subscription.name}
                       </h3>
@@ -290,12 +290,12 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
                 </div>
 
                 {/* Plan */}
-                <div className="col-span-2 flex items-center">
+                <div className="w-1/6 pr-4 flex items-center">
                   <span className="text-sm text-gray-900">{subscription.plan}</span>
                 </div>
 
                 {/* Cost */}
-                <div className="col-span-2 flex items-center">
+                <div className="w-1/6 pr-4 flex items-center">
                   <div className="flex items-center space-x-1">
                     <DollarSign className="w-3 h-3 text-green-600" />
                     <span className="text-sm font-semibold text-gray-900">
@@ -305,7 +305,7 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
                 </div>
 
                 {/* Billing Cycle */}
-                <div className="col-span-1 flex items-center">
+                <div className="w-1/12 pr-2 flex items-center">
                   <div className="flex items-center space-x-1">
                     <Clock className="w-3 h-3 text-blue-600" />
                     <span className="text-sm text-gray-600">{subscription.billingCycle}</span>
@@ -313,14 +313,14 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
                 </div>
 
                 {/* Status */}
-                <div className="col-span-1 flex items-center">
+                <div className="w-1/12 flex items-center">
                   <Badge className={getStatusColor(subscription.status)}>
                     {subscription.status}
                   </Badge>
                 </div>
 
                 {/* Actions */}
-                <div className="col-span-0 flex items-center justify-end">
+                <div className="ml-4 flex items-center justify-end">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
