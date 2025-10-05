@@ -230,7 +230,7 @@ export default function PremiumDashboard({
                   {filteredSubscriptions.map((subscription) => (
                     <EnhancedCard key={subscription.id} variant="default" hover={true}>
                       <div className="p-4">
-                        <div className="flex items-start space-x-3 mb-3">
+                        <div className="flex items-start space-x-3 -mt-2 mb-3">
                           <div className="flex-shrink-0">
                             {getSubscriptionIcon(subscription)}
                           </div>
