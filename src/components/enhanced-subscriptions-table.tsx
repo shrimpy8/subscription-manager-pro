@@ -108,13 +108,13 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
     });
   }, [subscriptions, sortField, sortOrder]);
 
-  const SortButton = memo(function SortButton({ field, children }: { field: SortField; children: React.ReactNode }) {
+  const SortButton = memo(function SortButton({ field, children, className }: { field: SortField; children: React.ReactNode; className?: string }) {
     return (
       <Button
         variant="ghost"
         size="sm"
         onClick={() => handleSort(field)}
-        className="h-8 px-2 lg:px-3 hover:bg-orange-50"
+        className={`h-8 px-2 lg:px-3 hover:bg-orange-50 ${className || ''}`}
       >
         <span className="sr-only">
           Sort by {field} in {sortField === field ? (sortOrder === 'asc' ? 'descending' : 'ascending') : 'ascending'} order
@@ -239,23 +239,23 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
                 <span className="font-semibold text-orange-800">Subscription</span>
               </SortButton>
             </div>
-            <div className="w-1/6 pr-4 pl-4 flex justify-start">
-              <SortButton field="plan">
+            <div className="w-1/6 pr-4 pl-4">
+              <SortButton field="plan" className="justify-start">
                 <span className="font-semibold text-orange-800">Plan</span>
               </SortButton>
             </div>
-            <div className="w-1/6 pr-4 pl-4 flex justify-start">
-              <SortButton field="cost">
+            <div className="w-1/6 pr-4 pl-4">
+              <SortButton field="cost" className="justify-start">
                 <span className="font-semibold text-orange-800">Cost</span>
               </SortButton>
             </div>
-            <div className="w-1/12 pr-2 pl-4 flex justify-start">
-              <SortButton field="billingCycle">
+            <div className="w-1/12 pr-2 pl-4">
+              <SortButton field="billingCycle" className="justify-start">
                 <span className="font-semibold text-orange-800">Billing</span>
               </SortButton>
             </div>
-            <div className="w-1/12 pl-4 flex justify-start">
-              <SortButton field="status">
+            <div className="w-1/12 pl-4">
+              <SortButton field="status" className="justify-start">
                 <span className="font-semibold text-orange-800">Status</span>
               </SortButton>
             </div>
