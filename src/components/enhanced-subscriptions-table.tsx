@@ -233,8 +233,8 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
       <div className="space-y-4">
         {/* Enhanced Table Header */}
         <EnhancedCard variant="outlined" className="overflow-hidden">
-          <div className="flex items-center px-16 py-4 bg-gradient-to-r from-orange-50 to-amber-50 border-b border-orange-200">
-            <div className="w-1/2 pr-8 pl-8">
+          <div className="flex items-center px-4 py-4 bg-gradient-to-r from-orange-50 to-amber-50 border-b border-orange-200">
+            <div className="w-1/2 pr-8 pl-2">
               <SortButton field="name">
                 <span className="font-semibold text-orange-800">Subscription</span>
               </SortButton>
@@ -264,9 +264,9 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
           {/* Enhanced Table Body */}
           <div className="divide-y divide-orange-100">
             {sortedSubscriptions.map((subscription) => (
-              <div key={subscription.id} className="flex items-center px-16 py-4 hover:bg-orange-50/50 transition-colors duration-200">
+              <div key={subscription.id} className="flex items-center px-4 py-4 hover:bg-orange-50/50 transition-colors duration-200">
                 {/* Subscription Info */}
-                <div className="w-1/2 pr-8 pl-8 flex items-center space-x-8">
+                <div className="w-1/2 pr-8 pl-2 flex items-center space-x-8">
                   {getSubscriptionIcon(subscription)}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center space-x-4 mb-2">
