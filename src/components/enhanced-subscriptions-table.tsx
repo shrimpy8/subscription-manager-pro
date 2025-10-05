@@ -233,158 +233,164 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
       <div className="space-y-4">
         {/* Enhanced Table Header */}
         <EnhancedCard variant="outlined" className="overflow-hidden">
-          <div className="flex items-center px-4 py-4 bg-gradient-to-r from-orange-50 to-amber-50 border-b border-orange-200">
-            <div className="w-1/2 pr-8 pl-2">
-              <SortButton field="name">
-                <span className="font-semibold text-orange-800">Subscription</span>
-              </SortButton>
-            </div>
-            <div className="w-1/6 pr-4 pl-4 text-left">
-              <SortButton field="plan" className="justify-start w-full text-left">
-                <span className="font-semibold text-orange-800 text-left">Plan</span>
-              </SortButton>
-            </div>
-            <div className="w-1/6 pr-4 pl-4 text-left">
-              <SortButton field="cost" className="justify-start w-full text-left">
-                <span className="font-semibold text-orange-800 text-left">Cost</span>
-              </SortButton>
-            </div>
-            <div className="w-1/12 pr-2 pl-4 text-left">
-              <SortButton field="billingCycle" className="justify-start w-full text-left">
-                <span className="font-semibold text-orange-800 text-left">Billing</span>
-              </SortButton>
-            </div>
-            <div className="w-1/12 pl-4 text-left">
-              <SortButton field="status" className="justify-start w-full text-left">
-                <span className="font-semibold text-orange-800 text-left">Status</span>
-              </SortButton>
-            </div>
-          </div>
+          <table className="w-full">
+            <thead>
+              <tr className="bg-gradient-to-r from-orange-50 to-amber-50 border-b border-orange-200">
+                <th className="text-left py-4 pl-4 w-1/2">
+                  <SortButton field="name">
+                    <span className="font-semibold text-orange-800">Subscription</span>
+                  </SortButton>
+                </th>
+                <th className="text-left py-4 pl-4 w-1/6">
+                  <SortButton field="plan">
+                    <span className="font-semibold text-orange-800">Plan</span>
+                  </SortButton>
+                </th>
+                <th className="text-left py-4 pl-4 w-1/6">
+                  <SortButton field="cost">
+                    <span className="font-semibold text-orange-800">Cost</span>
+                  </SortButton>
+                </th>
+                <th className="text-left py-4 pl-4 w-1/12">
+                  <SortButton field="billingCycle">
+                    <span className="font-semibold text-orange-800">Billing</span>
+                  </SortButton>
+                </th>
+                <th className="text-left py-4 pl-4 w-1/12">
+                  <SortButton field="status">
+                    <span className="font-semibold text-orange-800">Status</span>
+                  </SortButton>
+                </th>
+                <th className="text-left py-4 pl-4 w-16"></th>
+              </tr>
+            </thead>
+            <tbody>
 
-          {/* Enhanced Table Body */}
-          <div className="divide-y divide-orange-100">
-            {sortedSubscriptions.map((subscription) => (
-              <div key={subscription.id} className="flex items-center px-4 py-4 hover:bg-orange-50/50 transition-colors duration-200">
-                {/* Subscription Info */}
-                <div className="w-1/2 pr-8 pl-2 flex items-center space-x-8">
-                  {getSubscriptionIcon(subscription)}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center mb-2">
-                      <h3 className="text-sm font-semibold text-gray-900 flex-1">
-                        {subscription.name}
-                      </h3>
-                      <Badge className={`${getPriorityColor(subscription.priority)} ml-2`}>
-                        {subscription.priority}
-                      </Badge>
+              {sortedSubscriptions.map((subscription) => (
+                <tr key={subscription.id} className="hover:bg-orange-50/50 transition-colors duration-200">
+                  {/* Subscription Info */}
+                  <td className="py-4 pl-4">
+                    <div className="flex items-center space-x-3">
+                      {getSubscriptionIcon(subscription)}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center mb-1">
+                          <h3 className="text-sm font-semibold text-gray-900 flex-1">
+                            {subscription.name}
+                          </h3>
+                          <Badge className={`${getPriorityColor(subscription.priority)} ml-2`}>
+                            {subscription.priority}
+                          </Badge>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Calendar className="w-3 h-3 text-gray-400" />
+                          <span className="text-xs text-gray-600">
+                            Renews in {getDaysUntilRenewal(subscription.renewalDate)} days
+                          </span>
+                          {getDaysUntilRenewal(subscription.renewalDate) <= 7 && (
+                            <AlertTriangle className="w-3 h-3 text-yellow-500" />
+                          )}
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <Calendar className="w-3 h-3 text-gray-400" />
-                      <span className="text-xs text-gray-600">
-                        Renews in {getDaysUntilRenewal(subscription.renewalDate)} days
+                  </td>
+
+                  {/* Plan */}
+                  <td className="py-4 pl-4">
+                    <span className="text-sm text-gray-900">{subscription.plan}</span>
+                  </td>
+
+                  {/* Cost */}
+                  <td className="py-4 pl-4">
+                    <div className="flex items-center space-x-1">
+                      <DollarSign className="w-3 h-3 text-green-600" />
+                      <span className="text-sm font-semibold text-gray-900">
+                        {formatCurrency(subscription.cost, subscription.currency)}
                       </span>
-                      {getDaysUntilRenewal(subscription.renewalDate) <= 7 && (
-                        <AlertTriangle className="w-3 h-3 text-yellow-500" />
-                      )}
                     </div>
-                  </div>
-                </div>
+                  </td>
 
-                    {/* Plan */}
-                    <div className="w-1/6 pr-4 pl-4 text-left">
-                      <span className="text-sm text-gray-900">{subscription.plan}</span>
+                  {/* Billing Cycle */}
+                  <td className="py-4 pl-4">
+                    <div className="flex items-center space-x-1">
+                      <Clock className="w-3 h-3 text-blue-600" />
+                      <span className="text-sm text-gray-600">{subscription.billingCycle}</span>
                     </div>
+                  </td>
 
-                    {/* Cost */}
-                    <div className="w-1/6 pr-4 pl-4 text-left">
-                      <div className="flex items-center space-x-1">
-                        <DollarSign className="w-3 h-3 text-green-600" />
-                        <span className="text-sm font-semibold text-gray-900">
-                          {formatCurrency(subscription.cost, subscription.currency)}
-                        </span>
-                      </div>
-                    </div>
+                  {/* Status */}
+                  <td className="py-4 pl-4">
+                    <Badge className={getStatusColor(subscription.status)}>
+                      {subscription.status}
+                    </Badge>
+                  </td>
 
-                    {/* Billing Cycle */}
-                    <div className="w-1/12 pr-2 pl-4 text-left">
-                      <div className="flex items-center space-x-1">
-                        <Clock className="w-3 h-3 text-blue-600" />
-                        <span className="text-sm text-gray-600">{subscription.billingCycle}</span>
-                      </div>
-                    </div>
-
-                    {/* Status */}
-                    <div className="w-1/12 pl-4 text-left">
-                      <Badge className={getStatusColor(subscription.status)}>
-                        {subscription.status}
-                      </Badge>
-                    </div>
-
-                {/* Actions */}
-                <div className="ml-4 flex items-center justify-end">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                        <span className="sr-only">Open menu</span>
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48">
-                      {onViewDetails && (
-                        <DropdownMenuItem onClick={() => onViewDetails(subscription)}>
-                          <Eye className="mr-2 h-4 w-4" />
-                          View Details
-                        </DropdownMenuItem>
-                      )}
-                      {onEdit && (
-                        <DropdownMenuItem onClick={() => onEdit(subscription)}>
-                          <Edit className="mr-2 h-4 w-4" />
-                          Update Subscription
-                        </DropdownMenuItem>
-                      )}
-                      {subscription.url && (
-                        <DropdownMenuItem asChild>
-                          <a
-                            href={subscription.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center"
-                          >
-                            <ExternalLink className="mr-2 h-4 w-4" />
-                            Visit Website
-                          </a>
-                        </DropdownMenuItem>
-                      )}
-                      <DropdownMenuSeparator />
-                      {onDuplicate && (
-                        <DropdownMenuItem onClick={() => onDuplicate(subscription)}>
-                          <Copy className="mr-2 h-4 w-4" />
-                          Duplicate
-                        </DropdownMenuItem>
-                      )}
-                      {onPause && (
-                        <DropdownMenuItem onClick={() => onPause(subscription)}>
-                          <Pause className="mr-2 h-4 w-4" />
-                          {subscription.status === 'paused' ? 'Resume' : 'Pause'}
-                        </DropdownMenuItem>
-                      )}
-                      {onDelete && (
-                        <>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem 
-                            onClick={() => onDelete(subscription)}
-                            className="text-red-600 focus:text-red-600"
-                          >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
+                  {/* Actions */}
+                  <td className="py-4 pl-4">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                          <span className="sr-only">Open menu</span>
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48">
+                        {onViewDetails && (
+                          <DropdownMenuItem onClick={() => onViewDetails(subscription)}>
+                            <Eye className="mr-2 h-4 w-4" />
+                            View Details
                           </DropdownMenuItem>
-                        </>
-                      )}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </div>
-            ))}
-          </div>
+                        )}
+                        {onEdit && (
+                          <DropdownMenuItem onClick={() => onEdit(subscription)}>
+                            <Edit className="mr-2 h-4 w-4" />
+                            Update Subscription
+                          </DropdownMenuItem>
+                        )}
+                        {subscription.url && (
+                          <DropdownMenuItem asChild>
+                            <a
+                              href={subscription.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center"
+                            >
+                              <ExternalLink className="mr-2 h-4 w-4" />
+                              Visit Website
+                            </a>
+                          </DropdownMenuItem>
+                        )}
+                        <DropdownMenuSeparator />
+                        {onDuplicate && (
+                          <DropdownMenuItem onClick={() => onDuplicate(subscription)}>
+                            <Copy className="mr-2 h-4 w-4" />
+                            Duplicate
+                          </DropdownMenuItem>
+                        )}
+                        {onPause && (
+                          <DropdownMenuItem onClick={() => onPause(subscription)}>
+                            <Pause className="mr-2 h-4 w-4" />
+                            {subscription.status === 'paused' ? 'Resume' : 'Pause'}
+                          </DropdownMenuItem>
+                        )}
+                        {onDelete && (
+                          <>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem 
+                              onClick={() => onDelete(subscription)}
+                              className="text-red-600 focus:text-red-600"
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              Delete
+                            </DropdownMenuItem>
+                          </>
+                        )}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </EnhancedCard>
       </div>
     </ErrorBoundary>

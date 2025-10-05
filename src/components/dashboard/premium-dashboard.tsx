@@ -263,10 +263,10 @@ export default function PremiumDashboard({
             <EnhancedCard variant="elevated" padding="lg">
               <h3 className="text-h3 text-neutral-900 mb-4">Quick Actions</h3>
               <div className="space-y-3">
-                <PremiumButton variant="primary" className="w-full h-12 text-base font-semibold bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white">
+                <button className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base rounded-md flex items-center justify-center transition-colors">
                   <Plus className="h-5 w-5 mr-3" />
                   Add New Subscription
-                </PremiumButton>
+                </button>
                 <PremiumButton variant="secondary" className="w-full h-10 text-sm font-medium">
                   <Download className="h-4 w-4 mr-2" />
                   Export Data
