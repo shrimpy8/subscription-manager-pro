@@ -44,7 +44,7 @@ interface EnhancedSubscriptionsTableProps {
   onAddSubscription?: () => void;
 }
 
-type SortField = 'name' | 'plan' | 'cost' | 'billingCycle' | 'startDate' | 'status';
+type SortField = 'name' | 'plan' | 'cost' | 'billingCycle' | 'startDate' | 'status' | 'priority';
 type SortOrder = 'asc' | 'desc';
 
 const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
@@ -261,6 +261,11 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
                     <span className="font-semibold text-orange-800">Status</span>
                   </SortButton>
                 </th>
+                <th className="text-left py-4 pl-4 w-1/12">
+                  <SortButton field="priority">
+                    <span className="font-semibold text-orange-800">Priority</span>
+                  </SortButton>
+                </th>
                 <th className="text-left py-4 pl-4 w-16"></th>
               </tr>
             </thead>
@@ -274,12 +279,9 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
                       {getSubscriptionIcon(subscription)}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center mb-1">
-                          <h3 className="text-sm font-semibold text-gray-900 flex-1">
+                          <h3 className="text-sm font-semibold text-gray-900">
                             {subscription.name}
                           </h3>
-                          <Badge className={`${getPriorityColor(subscription.priority)} ml-2`}>
-                            {subscription.priority}
-                          </Badge>
                         </div>
                         <div className="flex items-center space-x-2">
                           <Calendar className="w-3 h-3 text-gray-400" />
@@ -321,6 +323,13 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
                   <td className="py-4 pl-4">
                     <Badge className={getStatusColor(subscription.status)}>
                       {subscription.status}
+                    </Badge>
+                  </td>
+
+                  {/* Priority */}
+                  <td className="py-4 pl-4">
+                    <Badge className={getPriorityColor(subscription.priority)}>
+                      {subscription.priority}
                     </Badge>
                   </td>
 
