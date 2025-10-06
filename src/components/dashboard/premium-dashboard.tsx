@@ -213,8 +213,8 @@ export default function PremiumDashboard({
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-6">
                   {filteredSubscriptions.map((subscription) => (
                     <EnhancedCard key={subscription.id} variant="default" hover={true}>
-                      <div className="p-4">
-                        <div className="flex items-start space-x-3 -mt-2 mb-3">
+                      <div className="p-3">
+                        <div className="flex items-start space-x-3 -mt-2 mb-1">
                           <div className="flex-shrink-0">
                             {getSubscriptionIcon(subscription)}
                           </div>
@@ -223,7 +223,7 @@ export default function PremiumDashboard({
                             <p className="text-xs text-neutral-600 leading-tight">{subscription.category}</p>
                           </div>
                         </div>
-                        <div className="space-y-2">
+                        <div className="mt-3 pt-3 border-t border-neutral-200 space-y-2">
                           <div className="flex justify-between">
                             <span className="text-body-sm text-neutral-600">Cost:</span>
                             <span className="text-body-sm font-medium">{formatCurrency(subscription.cost, subscription.currency)}</span>

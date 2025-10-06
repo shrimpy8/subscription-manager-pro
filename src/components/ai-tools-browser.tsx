@@ -469,7 +469,7 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
                           {/* Checkbox removed per design cleanup */}
 
                           {/* Line 1: Icon + Tool Name */}
-                          <div className="flex items-center space-x-2 mb-2 mt-4">
+                          <div className="flex items-center space-x-2 mb-1 mt-4">
                             <div className="relative w-10 h-10 flex items-center justify-center flex-shrink-0">
                               <Image
                                 src={`https://www.google.com/s2/favicons?domain=${new URL(tool.url).hostname}&sz=64`}
@@ -498,7 +498,7 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
                           </div>
 
                           {/* Line 2: Action Buttons + Visit Link */}
-                          <div className="flex items-center justify-between gap-1">
+                          <div className="mt-3 pt-3 border-t border-neutral-200 flex items-center justify-between gap-1">
                             {/* Show Track/Using buttons only for non-CN/Region and non-Roleplay tools */}
                             {!tool.flags?.includes('cn-region') && tool.category !== 'Roleplay' ? (
                               <>
