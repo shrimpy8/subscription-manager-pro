@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { Plus, Download } from 'lucide-react';
-import { PremiumButton } from '@/components/ui/premium-button';
+// import { PremiumButton } from '@/components/ui/premium-button';
 import PageHeader from '@/components/ui/page-header';
-import { Badge } from '@/components/ui/badge';
+// import { Badge } from '@/components/ui/badge';
 import { Subscription, SubscriptionFilters, ViewMode } from '@/types/subscription';
 import { loadSubscriptions, saveSubscriptions, exportSubscriptionsToCSV, downloadCSV } from '@/lib/subscription-persistence';
 import { handleSubscriptionError } from '@/utils/error-handler';

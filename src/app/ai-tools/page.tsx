@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import AIToolsBrowser from '@/components/ai-tools-browser';
 import PageHeader from '@/components/ui/page-header';
-import { PremiumButton } from '@/components/ui/premium-button';
+// import { PremiumButton } from '@/components/ui/premium-button';
 import { Plus } from 'lucide-react';
 import { aiTools } from '@/lib/ai-tools-data';
 import { AITool } from '@/types/ai-tools';
@@ -12,7 +12,7 @@ import { generateId } from '@/lib/utils';
 import { saveSubscriptions, loadSubscriptions } from '@/lib/subscription-storage';
 import { useToast } from '@/components/ui/toast';
 import { ToastContainer } from '@/components/ui/toast';
-import { getUserFriendlyMessage } from '@/utils/error-messages';
+// import { getUserFriendlyMessage } from '@/utils/error-messages';
 
 export default function AIToolsPage() {
   const toast = useToast();

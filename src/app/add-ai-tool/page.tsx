@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
+// import { Button } from '@/components/ui/button';
 import { PremiumButton } from '@/components/ui/premium-button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -82,17 +82,17 @@ export default function AddAIToolPage() {
     
     try {
       // Create new AI tool data
-      const newAITool = {
-        id: Date.now(), // Temporary ID
-        name: formData.name.trim(),
-        url: formData.url.trim(),
-        category: formData.category,
-        fallbackIcon: formData.fallbackIcon || '🤖',
-        rank: 999, // Will be sorted by date added
-        originalRank: 999,
-        isSubscribed: false,
-        isUsing: false
-      };
+      // const _newAITool = {
+      //   id: Date.now(), // Temporary ID
+      //   name: formData.name.trim(),
+      //   url: formData.url.trim(),
+      //   category: formData.category,
+      //   fallbackIcon: formData.fallbackIcon || '🤖',
+      //   rank: 999, // Will be sorted by date added
+      //   originalRank: 999,
+      //   isSubscribed: false,
+      //   isUsing: false
+      // };
       
       // TODO: Add to AI tools list via API
       
@@ -108,7 +108,7 @@ export default function AddAIToolPage() {
         description: ''
       });
       
-    } catch (error) {
+    } catch {
       const errorMessage = getUserFriendlyMessage('SAVE_ERROR');
       toast.error(errorMessage);
     } finally {

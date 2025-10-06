@@ -1,26 +1,63 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { Subscription } from '@/types/subscription';
 import { subscriptionCreateSchema, subscriptionsBulkSchema } from '@/lib/validation/schemas';
 import { sampleSubscriptions } from '@/lib/sample-data';
+import { 
+  generateRequestId, 
+  createSuccessResponse, 
+  createErrorResponse,
+  parsePaginationParams,
+  parseFilterParams,
+  applyPagination,
+  applyFilters,
+  applySorting,
+  PaginatedResponse
+} from '@/lib/api-helpers';
 
 // Mock data store (in production, this would be a database)
 let subscriptions: Subscription[] = [...sampleSubscriptions];
 
 /**
  * GET /api/subscriptions
- * Retrieve all subscriptions
+ * Retrieve subscriptions with pagination, filtering, and sorting
  */
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const requestId = generateRequestId();
+  
   try {
-    return NextResponse.json({
+    const { searchParams } = new URL(request.url);
+    
+    // Parse pagination and filter parameters
+    const pagination = parsePaginationParams(searchParams);
+    const filters = parseFilterParams(searchParams);
+    
+    // Apply filters
+    let filteredData = applyFilters(subscriptions as unknown as Record<string, unknown>[], filters);
+    
+    // Apply sorting
+    filteredData = applySorting(filteredData, filters.sort, filters.order);
+    
+    // Apply pagination
+    const { data, has_more, next_cursor } = applyPagination(filteredData, pagination);
+    
+    const response: PaginatedResponse<Subscription> = {
       success: true,
-      data: subscriptions,
-      count: subscriptions.length
-    });
-  } catch (error) {
-    return NextResponse.json(
-      { success: false, error: 'Failed to fetch subscriptions' },
-      { status: 500 }
+      data: data as unknown as Subscription[],
+      has_more,
+      total_count: filteredData.length,
+      next_cursor,
+      request_id: requestId
+    };
+    
+    return createSuccessResponse(response, requestId);
+  } catch {
+    return createErrorResponse(
+      'api_error',
+      'internal_server_error',
+      'Failed to fetch subscriptions',
+      undefined,
+      requestId,
+      500
     );
   }
 }
@@ -30,11 +67,21 @@ export async function GET() {
  * Create a new subscription
  */
 export async function POST(request: NextRequest) {
+  const requestId = generateRequestId();
+  
   try {
     const json = await request.json();
     const parsed = subscriptionCreateSchema.safeParse(json);
     if (!parsed.success) {
-      return NextResponse.json({ success: false, error: 'Invalid data', details: parsed.error.flatten() }, { status: 400 });
+      const firstError = parsed.error.issues[0];
+      return createErrorResponse(
+        'invalid_request_error',
+        'validation_failed',
+        firstError.message,
+        firstError.path.join('.'),
+        requestId,
+        400
+      );
     }
     const body = parsed.data;
     
@@ -77,15 +124,20 @@ export async function POST(request: NextRequest) {
 
     subscriptions.push(subscription);
 
-    return NextResponse.json({
+    return createSuccessResponse({
       success: true,
       data: subscription,
-      message: 'Subscription created successfully'
-    }, { status: 201 });
-  } catch (error) {
-    return NextResponse.json(
-      { success: false, error: 'Failed to create subscription' },
-      { status: 500 }
+      message: 'Subscription created successfully',
+      request_id: requestId
+    }, requestId, 201);
+  } catch {
+    return createErrorResponse(
+      'api_error',
+      'internal_server_error',
+      'Failed to create subscription',
+      undefined,
+      requestId,
+      500
     );
   }
 }
@@ -95,23 +147,38 @@ export async function POST(request: NextRequest) {
  * Update multiple subscriptions (bulk operation)
  */
 export async function PUT(request: NextRequest) {
+  const requestId = generateRequestId();
+  
   try {
     const json = await request.json();
     const parsed = subscriptionsBulkSchema.safeParse(json);
     if (!parsed.success) {
-      return NextResponse.json({ success: false, error: 'Invalid data', details: parsed.error.flatten() }, { status: 400 });
+      const firstError = parsed.error.issues[0];
+      return createErrorResponse(
+        'invalid_request_error',
+        'validation_failed',
+        firstError.message,
+        firstError.path.join('.'),
+        requestId,
+        400
+      );
     }
     subscriptions = parsed.data.subscriptions as Subscription[];
 
-    return NextResponse.json({
+    return createSuccessResponse({
       success: true,
       data: subscriptions,
-      message: 'Subscriptions updated successfully'
-    });
-  } catch (error) {
-    return NextResponse.json(
-      { success: false, error: 'Failed to update subscriptions' },
-      { status: 500 }
+      message: 'Subscriptions updated successfully',
+      request_id: requestId
+    }, requestId);
+  } catch {
+    return createErrorResponse(
+      'api_error',
+      'internal_server_error',
+      'Failed to update subscriptions',
+      undefined,
+      requestId,
+      500
     );
   }
 }
