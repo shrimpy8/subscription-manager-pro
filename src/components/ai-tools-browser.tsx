@@ -200,18 +200,7 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
   return (
     <ErrorBoundary>
       <div className="max-w-7xl mx-auto">
-      {/* Header with a16z ranking info */}
-      <div className="text-center mb-8">
-        <div className="flex items-center justify-center mb-4">
-          <div className="w-8 h-8 text-primary-600 mr-3">✨</div>
-          <h1 className="text-h1 text-neutral-900">
-            Gen AI Consumer Apps
-          </h1>
-        </div>
-        <p className="text-body-lg text-neutral-600 max-w-2xl mx-auto">
-          Track and explore the most innovative AI tools shaping the future of consumer technology
-        </p>
-      </div>
+      {/* Header moved to shared PageHeader in the parent page */}
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mb-8">

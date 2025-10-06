@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Plus, Download } from 'lucide-react';
 import { PremiumButton } from '@/components/ui/premium-button';
+import PageHeader from '@/components/ui/page-header';
 import { Badge } from '@/components/ui/badge';
 import { Subscription, SubscriptionFilters, ViewMode } from '@/types/subscription';
 import { loadSubscriptions, saveSubscriptions, exportSubscriptionsToCSV, downloadCSV } from '@/lib/subscription-persistence';
@@ -206,7 +207,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
+    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100">
       {/* Sidebar */}
       <Sidebar 
         currentTab={currentTab} 
@@ -215,72 +216,55 @@ export default function HomePage() {
 
       {/* Main Content Area */}
       <div className="md:ml-64 min-h-screen">
-        {/* Top Header Bar */}
-        <header className="glass-card border-b border-orange-200/50 sticky top-0 z-30">
-          <div className="px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
-              <div className="flex items-center space-x-4">
-                <h2 className="section-title">
-                  {currentTab === 'subscriptions' ? 'Subscriptions' : 'Trending AI Tools'}
-                </h2>
-                <Badge variant="secondary" className="btn-secondary">
-                  {currentTab === 'subscriptions' ? `${activeSubscriptions} Active` : '50 Tools'}
-                </Badge>
-              </div>
-              
-              {currentTab === 'subscriptions' && (
-                <div className="flex items-center space-x-4">
-                  <PremiumButton 
-                    variant="secondary"
-                    disabled={exportLoading.isLoading}
-                    onClick={async () => {
-                      try {
-                        exportLoading.setLoading(true, 'Exporting subscriptions...');
-                        exportLoading.clearError();
-                        const csvContent = exportSubscriptionsToCSV(subscriptions);
-                        downloadCSV(csvContent, `subscriptions-${formatDate(getCurrentDate(), 'input')}.csv`);
-                        toast.success(`Successfully exported ${subscriptions.length} subscriptions!`);
-                      } catch (error) {
-                        const errorMessage = getUserFriendlyMessage('EXPORT_ERROR');
-                        exportLoading.setError(errorMessage);
-                        toast.error(errorMessage);
-                        handleSubscriptionError(
-                          error as Error,
-                          'exporting subscriptions',
-                          { component: 'main-page' }
-                        );
-                      } finally {
-                        exportLoading.setLoading(false);
-                      }
-                    }}
-                  >
-                    <Download className="w-4 h-4 mr-2" />
-                    {exportLoading.isLoading ? (exportLoading.loadingMessage || 'Exporting...') : 'Export CSV'}
-                  </PremiumButton>
-                  <PremiumButton 
-                    variant="orange-gradient"
-                    onClick={() => window.location.href = '/ai-tool-form'}
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add Subscription
-                  </PremiumButton>
-                </div>
-              )}
-              
-              {currentTab === 'ai-tools' && (
-                <div className="flex items-center space-x-4">
-                  <PremiumButton 
-                    variant="orange-gradient"
-                    onClick={() => window.location.href = '/add-ai-tool'}
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add AI Tool
-                  </PremiumButton>
-                </div>
-              )}
-            </div>
-          </div>
-        </header>
+        <PageHeader
+          title={currentTab === 'subscriptions' ? 'Subscriptions' : 'Trending AI Tools'}
+          badgeText={currentTab === 'subscriptions' ? `${activeSubscriptions} Active` : '50 Tools'}
+          actions={currentTab === 'subscriptions' ? [
+            {
+              key: 'export',
+              label: exportLoading.isLoading ? (exportLoading.loadingMessage || 'Exporting...') : 'Export CSV',
+              variant: 'secondary',
+              disabled: exportLoading.isLoading,
+              loading: exportLoading.isLoading,
+              iconLeft: <Download className="w-4 h-4 mr-2" />,
+              onClick: async () => {
+                try {
+                  exportLoading.setLoading(true, 'Exporting subscriptions...');
+                  exportLoading.clearError();
+                  const csvContent = exportSubscriptionsToCSV(subscriptions);
+                  downloadCSV(csvContent, `subscriptions-${formatDate(getCurrentDate(), 'input')}.csv`);
+                  toast.success(`Successfully exported ${subscriptions.length} subscriptions!`);
+                } catch (error) {
+                  const errorMessage = getUserFriendlyMessage('EXPORT_ERROR');
+                  exportLoading.setError(errorMessage);
+                  toast.error(errorMessage);
+                  handleSubscriptionError(
+                    error as Error,
+                    'exporting subscriptions',
+                    { component: 'main-page' }
+                  );
+                } finally {
+                  exportLoading.setLoading(false);
+                }
+              }
+            },
+            {
+              key: 'add-sub',
+              label: 'Add Subscription',
+              variant: 'orange-gradient',
+              iconLeft: <Plus className="w-4 h-4 mr-2" />,
+              onClick: () => (window.location.href = '/ai-tool-form')
+            }
+          ] : [
+            {
+              key: 'add-ai',
+              label: 'Add AI Tool',
+              variant: 'orange-gradient',
+              iconLeft: <Plus className="w-4 h-4 mr-2" />,
+              onClick: () => (window.location.href = '/add-ai-tool')
+            }
+          ]}
+        />
 
         {/* Main Content */}
         {currentTab === 'subscriptions' ? (

@@ -62,7 +62,7 @@ export default function Sidebar({ currentTab, onTabChange, onSettingsClick, clas
           {/* Logo/Title */}
           <div className="mb-8">
             <h1 className="text-xl font-bold gradient-text">
-              Subscription Manager Pro
+              Subscription Manager
             </h1>
             <p className="text-sm text-gray-600 mt-1">
               Track subscriptions & AI tools

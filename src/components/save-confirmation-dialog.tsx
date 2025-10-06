@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, Save } from 'lucide-react';
+import { AlertTriangle, Save, X } from 'lucide-react';
 import { PremiumButton } from '@/components/ui/premium-button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { UpdateSubscriptionFormData } from '@/components/update-subscription-form';
@@ -26,20 +26,25 @@ export default function SaveConfirmationDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md glass-card">
         <DialogHeader>
-          <div className="flex items-center space-x-3">
-            <div className="flex-shrink-0">
-              <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
-                <AlertTriangle className="w-5 h-5 text-orange-600" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="flex-shrink-0">
+                <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                  <AlertTriangle className="w-5 h-5 text-orange-600" />
+                </div>
+              </div>
+              <div>
+                <DialogTitle className="modal-title">
+                  Save Changes
+                </DialogTitle>
+                <DialogDescription className="text-sm text-gray-600">
+                  This action cannot be undone.
+                </DialogDescription>
               </div>
             </div>
-            <div>
-              <DialogTitle className="modal-title">
-                Save Changes
-              </DialogTitle>
-              <DialogDescription className="text-sm text-gray-600">
-                This action cannot be undone.
-              </DialogDescription>
-            </div>
+            <PremiumButton variant="ghost" size="sm" onClick={onClose} title="Close">
+              <X className="w-4 h-4" />
+            </PremiumButton>
           </div>
         </DialogHeader>
 

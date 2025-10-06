@@ -129,21 +129,7 @@ export default function PremiumDashboard({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100">
-      {/* Hero Section */}
-      <div className="bg-white shadow-sm border-b border-neutral-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-display text-neutral-900">
-                Subscription Manager
-              </h1>
-              <p className="text-body-lg text-neutral-600 mt-2">
-                Manage your subscriptions with ease
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Header content handled by shared PageHeader in parent; hero removed for consistency */}
 
       {/* Metrics Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

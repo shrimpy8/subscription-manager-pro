@@ -21,20 +21,25 @@ export default function CancelConfirmationDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md glass-card">
         <DialogHeader>
-          <div className="flex items-center space-x-3">
-            <div className="flex-shrink-0">
-              <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
-                <AlertTriangle className="w-5 h-5 text-yellow-600" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="flex-shrink-0">
+                <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
+                  <AlertTriangle className="w-5 h-5 text-yellow-600" />
+                </div>
+              </div>
+              <div>
+                <DialogTitle className="modal-title">
+                  Cancel Changes
+                </DialogTitle>
+                <DialogDescription className="text-sm text-gray-600">
+                  You have unsaved changes that will be lost.
+                </DialogDescription>
               </div>
             </div>
-            <div>
-              <DialogTitle className="modal-title">
-                Cancel Changes
-              </DialogTitle>
-              <DialogDescription className="text-sm text-gray-600">
-                You have unsaved changes that will be lost.
-              </DialogDescription>
-            </div>
+            <PremiumButton variant="ghost" size="sm" onClick={onClose} title="Close">
+              <X className="w-4 h-4" />
+            </PremiumButton>
           </div>
         </DialogHeader>
 

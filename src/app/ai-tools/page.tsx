@@ -2,6 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import AIToolsBrowser from '@/components/ai-tools-browser';
+import PageHeader from '@/components/ui/page-header';
+import { PremiumButton } from '@/components/ui/premium-button';
+import { Plus } from 'lucide-react';
+import { aiTools } from '@/lib/ai-tools-data';
 import { AITool } from '@/types/ai-tools';
 import { Subscription } from '@/types/subscription';
 import { generateId } from '@/lib/utils';
@@ -77,7 +81,18 @@ export default function AIToolsPage() {
   };
 
   return (
-    <div>
+    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100">
+      <PageHeader
+        title="Trending AI Tools"
+        badgeText={`${aiTools.length} Tools`}
+        actions={[{
+          key: 'add-ai',
+          label: 'Add AI Tool',
+          variant: 'orange-gradient',
+          iconLeft: <Plus className="w-4 h-4 mr-2" />,
+          onClick: () => (window.location.href = '/add-ai-tool')
+        }]}
+      />
       <AIToolsBrowser
         onAddToSubscriptions={handleAddToSubscriptions}
         onMarkAsUsing={handleMarkAsUsing}
