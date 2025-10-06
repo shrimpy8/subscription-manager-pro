@@ -683,6 +683,12 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
                         value={formData.secretKey}
                         onChange={(e) => handleInputChange('secretKey', e.target.value)}
                         className="pl-10"
+                        autoComplete="new-password"
+                        inputMode="text"
+                        name="secret_key"
+                        data-lpignore="true"
+                        data-1p-ignore
+                        data-form-type="other"
                       />
                     </div>
                   </div>
@@ -703,6 +709,12 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
                               setApiKeyInput('');
                             }
                           }}
+                          autoComplete="off"
+                          inputMode="text"
+                          name="api_access_key"
+                          data-lpignore="true"
+                          data-1p-ignore
+                          data-form-type="other"
                         />
                         <PremiumButton
                           type="button"
