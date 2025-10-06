@@ -1,5 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Subscription } from '@/types/subscription';
+import { z } from 'zod';
+import { ZodError } from 'zod';
+
+// Define valid actions
+const actionSchema = z.object({
+  action: z.enum(['pause', 'duplicate', 'cancel', 'reactivate']),
+});
 
 // Mock data store (in production, this would be a database)
 const subscriptions: Subscription[] = [];
@@ -14,8 +21,23 @@ export async function POST(
 ) {
   try {
     const body = await request.json();
-    const { action } = body;
     const resolvedParams = await params;
+    
+    // Validate the incoming action using Zod
+    const validationResult = actionSchema.safeParse(body);
+
+    if (!validationResult.success) {
+      const errors = validationResult.error.issues.map(err => ({
+        path: err.path.join('.'),
+        message: err.message,
+      }));
+      return NextResponse.json(
+        { success: false, error: 'Validation failed', details: errors },
+        { status: 400 }
+      );
+    }
+
+    const { action } = validationResult.data;
     const subscriptionIndex = subscriptions.findIndex(sub => sub.id === resolvedParams.id);
 
     if (subscriptionIndex === -1) {
@@ -65,12 +87,6 @@ export async function POST(
         };
         result = subscriptions[subscriptionIndex];
         break;
-
-      default:
-        return NextResponse.json(
-          { success: false, error: 'Invalid action' },
-          { status: 400 }
-        );
     }
 
     return NextResponse.json({
@@ -79,6 +95,12 @@ export async function POST(
       message: `Subscription ${action}ed successfully`
     });
   } catch (error) {
+    if (error instanceof ZodError) {
+      return NextResponse.json(
+        { success: false, error: 'Validation failed', details: error.issues },
+        { status: 400 }
+      );
+    }
     return NextResponse.json(
       { success: false, error: 'Failed to perform action' },
       { status: 500 }
