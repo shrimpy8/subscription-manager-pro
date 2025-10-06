@@ -16,6 +16,7 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/components/ui/toast';
 import { ToastContainer } from '@/components/ui/toast';
 import { getUserFriendlyMessage } from '@/utils/error-messages';
+import { sanitizeInput } from '@/lib/xss';
 // import { Switch } from '@/components/ui/switch';
 import { ArrowLeft, FileText, DollarSign, Gift, Globe, Mail, Tag, Calendar, Key, Shield, Plus, Trash2, RotateCcw } from 'lucide-react';
 import SaveConfirmationDialog from './save-confirmation-dialog';
@@ -1028,10 +1029,10 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
                   {createSectionHeader('NOTES', <FileText className="w-5 h-5 mr-2 text-primary-600" />, 'Personal Notes (optional)')}
                 </CardHeader>
                 <CardContent>
-                  <Textarea
+                    <Textarea
                     placeholder="Any personal notes about this AI tool subscription..."
-                    value={formData.notes}
-                    onChange={(e) => handleInputChange('notes', e.target.value)}
+                      value={formData.notes}
+                      onChange={(e) => handleInputChange('notes', sanitizeInput(e.target.value))}
                     rows={4}
                   />
                 </CardContent>

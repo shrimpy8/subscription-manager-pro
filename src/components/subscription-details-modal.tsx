@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Subscription } from '@/types/subscription';
 import { toDate, formatDate } from '@/lib/utils';
 import { formatCurrency, getDaysUntilRenewal } from '@/lib/utils';
+import { sanitizeInput } from '@/lib/xss';
 
 interface SubscriptionDetailsModalProps {
   isOpen: boolean;
@@ -91,8 +92,8 @@ export default function SubscriptionDetailsModal({
                   </Badge>
                 )}
               </div>
-              <p className="text-sm text-neutral-600 mb-1">{subscription.plan || 'Free'} Plan</p>
-              <p className="text-sm text-neutral-600">{subscription.description}</p>
+              <p className="text-sm text-neutral-600 mb-1">{sanitizeInput(subscription.plan || 'Free')} Plan</p>
+              <p className="text-sm text-neutral-600">{sanitizeInput(subscription.description || '')}</p>
             </div>
             <PremiumButton 
               onClick={() => window.open(subscription.url, '_blank')}
@@ -190,7 +191,7 @@ export default function SubscriptionDetailsModal({
               <CardContent className="space-y-4">
                 <div>
                   <span className="text-sm text-neutral-600 block mb-1">Current Email</span>
-                  <span className="text-sm font-medium text-neutral-900">{subscription.accountEmail || 'Not set'}</span>
+                  <span className="text-sm font-medium text-neutral-900">{sanitizeInput(subscription.accountEmail || 'Not set')}</span>
                 </div>
                 {subscription.accountEmailsUsedPreviously && subscription.accountEmailsUsedPreviously.length > 0 && (
                   <div>

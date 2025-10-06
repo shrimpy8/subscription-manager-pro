@@ -15,6 +15,7 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/components/ui/toast';
 import { ToastContainer } from '@/components/ui/toast';
 import { getUserFriendlyMessage } from '@/utils/error-messages';
+import { sanitizeInput } from '@/lib/xss';
 // import { Switch } from '@/components/ui/switch';
 import { ArrowLeft, FileText, DollarSign, Gift, Globe, Mail, Tag, Calendar, Key, Shield, Plus, Trash2 } from 'lucide-react';
 import { SubscriptionCategory } from '@/types/subscription';
@@ -361,7 +362,7 @@ export default function AIToolSubscriptionForm() {
                       id="description"
                       placeholder="Brief description of the AI tool and its capabilities..."
                       value={formData.description}
-                      onChange={(e) => handleInputChange('description', e.target.value)}
+                      onChange={(e) => handleInputChange('description', sanitizeInput(e.target.value))}
                       rows={3}
                     />
                   </div>
