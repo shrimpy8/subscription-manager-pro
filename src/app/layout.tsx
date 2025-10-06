@@ -17,6 +17,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Conservative CSP for client-only phase; adjust if blocking dev needs */}
+        <meta
+          httpEquiv="Content-Security-Policy"
+          content="default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'"
+        />
+      </head>
       <body className={inter.className}>
         <ErrorBoundary>
           <div className="min-h-screen bg-gradient-to-br from-neutral-100 to-neutral-200">

@@ -428,3 +428,23 @@ The project is complete and functional with excellent code quality, comprehensiv
 ### Next
 - Continue enforcing design system usage (`PremiumButton`, `EnhancedCard`) and neutral header pattern for new pages.
 - Tidy minor lint warnings and unused imports.
+
+## 2025-10-06 16:50 – UI/UX sweep completed (non-accessibility)
+
+### Highlights
+- Neutral background unification across key pages (Dashboard, AI Tools, Add AI Tool, Add/Update Subscription, Settings, Showcase, tools subpages).
+- Button consistency: “Add Subscription” empty-state now gradient; dialogs and primary actions standardized.
+- Settings subtitle aligned to shared header style; spacing/padding harmonized on Add/Update pages (Workflow Tip/Warning cards).
+- Subscription Details modal restyled to neutral glass header, standardized typography/labels, single close icon.
+- Autofill focus bug fixed: suppressed password manager prompts on Secret Key/API Keys (Safari/Chrome/Firefox/1P/LP friendly attributes).
+
+### Linear
+- Closed: HH2-49, HH2-153, HH2-157, HH2-166, HH2-168.
+- Logged & fixed: HH2-167 (Key Management focus/autofill).
+- Future (Backlog): HH2-169 (Micro-interactions), HH2-170 (Premium charts).
+
+### Build/Quality
+- Lint/build clean after changes. No runtime errors observed.
+
+### Notes
+- Accessibility items are intentionally deferred.
