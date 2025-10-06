@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { Grid, List, BarChart3, DollarSign, CheckCircle, PiggyBank, TrendingUp } from 'lucide-react';
 import { EnhancedCard, MetricsCard } from '@/components/ui/enhanced-card';
 import Image from 'next/image';
+import { AI_TOOL_CATEGORY_LABEL } from '@/types/ai-tools';
 import { PremiumButton, ButtonGroup } from '@/components/ui/premium-button';
 // import { SearchInput } from '@/components/ui/enhanced-input';
 import { Subscription, SubscriptionFilters, ViewMode } from '@/types/subscription';
@@ -220,7 +221,12 @@ export default function PremiumDashboard({
                           </div>
                           <div className="flex-1 min-w-0">
                             <h3 className="text-sm text-neutral-900 leading-tight">{subscription.name}</h3>
-                            <p className="text-xs text-neutral-600 leading-tight">{subscription.category}</p>
+                            <p className="text-xs text-neutral-600 leading-tight">
+                              {(AI_TOOL_CATEGORY_LABEL as Record<string,string>)[subscription.category]
+                                || (subscription.category === 'AI Tools' && subscription.subcategory
+                                  ? (AI_TOOL_CATEGORY_LABEL[subscription.subcategory as keyof typeof AI_TOOL_CATEGORY_LABEL] || subscription.subcategory)
+                                  : subscription.category)}
+                            </p>
                           </div>
                         </div>
                         <div className="mt-3 pt-3 border-t border-neutral-200 space-y-2">

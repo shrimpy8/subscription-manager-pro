@@ -10,6 +10,7 @@ import Image from 'next/image';
 import { PremiumButton } from '@/components/ui/premium-button';
 import { Badge } from '@/components/ui/badge';
 import { Subscription } from '@/types/subscription';
+import { AI_TOOL_CATEGORY_LABEL } from '@/types/ai-tools';
 import { formatCurrency, getDaysUntilRenewal, getStatusColor, getPriorityColor } from '@/lib/utils';
 
 interface EnhancedSubscriptionCardProps {
@@ -127,7 +128,11 @@ export const EnhancedSubscriptionCard = ({
             <h3 className="text-h4 text-neutral-900 truncate group-hover:text-primary-600 transition-colors">
               {subscription.name}
             </h3>
-            <p className="text-body-sm text-neutral-600">{subscription.category}</p>
+            <p className="text-body-sm text-neutral-600">
+              {subscription.category === 'AI Tools' && subscription.subcategory
+                ? (AI_TOOL_CATEGORY_LABEL[subscription.subcategory as keyof typeof AI_TOOL_CATEGORY_LABEL] || subscription.subcategory)
+                : subscription.category}
+            </p>
           </div>
         </div>
         

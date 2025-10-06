@@ -27,6 +27,7 @@ import {
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
 import { Subscription } from '@/types/subscription';
+import { AI_TOOL_CATEGORY_LABEL } from '@/types/ai-tools';
 import { formatCurrency, getDaysUntilRenewal, getStatusColor, getPriorityColor, toDate, formatDate } from '@/lib/utils';
 import { ErrorBoundary } from '@/components/error-boundary';
 
@@ -184,6 +185,19 @@ const SubscriptionsTable = memo(function SubscriptionsTable({
     return `Renews in ${days} days`;
   };
 
+  const getCategoryDisplay = (sub: Subscription): string => {
+    // If category itself is one of the AI tool category keys (e.g., "Dev"), map to label
+    if ((AI_TOOL_CATEGORY_LABEL as Record<string, string>)[sub.category]) {
+      return (AI_TOOL_CATEGORY_LABEL as Record<string, string>)[sub.category];
+    }
+    // Otherwise if it's an AI Tools entry, map its subcategory label
+    if (sub.category === 'AI Tools' && sub.subcategory) {
+      const key = sub.subcategory as keyof typeof AI_TOOL_CATEGORY_LABEL;
+      return AI_TOOL_CATEGORY_LABEL[key] || sub.subcategory;
+    }
+    return sub.category;
+  };
+
   return (
     <ErrorBoundary>
       <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
@@ -287,7 +301,7 @@ const SubscriptionsTable = memo(function SubscriptionsTable({
                   </div>
                 </td>
                 <td className="p-4">
-                  <span className="text-sm text-gray-700 capitalize">{subscription.category}</span>
+                  <span className="text-sm text-gray-700">{getCategoryDisplay(subscription)}</span>
                 </td>
                 <td className="p-4">
                   <span className="text-sm font-medium text-gray-900">

@@ -77,7 +77,7 @@ export const AI_TOOL_SUBCATEGORIES = [
   'DB',
   'Deploy',
   'Design/Prototype',
-  'Dev',
+  'Development',
   'Image',
   'Other',
   'Planning',
@@ -86,7 +86,7 @@ export const AI_TOOL_SUBCATEGORIES = [
   'Search',
   'Speech-to-text',
   'Transcribe',
-  'Utils',
+  'Utilities',
   'Vector DB',
   'Video',
   'Write'

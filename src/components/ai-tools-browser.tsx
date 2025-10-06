@@ -408,16 +408,15 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
             const categoryTools = groupedTools[category];
             return (
               <div key={category}>
-                {/* Category Header */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center space-x-3">
-                    <Badge className={`${AI_TOOL_CATEGORY_COLORS[category]} text-sm px-3 py-1`}>
-                      {AI_TOOL_CATEGORY_LABEL[category]}
-                    </Badge>
-                    <span className="text-sm text-gray-600">
-                      {categoryTools.length} tool{categoryTools.length !== 1 ? 's' : ''}
-                    </span>
-                  </div>
+                {/* Category Header - consistent neutral style */}
+                <div className="flex items-center mb-3">
+                  <div className="w-2 h-2 rounded-full bg-orange-400 mr-2" />
+                  <h3 className="text-sm font-semibold text-neutral-900 mr-2">
+                    {AI_TOOL_CATEGORY_LABEL[category]}
+                  </h3>
+                  <span className="text-xs text-neutral-500">
+                    {categoryTools.length} tool{categoryTools.length !== 1 ? 's' : ''}
+                  </span>
                 </div>
 
                 {/* Tools Grid for this category */}
