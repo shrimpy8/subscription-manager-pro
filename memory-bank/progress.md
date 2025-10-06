@@ -448,3 +448,20 @@ The project is complete and functional with excellent code quality, comprehensiv
 
 ### Notes
 - Accessibility items are intentionally deferred.
+
+## 2025-10-06 17:35 – Security hardening (minimal phase) complete
+
+### Highlights
+- Added core security headers via `src/middleware.ts` (HSTS, XFO, XCTO, Referrer-Policy, Permissions-Policy) and CSP header with env guard.
+- Implemented XSS sanitization utilities (`src/lib/xss.ts`) and applied to notes/descriptions and account email displays.
+- Added URL parameter validation utilities (`src/lib/url-params.ts`) and guarded `update-subscription/[id]` route against malformed IDs with friendly fallback.
+
+### Linear
+- Done: HH2-172 (Security headers + CSP), HH2-174 (Client-side XSS sanitization).
+- Open (Minimal phase): HH2-171 (encryption deferred to Supabase), HH2-173 (API validation), HH2-175 (URL param validation rollout – in progress incrementally).
+
+### Build/Quality
+- Lint/build clean (no errors). Pre-existing warnings remain; no runtime build issues.
+
+### Next
+- Implement HH2-173: add zod schemas and centralized API error responses step-by-step, validating each route with a clean build before moving to the next.
