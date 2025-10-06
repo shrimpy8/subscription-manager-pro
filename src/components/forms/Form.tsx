@@ -6,7 +6,7 @@
 import React, { useState, useCallback } from 'react';
 import { FormConfig, FormData, ValidationValue } from '@/types/common';
 import { FormField } from './FormField';
-import { Button } from '@/components/ui/button';
+import { PremiumButton } from '@/components/ui/premium-button';
 import { FormStateManager } from '@/lib/form-helpers';
 import { FieldError } from '@/components/ui/field-error';
 import { ValidationIndicator } from '@/components/ui/validation-indicator';
@@ -128,13 +128,15 @@ export function Form<T extends FormData>({ config, className = '' }: FormProps<T
         );
       })}
       
-      <Button
+      <PremiumButton
         type="submit"
         disabled={formState.isSubmitting || config.loading}
         className="w-full"
+        variant="gradient"
+        loading={formState.isSubmitting || config.loading}
       >
-        {formState.isSubmitting || config.loading ? 'Submitting...' : (config.submitText || 'Submit')}
-      </Button>
+        {config.submitText || 'Submit'}
+      </PremiumButton>
     </form>
   );
 }

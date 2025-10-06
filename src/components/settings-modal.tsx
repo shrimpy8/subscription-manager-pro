@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { X, Download, Upload, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { PremiumButton } from '@/components/ui/premium-button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Subscription } from '@/types/subscription';
@@ -109,34 +108,36 @@ export default function SettingsModal({ isOpen, onClose, subscriptions, onSubscr
               <CardTitle className="card-title">Data Management</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <Button
-                variant="outline"
+              <PremiumButton
+                variant="secondary"
                 className="w-full justify-start"
                 onClick={handleExport}
                 disabled={isExporting}
+                loading={isExporting}
               >
                 <Download className="w-4 h-4 mr-2" />
                 {isExporting ? 'Exporting...' : 'Export Subscriptions'}
-              </Button>
+              </PremiumButton>
               
-              <Button
-                variant="outline"
+              <PremiumButton
+                variant="secondary"
                 className="w-full justify-start"
                 onClick={handleImport}
                 disabled={isImporting}
+                loading={isImporting}
               >
                 <Upload className="w-4 h-4 mr-2" />
                 {isImporting ? 'Importing...' : 'Import Subscriptions'}
-              </Button>
+              </PremiumButton>
               
-              <Button
-                variant="outline"
-                className="w-full justify-start text-red-600 hover:text-red-700"
+              <PremiumButton
+                variant="error"
+                className="w-full justify-start"
                 onClick={handleClearAll}
               >
                 <Trash2 className="w-4 h-4 mr-2" />
                 Clear All Data
-              </Button>
+              </PremiumButton>
             </CardContent>
           </Card>
 
@@ -155,9 +156,9 @@ export default function SettingsModal({ isOpen, onClose, subscriptions, onSubscr
         </div>
 
         <div className="flex justify-end pt-4">
-          <Button onClick={onClose} className="btn-primary">
+          <PremiumButton onClick={onClose} variant="primary">
             Close
-          </Button>
+          </PremiumButton>
         </div>
       </div>
       <ToastContainer />

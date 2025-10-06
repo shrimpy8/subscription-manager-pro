@@ -16,6 +16,7 @@ import {
   Plus
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { PremiumButton } from '@/components/ui/premium-button';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -380,13 +381,13 @@ const SubscriptionsTable = memo(function SubscriptionsTable({
           </div>
           <h3 className="text-lg font-medium text-gray-900 mb-2">No subscriptions found</h3>
           <p className="text-gray-600 mb-4">Get started by adding your first subscription.</p>
-          <Button 
-            className="gradient-bg hover:opacity-90"
+          <PremiumButton 
+            variant="gradient"
             onClick={() => window.location.href = '/ai-tool-form'}
           >
             <Plus className="w-4 h-4 mr-2" />
             Add Subscription
-          </Button>
+          </PremiumButton>
         </div>
       )}
     </div>

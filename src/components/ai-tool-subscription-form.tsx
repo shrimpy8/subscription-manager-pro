@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -424,9 +423,9 @@ export default function AIToolSubscriptionForm() {
                             }
                           }}
                         />
-                        <Button
+                        <PremiumButton
                           type="button"
-                          variant="outline"
+                          variant="secondary"
                           size="sm"
                           onClick={() => {
                             handleArrayAdd('apiAccessKeys', apiKeyInput);
@@ -434,14 +433,14 @@ export default function AIToolSubscriptionForm() {
                           }}
                         >
                           <Plus className="w-4 h-4" />
-                        </Button>
+                        </PremiumButton>
                       </div>
                       <div className="space-y-2">
                         {formData.apiAccessKeys.map((key, index) => (
                           <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 rounded border">
                             <Key className="w-4 h-4 text-gray-400" />
                             <span className="flex-1 text-sm font-mono">{key}</span>
-                            <Button
+                            <PremiumButton
                               type="button"
                               variant="ghost"
                               size="sm"
@@ -449,7 +448,7 @@ export default function AIToolSubscriptionForm() {
                               className="text-red-500 hover:text-red-700"
                             >
                               <Trash2 className="w-4 h-4" />
-                            </Button>
+                            </PremiumButton>
                           </div>
                         ))}
                       </div>
@@ -661,16 +660,16 @@ export default function AIToolSubscriptionForm() {
                             }
                           }}
                         />
-                        <Button
+                        <PremiumButton
                           type="button"
-                          variant="outline"
+                          variant="secondary"
                           onClick={() => {
                             handleArrayAdd('previouslyUsedPromotionCode', promoCodeInput);
                             setPromoCodeInput('');
                           }}
                         >
                           Add
-                        </Button>
+                        </PremiumButton>
                       </div>
                       <div className="flex flex-wrap gap-1">
                         {formData.previouslyUsedPromotionCode.map((code, index) => (

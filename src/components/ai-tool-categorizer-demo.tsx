@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { PremiumButton } from '@/components/ui/premium-button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -141,21 +141,23 @@ export function AIToolCategorizerDemo() {
           </div>
           
           <div className="flex gap-3">
-            <Button 
+            <PremiumButton 
               onClick={handleAnalyze} 
-              disabled={!toolName.trim() || !toolUrl.trim() || isAnalyzing}
+              disabled={!toolName.trim() || !toolUrl.trim()}
+              loading={isAnalyzing}
+              variant="gradient"
               className="flex-1"
             >
-              {isAnalyzing ? 'Analyzing...' : 'Analyze & Categorize'}
-            </Button>
-            <Button 
+              Analyze & Categorize
+            </PremiumButton>
+            <PremiumButton 
               onClick={handleClear}
-              variant="outline"
+              variant="secondary"
               className="px-4"
             >
               <X className="w-4 h-4 mr-2" />
               Clear
-            </Button>
+            </PremiumButton>
           </div>
         </CardContent>
       </Card>
@@ -298,15 +300,15 @@ export function AIToolCategorizerDemo() {
 
                   {/* Clear Override Button */}
                   {overrideCategory && (
-                    <Button 
-                      variant="outline" 
+                    <PremiumButton 
+                      variant="secondary" 
                       size="sm" 
                       onClick={() => setOverrideCategory('')}
                       className="w-full"
                     >
                       <X className="w-4 h-4 mr-2" />
                       Clear Override
-                    </Button>
+                    </PremiumButton>
                   )}
 
                   {/* Tool Summary */}
@@ -345,9 +347,9 @@ export function AIToolCategorizerDemo() {
               { name: 'Zapier', url: 'https://zapier.com', description: 'Workflow automation platform' },
               { name: 'n8n', url: 'https://n8n.io', description: 'Open-source workflow automation' }
             ].map((example, index) => (
-              <Button
+              <PremiumButton
                 key={index}
-                variant="outline"
+                variant="secondary"
                 className="h-auto p-3 text-left justify-start"
                 onClick={() => {
                   setToolName(example.name);
@@ -359,7 +361,7 @@ export function AIToolCategorizerDemo() {
                   <div className="font-medium">{example.name}</div>
                   <div className="text-xs text-gray-500 mt-1">{example.description}</div>
                 </div>
-              </Button>
+              </PremiumButton>
             ))}
           </div>
         </CardContent>

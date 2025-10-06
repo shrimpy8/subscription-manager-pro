@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { Filter, X, ChevronDown } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { PremiumButton } from '@/components/ui/premium-button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -102,8 +101,8 @@ export function AdvancedFilters({ filters, onFiltersChange, onClearFilters }: Ad
         <div className="space-y-4">
           {/* Filter Toggle Button */}
           <div className="flex items-center justify-between">
-            <Button
-              variant="outline"
+            <PremiumButton
+              variant="secondary"
               onClick={() => setIsExpanded(!isExpanded)}
               className="flex items-center space-x-2"
             >
@@ -115,7 +114,7 @@ export function AdvancedFilters({ filters, onFiltersChange, onClearFilters }: Ad
                 </Badge>
               )}
               <ChevronDown className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
-            </Button>
+            </PremiumButton>
             
             {activeFiltersCount > 0 && (
               <PremiumButton variant="ghost" size="sm" onClick={onClearFilters}>

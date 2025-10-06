@@ -111,7 +111,7 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
 
   const SortButton = memo(function SortButton({ field, children, className }: { field: SortField; children: React.ReactNode; className?: string }) {
     return (
-      <Button
+      <PremiumButton
         variant="ghost"
         size="sm"
         onClick={() => handleSort(field)}
@@ -128,7 +128,7 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
             <ChevronDown className="ml-2 h-4 w-4" />
           )
         )}
-      </Button>
+      </PremiumButton>
     );
   });
 

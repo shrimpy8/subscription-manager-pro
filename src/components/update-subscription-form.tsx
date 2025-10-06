@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -361,16 +360,16 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
         </div>
         {sectionStates[sectionKey]?.hasChanges && (
           <div className="flex items-center space-x-2">
-            <Button
+            <PremiumButton
               type="button"
               variant="ghost"
               size="sm"
               onClick={() => revertSection(sectionKey)}
-              className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 p-2"
+              className="text-gray-500 hover:text-gray-700 p-2"
               title="Revert All Changes"
             >
               <RotateCcw className="w-5 h-5" />
-            </Button>
+            </PremiumButton>
           </div>
         )}
       </CardTitle>
@@ -705,9 +704,9 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
                             }
                           }}
                         />
-                        <Button
+                        <PremiumButton
                           type="button"
-                          variant="outline"
+                          variant="secondary"
                           size="sm"
                           onClick={() => {
                             handleArrayAdd('apiAccessKeys', apiKeyInput);
@@ -715,14 +714,14 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
                           }}
                         >
                           <Plus className="w-4 h-4" />
-                        </Button>
+                        </PremiumButton>
                       </div>
                       <div className="space-y-2">
                         {formData.apiAccessKeys.map((key, index) => (
                           <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 rounded border">
                             <Key className="w-4 h-4 text-gray-400" />
                             <span className="flex-1 text-sm font-mono">{key}</span>
-                            <Button
+                            <PremiumButton
                               type="button"
                               variant="ghost"
                               size="sm"
@@ -730,7 +729,7 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
                               className="text-red-500 hover:text-red-700"
                             >
                               <Trash2 className="w-4 h-4" />
-                            </Button>
+                            </PremiumButton>
                           </div>
                         ))}
                       </div>
@@ -933,16 +932,16 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
                             }
                           }}
                         />
-                        <Button
+                        <PremiumButton
                           type="button"
-                          variant="outline"
+                          variant="secondary"
                           onClick={() => {
                             handleArrayAdd('previouslyUsedPromotionCode', promoCodeInput);
                             setPromoCodeInput('');
                           }}
                         >
                           Add
-                        </Button>
+                        </PremiumButton>
                       </div>
                       <div className="flex flex-wrap gap-1">
                         {formData.previouslyUsedPromotionCode.map((code, index) => (

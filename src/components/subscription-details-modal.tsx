@@ -2,9 +2,8 @@
 
 import { X, ExternalLink, Calendar, DollarSign, User, Key, Shield, Globe } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import Image from 'next/image';
 import { PremiumButton } from '@/components/ui/premium-button';
+import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Subscription } from '@/types/subscription';
@@ -95,13 +94,13 @@ export default function SubscriptionDetailsModal({
               <p className="text-gray-600 mb-2">{subscription.plan || 'Free'} Plan</p>
               <p className="text-sm text-gray-500">{subscription.description}</p>
             </div>
-            <Button 
+            <PremiumButton 
               onClick={() => window.open(subscription.url, '_blank')}
-              className="gradient-bg hover:opacity-90"
+              variant="gradient"
             >
               <ExternalLink className="w-4 h-4 mr-2" />
               Visit Website
-            </Button>
+            </PremiumButton>
           </div>
 
           {/* Main Content Grid */}

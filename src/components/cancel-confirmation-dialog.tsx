@@ -1,7 +1,6 @@
 "use client";
 
 import { AlertTriangle, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { PremiumButton } from '@/components/ui/premium-button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 

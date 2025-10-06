@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import { PremiumButton } from '@/components/ui/premium-button';
 
 interface LoadingSpinnerProps {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -59,23 +59,21 @@ export function LoadingButton({
   className,
   disabled,
   onClick,
-  variant = 'default'
+  variant = 'default',
+  size = 'md'
 }: LoadingButtonProps) {
   return (
-    <Button
+    <PremiumButton
       className={className}
       disabled={disabled || isLoading}
       onClick={onClick}
+      variant={variant === 'secondary' ? 'secondary' : variant === 'success' ? 'success' : variant === 'warning' ? 'warning' : variant === 'error' ? 'error' : 'primary'}
+      loading={isLoading}
+      size={size === 'sm' ? 'sm' : size === 'lg' ? 'lg' : 'md'}
+      title={isLoading ? loadingText : undefined}
     >
-      {isLoading ? (
-        <div className="flex items-center justify-center">
-          <LoadingSpinner size="sm" variant={variant} className="mr-2" />
-          {loadingText}
-        </div>
-      ) : (
-        children
-      )}
-    </Button>
+      {children}
+    </PremiumButton>
   );
 }
 

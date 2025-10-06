@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { BarChart3, Sparkles, Settings, Menu, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { PremiumButton } from '@/components/ui/premium-button';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
@@ -34,14 +34,14 @@ export default function Sidebar({ currentTab, onTabChange, onSettingsClick, clas
   return (
     <>
       {/* Mobile Menu Button */}
-      <Button
-        variant="outline"
+      <PremiumButton
+        variant="secondary"
         size="sm"
         className="md:hidden fixed top-4 left-4 z-50"
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
       >
         {isMobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
-      </Button>
+      </PremiumButton>
 
       {/* Mobile Overlay */}
       {isMobileMenuOpen && (
@@ -111,15 +111,15 @@ export default function Sidebar({ currentTab, onTabChange, onSettingsClick, clas
           {/* Settings */}
           <div className="mt-8 pt-6 border-t border-orange-200/50">
             <Link href="/settings" className="block">
-              <Button
-                variant="outline"
+              <PremiumButton
+                variant="secondary"
                 size="sm"
                 className="w-full justify-start"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <Settings className="w-4 h-4 mr-2" />
                 Settings
-              </Button>
+              </PremiumButton>
             </Link>
           </div>
         </div>
