@@ -21,8 +21,8 @@ export function LoadingSpinner({
   };
 
   const variantClasses = {
-    default: 'border-gray-300 border-t-blue-600',
-    primary: 'border-gray-300 border-t-blue-600',
+    default: 'border-gray-300 border-t-orange-600',
+    primary: 'border-gray-300 border-t-orange-600',
     secondary: 'border-gray-300 border-t-gray-600',
     success: 'border-gray-300 border-t-green-600',
     warning: 'border-gray-300 border-t-yellow-600',

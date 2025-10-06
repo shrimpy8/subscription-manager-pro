@@ -2,6 +2,7 @@
 
 import { AlertTriangle, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { PremiumButton } from '@/components/ui/premium-button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { UpdateSubscriptionFormData } from '@/components/update-subscription-form';
 
@@ -92,31 +93,28 @@ export default function SaveConfirmationDialog({
         </div>
 
         <div className="flex justify-end space-x-3">
-          <Button
-            variant="outline"
+          <PremiumButton
+            variant="secondary"
             onClick={onClose}
             disabled={isLoading}
             className="px-4 py-2"
           >
             Cancel
-          </Button>
-          <Button
+          </PremiumButton>
+          <PremiumButton
+            variant="gradient"
             onClick={onConfirm}
-            disabled={isLoading}
-            className="px-4 py-2 bg-orange-600 hover:bg-orange-700 transition-opacity duration-200 hover:opacity-90"
+            loading={!!isLoading}
+            className="px-4 py-2"
           >
-            {isLoading ? (
-              <div className="flex items-center space-x-2">
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                <span>Saving...</span>
-              </div>
-            ) : (
+            {!isLoading && (
               <div className="flex items-center space-x-2">
                 <Save className="w-4 h-4" />
                 <span>Save Changes</span>
               </div>
             )}
-          </Button>
+            {isLoading && 'Saving...'}
+          </PremiumButton>
         </div>
       </DialogContent>
     </Dialog>

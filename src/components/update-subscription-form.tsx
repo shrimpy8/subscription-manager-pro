@@ -8,6 +8,9 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { EnhancedCard } from '@/components/ui/enhanced-card';
+import { PremiumButton } from '@/components/ui/premium-button';
+import { EnhancedInput } from '@/components/ui/enhanced-input';
 import { FormField, FormValidation } from '@/components/ui/form-field';
 import { validateSubscription } from '@/utils/validation';
 import { Badge } from '@/components/ui/badge';
@@ -497,26 +500,26 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
+    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <header className="glass-card border-b border-orange-200/50 sticky top-0 z-30">
+        <header className="bg-white shadow-sm border-b border-neutral-200 sticky top-0 z-30">
           <div className="px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center space-x-4">
                 <div className="flex items-center">
-                  <ArrowLeft className="w-5 h-5 mr-2 text-gray-600" />
+                  <ArrowLeft className="w-5 h-5 mr-2 text-neutral-600" />
                   <button 
                     onClick={() => router.push('/?view=list')}
-                    className="text-gray-600 hover:text-gray-800 cursor-pointer"
+                    className="text-neutral-600 hover:text-neutral-800 cursor-pointer transition-colors"
                   >
                     Back to Subscriptions
                   </button>
                 </div>
               </div>
               <div className="flex items-center space-x-4">
-                <h2 className="section-title">Update Subscription</h2>
-                <Badge variant="secondary" className="bg-orange-100 text-orange-800">
+                <h2 className="text-h2 text-neutral-900">Update Subscription</h2>
+                <Badge variant="secondary" className="bg-primary-100 text-primary-800">
                   Editing
                 </Badge>
               </div>
@@ -526,16 +529,18 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
 
         {/* Warning */}
         <div className="px-4 sm:px-6 lg:px-8 mb-6">
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-            <h4 className="text-sm font-medium text-yellow-900 mb-2">
-              ⚠️ Update Warning
-            </h4>
-            <p className="text-sm text-yellow-800">
-              <strong>Editing Subscription:</strong> You are about to modify an existing subscription. 
-              Changes will be saved when you click &quot;Save Changes&quot;. 
-              Make sure all information is correct before proceeding.
-            </p>
-          </div>
+          <EnhancedCard variant="outlined" className="bg-warning-50 border-warning-200">
+            <div className="p-4">
+              <h4 className="text-sm font-semibold text-warning-900 mb-2 flex items-center">
+                ⚠️ Update Warning
+              </h4>
+              <p className="text-sm text-warning-800">
+                <strong>Editing Subscription:</strong> You are about to modify an existing subscription. 
+                Changes will be saved when you click &quot;Save Changes&quot;. 
+                Make sure all information is correct before proceeding.
+              </p>
+            </div>
+          </EnhancedCard>
         </div>
 
         <form className="px-4 sm:px-6 lg:px-8 pb-8">
@@ -543,9 +548,9 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
             {/* Left Column */}
             <div className="space-y-6">
               {/* Basic Information */}
-              <Card className="border border-gray-200 shadow-sm">
+              <EnhancedCard variant="elevated" className="border border-neutral-200">
                 <CardHeader className="pb-4">
-                  {createSectionHeader('BASIC_INFO', <FileText className="w-5 h-5 mr-2 text-orange-600" />, 'Basic Information')}
+                  {createSectionHeader('BASIC_INFO', <FileText className="w-5 h-5 mr-2 text-primary-600" />, 'Basic Information')}
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
@@ -660,7 +665,7 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
                     </div>
                   </div>
                 </CardContent>
-              </Card>
+              </EnhancedCard>
 
               {/* Key Management */}
               <Card className="border border-gray-200 shadow-sm">
@@ -735,9 +740,9 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
               </Card>
 
               {/* Usage */}
-              <Card className="border border-gray-200 shadow-sm">
+              <EnhancedCard variant="elevated" className="border border-neutral-200">
                 <CardHeader className="pb-4">
-                  {createSectionHeader('USAGE', <Shield className="w-5 h-5 mr-2 text-orange-600" />, 'Usage')}
+                  {createSectionHeader('USAGE', <Shield className="w-5 h-5 mr-2 text-primary-600" />, 'Usage')}
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <OptionGridControl
@@ -773,15 +778,15 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
                     </label>
                   </div>
                 </CardContent>
-              </Card>
+              </EnhancedCard>
             </div>
 
             {/* Right Column */}
             <div className="space-y-6">
               {/* Billing Information */}
-              <Card className="border border-gray-200 shadow-sm">
+              <EnhancedCard variant="elevated" className="border border-neutral-200">
                 <CardHeader className="pb-4">
-                  {createSectionHeader('BILLING', <DollarSign className="w-5 h-5 mr-2 text-orange-600" />, 'Billing Information')}
+                  {createSectionHeader('BILLING', <DollarSign className="w-5 h-5 mr-2 text-primary-600" />, 'Billing Information')}
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
@@ -890,12 +895,12 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
                     </div>
                   </div>
                 </CardContent>
-              </Card>
+              </EnhancedCard>
 
               {/* Promo Details */}
-              <Card className="border border-gray-200 shadow-sm">
+              <EnhancedCard variant="elevated" className="border border-neutral-200">
                 <CardHeader className="pb-4">
-                  {createSectionHeader('PROMO', <Gift className="w-5 h-5 mr-2 text-orange-600" />, 'Promo Details (optional)')}
+                  {createSectionHeader('PROMO', <Gift className="w-5 h-5 mr-2 text-primary-600" />, 'Promo Details (optional)')}
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
@@ -956,12 +961,12 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
                     </div>
                   </div>
                 </CardContent>
-              </Card>
+              </EnhancedCard>
 
               {/* Miscellaneous */}
-              <Card className="border border-gray-200 shadow-sm">
+              <EnhancedCard variant="elevated" className="border border-neutral-200">
                 <CardHeader className="pb-4">
-                  {createSectionHeader('MISCELLANEOUS', <Shield className="w-5 h-5 mr-2 text-orange-600" />, 'Miscellaneous')}
+                  {createSectionHeader('MISCELLANEOUS', <Shield className="w-5 h-5 mr-2 text-primary-600" />, 'Miscellaneous')}
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
@@ -1004,12 +1009,12 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
                     />
                   </div>
                 </CardContent>
-              </Card>
+              </EnhancedCard>
 
               {/* Personal Notes */}
-              <Card className="border border-gray-200 shadow-sm">
+              <EnhancedCard variant="elevated" className="border border-neutral-200">
                 <CardHeader className="pb-4">
-                  {createSectionHeader('NOTES', <FileText className="w-5 h-5 mr-2 text-orange-600" />, 'Personal Notes (optional)')}
+                  {createSectionHeader('NOTES', <FileText className="w-5 h-5 mr-2 text-primary-600" />, 'Personal Notes (optional)')}
                 </CardHeader>
                 <CardContent>
                   <Textarea
@@ -1019,26 +1024,26 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
                     rows={4}
                   />
                 </CardContent>
-              </Card>
+              </EnhancedCard>
             </div>
           </div>
 
           {/* Footer Actions */}
-          <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
-            <Button 
+          <div className="flex justify-end space-x-4 pt-6 border-t border-neutral-200">
+            <PremiumButton 
               type="button" 
-              variant="outline"
+              variant="secondary"
               onClick={handleCancel}
             >
               Cancel
-            </Button>
-            <Button 
+            </PremiumButton>
+            <PremiumButton 
               type="button"
+              variant="gradient"
               onClick={handleSave}
-              className="gradient-bg hover:opacity-90"
             >
               Save Changes
-            </Button>
+            </PremiumButton>
           </div>
         </form>
       </div>

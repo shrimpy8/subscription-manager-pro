@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { Download, Upload, Trash2, ArrowLeft, Info, BarChart3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { EnhancedCard } from '@/components/ui/enhanced-card';
+import { PremiumButton } from '@/components/ui/premium-button';
 import { Subscription } from '@/types/subscription';
 import { handleError } from '@/utils/error-handler';
 import { saveSubscriptions, loadSubscriptions } from '@/lib/subscription-storage';
@@ -101,25 +103,25 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
+    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <header className="glass-card border-b border-orange-200/50 sticky top-0 z-30">
+        <header className="bg-white shadow-sm border-b border-neutral-200 sticky top-0 z-30">
           <div className="px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center space-x-4">
                 <div className="flex items-center">
-                  <ArrowLeft className="w-5 h-5 mr-2 text-gray-600" />
+                  <ArrowLeft className="w-5 h-5 mr-2 text-neutral-600" />
                   <Link 
                     href="/" 
-                    className="text-gray-600 hover:text-gray-800 cursor-pointer"
+                    className="text-neutral-600 hover:text-neutral-800 cursor-pointer transition-colors"
                   >
                     Back to Dashboard
                   </Link>
                 </div>
               </div>
               <div className="flex items-center space-x-4">
-                <h2 className="section-title">Settings</h2>
+                <h2 className="text-h2 text-neutral-900">Settings</h2>
               </div>
             </div>
           </div>
@@ -128,7 +130,7 @@ export default function SettingsPage() {
         {/* Content */}
         <div className="px-4 sm:px-6 lg:px-8 py-8">
           <div className="mb-6">
-            <p className="text-gray-600">
+            <p className="text-body-lg text-neutral-600">
               Manage your subscription data and application preferences.
             </p>
           </div>
@@ -136,43 +138,45 @@ export default function SettingsPage() {
           {/* Settings Content */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Data Management */}
-            <Card className="border border-gray-200 shadow-sm">
+            <EnhancedCard variant="elevated" className="border border-neutral-200">
               <CardHeader className="pb-4">
-                <CardTitle className="flex items-center text-lg font-semibold text-gray-900">
-                  <Download className="w-5 h-5 mr-2 text-orange-600" />
+                <CardTitle className="flex items-center text-h3 text-neutral-900">
+                  <Download className="w-5 h-5 mr-2 text-primary-600" />
                   Data Management
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-3">
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start border-gray-300 hover:bg-orange-50 hover:border-orange-300"
+                  <PremiumButton
+                    variant="secondary"
+                    className="w-full justify-start"
                     onClick={handleExport}
                     disabled={isExporting}
+                    loading={isExporting}
                   >
                     <Download className="w-4 h-4 mr-2" />
                     {isExporting ? 'Exporting...' : 'Export Subscriptions'}
-                  </Button>
+                  </PremiumButton>
                   
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start border-gray-300 hover:bg-orange-50 hover:border-orange-300"
+                  <PremiumButton
+                    variant="secondary"
+                    className="w-full justify-start"
                     onClick={handleImport}
                     disabled={isImporting}
+                    loading={isImporting}
                   >
                     <Upload className="w-4 h-4 mr-2" />
                     {isImporting ? 'Importing...' : 'Import Subscriptions'}
-                  </Button>
+                  </PremiumButton>
                   
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400"
+                  <PremiumButton
+                    variant="error"
+                    className="w-full justify-start"
                     onClick={handleClearAll}
                   >
                     <Trash2 className="w-4 h-4 mr-2" />
                     Clear All Data
-                  </Button>
+                  </PremiumButton>
                 </div>
                 
                 <div className="pt-4 border-t border-gray-200">
@@ -184,13 +188,13 @@ export default function SettingsPage() {
                   </p>
                 </div>
               </CardContent>
-            </Card>
+            </EnhancedCard>
 
             {/* Application Info */}
-            <Card className="border border-gray-200 shadow-sm">
+            <EnhancedCard variant="elevated" className="border border-neutral-200">
               <CardHeader className="pb-4">
-                <CardTitle className="flex items-center text-lg font-semibold text-gray-900">
-                  <Info className="w-5 h-5 mr-2 text-orange-600" />
+                <CardTitle className="flex items-center text-h3 text-neutral-900">
+                  <Info className="w-5 h-5 mr-2 text-primary-600" />
                   Application Information
                 </CardTitle>
               </CardHeader>
@@ -224,37 +228,37 @@ export default function SettingsPage() {
                   </div>
                 </div>
               </CardContent>
-            </Card>
+            </EnhancedCard>
 
             {/* Usage Statistics */}
-            <Card className="border border-gray-200 shadow-sm lg:col-span-2">
+            <EnhancedCard variant="elevated" className="border border-neutral-200 lg:col-span-2">
               <CardHeader className="pb-4">
-                <CardTitle className="flex items-center text-lg font-semibold text-gray-900">
-                  <BarChart3 className="w-5 h-5 mr-2 text-orange-600" />
+                <CardTitle className="flex items-center text-h3 text-neutral-900">
+                  <BarChart3 className="w-5 h-5 mr-2 text-primary-600" />
                   Usage Statistics
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="text-center p-4 bg-orange-50 rounded-lg">
-                    <div className="text-2xl font-bold text-orange-600">{subscriptions.length}</div>
-                    <div className="text-sm text-gray-600">Total Subscriptions</div>
+                  <div className="text-center p-4 bg-primary-50 rounded-lg">
+                    <div className="text-2xl font-bold text-primary-600">{subscriptions.length}</div>
+                    <div className="text-sm text-neutral-600">Total Subscriptions</div>
                   </div>
-                  <div className="text-center p-4 bg-amber-50 rounded-lg">
-                    <div className="text-2xl font-bold text-amber-600">
+                  <div className="text-center p-4 bg-success-50 rounded-lg">
+                    <div className="text-2xl font-bold text-success-600">
                       {subscriptions.filter(sub => sub.status === 'active').length}
                     </div>
-                    <div className="text-sm text-gray-600">Active Subscriptions</div>
+                    <div className="text-sm text-neutral-600">Active Subscriptions</div>
                   </div>
-                  <div className="text-center p-4 bg-yellow-50 rounded-lg">
-                    <div className="text-2xl font-bold text-yellow-600">
+                  <div className="text-center p-4 bg-warning-50 rounded-lg">
+                    <div className="text-2xl font-bold text-warning-600">
                       {subscriptions.filter(sub => sub.status === 'paused').length}
                     </div>
-                    <div className="text-sm text-gray-600">Paused Subscriptions</div>
+                    <div className="text-sm text-neutral-600">Paused Subscriptions</div>
                   </div>
                 </div>
               </CardContent>
-            </Card>
+            </EnhancedCard>
           </div>
         </div>
       </div>

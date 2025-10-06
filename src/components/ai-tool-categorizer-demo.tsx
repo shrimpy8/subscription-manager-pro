@@ -218,11 +218,11 @@ export function AIToolCategorizerDemo() {
 
                 {/* New Category Suggestion */}
                 {result.isNewCategory && (
-                  <div className="flex items-start gap-3 p-4 rounded-lg border border-blue-200 bg-blue-50">
-                    <AlertCircle className="h-4 w-4 text-blue-600 mt-0.5" />
+                  <div className="flex items-start gap-3 p-4 rounded-lg border border-orange-200 bg-orange-50">
+                    <AlertCircle className="h-4 w-4 text-orange-600 mt-0.5" />
                     <div className="text-sm">
-                      <strong className="text-blue-800">New Category Suggested:</strong> This tool doesn&apos;t fit well into existing categories. 
-                      Consider creating a new category: <strong className="text-blue-800">{suggestNewCategoryName(toolName, toolUrl, toolDescription)}</strong>
+                      <strong className="text-orange-800">New Category Suggested:</strong> This tool doesn&apos;t fit well into existing categories. 
+                      Consider creating a new category: <strong className="text-orange-800">{suggestNewCategoryName(toolName, toolUrl, toolDescription)}</strong>
                     </div>
                   </div>
                 )}
@@ -310,8 +310,8 @@ export function AIToolCategorizerDemo() {
                   )}
 
                   {/* Tool Summary */}
-                  <div className="p-4 rounded-lg border bg-blue-50">
-                    <h4 className="font-semibold mb-2 text-blue-800">Tool Summary</h4>
+                  <div className="p-4 rounded-lg border bg-orange-50">
+                    <h4 className="font-semibold mb-2 text-orange-800">Tool Summary</h4>
                     <div className="space-y-1 text-sm">
                       <div><strong>Name:</strong> {toolName}</div>
                       <div><strong>URL:</strong> {toolUrl}</div>

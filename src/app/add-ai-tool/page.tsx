@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { PremiumButton } from '@/components/ui/premium-button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -135,7 +136,7 @@ export default function AddAIToolPage() {
               </div>
               <div className="flex items-center space-x-4">
                 <h2 className="section-title">Add AI Tool</h2>
-                <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                <Badge variant="secondary" className="bg-orange-100 text-orange-800">
                   Discovery
                 </Badge>
               </div>
@@ -150,7 +151,7 @@ export default function AddAIToolPage() {
               <Card className="border border-gray-200 shadow-sm">
                 <CardHeader className="pb-4">
                   <CardTitle className="flex items-center text-lg font-semibold text-gray-900">
-                    <FileText className="w-5 h-5 mr-2 text-blue-600" />
+                    <FileText className="w-5 h-5 mr-2 text-orange-600" />
                     Basic Information
                   </CardTitle>
                 </CardHeader>
@@ -232,7 +233,7 @@ export default function AddAIToolPage() {
               <Card className="border border-gray-200 shadow-sm">
                 <CardHeader className="pb-4">
                   <CardTitle className="flex items-center text-lg font-semibold text-gray-900">
-                    <FileText className="w-5 h-5 mr-2 text-blue-600" />
+                    <FileText className="w-5 h-5 mr-2 text-orange-600" />
                     Additional Information
                   </CardTitle>
                 </CardHeader>
@@ -250,11 +251,11 @@ export default function AddAIToolPage() {
                     />
                   </div>
 
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <h4 className="text-sm font-medium text-blue-900 mb-2">
+                  <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                    <h4 className="text-sm font-medium text-orange-900 mb-2">
                       What happens next?
                     </h4>
-                    <ul className="text-sm text-blue-800 space-y-1">
+                    <ul className="text-sm text-orange-800 space-y-1">
                       <li>• This tool will be added to the AI Tools browser</li>
                       <li>• You can browse and discover it alongside other tools</li>
                       <li>• When you&apos;re ready to subscribe, use &quot;Add Subscription&quot;</li>
@@ -268,23 +269,24 @@ export default function AddAIToolPage() {
 
           {/* Footer Actions */}
           <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
-            <Button 
+            <PremiumButton 
               type="button" 
-              variant="outline"
+              variant="secondary"
               onClick={() => {
                 console.log('Navigating to Trending AI Tools...');
                 window.location.href = '/?tab=ai-tools';
               }}
             >
               Cancel
-            </Button>
-            <Button 
+            </PremiumButton>
+            <PremiumButton 
               type="submit" 
-              className="bg-blue-600 hover:bg-blue-700 text-white"
+              variant="gradient"
               disabled={isSubmitting}
+              loading={isSubmitting}
             >
               {isSubmitting ? 'Adding...' : 'Add AI Tool'}
-            </Button>
+            </PremiumButton>
           </div>
         </form>
       </div>

@@ -2,6 +2,7 @@
 
 import { AlertTriangle, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { PremiumButton } from '@/components/ui/premium-button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Subscription } from '@/types/subscription';
 import { formatCurrency } from '@/lib/utils';
@@ -86,31 +87,28 @@ export default function DeleteConfirmationDialog({
         </div>
 
         <div className="flex justify-end space-x-3">
-          <Button
-            variant="outline"
+          <PremiumButton
+            variant="secondary"
             onClick={onClose}
             disabled={isLoading}
             className="px-4 py-2"
           >
             Cancel
-          </Button>
-          <Button
+          </PremiumButton>
+          <PremiumButton
+            variant="error"
             onClick={onConfirm}
-            disabled={isLoading}
-            className="px-4 py-2 bg-red-600 hover:bg-red-700 transition-opacity duration-200 hover:opacity-90"
+            loading={!!isLoading}
+            className="px-4 py-2"
           >
-            {isLoading ? (
-              <div className="flex items-center space-x-2">
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                <span>Deleting...</span>
-              </div>
-            ) : (
+            {!isLoading && (
               <div className="flex items-center space-x-2">
                 <Trash2 className="w-4 h-4" />
                 <span>Delete Subscription</span>
               </div>
             )}
-          </Button>
+            {isLoading && 'Deleting...'}
+          </PremiumButton>
         </div>
       </DialogContent>
     </Dialog>

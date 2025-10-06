@@ -52,7 +52,7 @@ export function ValidationIndicator({
       case 'error':
         return <AlertCircle className={cn(iconClasses, 'text-red-600')} />;
       case 'loading':
-        return <Loader2 className={cn(iconClasses, 'text-blue-600 animate-spin')} />;
+        return <Loader2 className={cn(iconClasses, 'text-orange-600 animate-spin')} />;
       default:
         return null;
     }
@@ -65,7 +65,7 @@ export function ValidationIndicator({
       success: 'text-green-600',
       warning: 'text-yellow-600',
       error: 'text-red-600',
-      loading: 'text-blue-600',
+      loading: 'text-orange-600',
       default: 'text-gray-600'
     };
     

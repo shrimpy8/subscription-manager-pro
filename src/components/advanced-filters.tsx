@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Filter, X, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { PremiumButton } from '@/components/ui/premium-button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -117,9 +118,9 @@ export function AdvancedFilters({ filters, onFiltersChange, onClearFilters }: Ad
             </Button>
             
             {activeFiltersCount > 0 && (
-              <Button variant="ghost" size="sm" onClick={onClearFilters}>
+              <PremiumButton variant="ghost" size="sm" onClick={onClearFilters}>
                 Clear All
-              </Button>
+              </PremiumButton>
             )}
           </div>
 

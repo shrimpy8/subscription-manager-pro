@@ -6,6 +6,7 @@
 import { useState } from 'react';
 import { MoreVertical, Edit, Copy, Trash2, Pause, Play, ExternalLink, Calendar, DollarSign, AlertCircle } from 'lucide-react';
 import { EnhancedCard } from '@/components/ui/enhanced-card';
+import Image from 'next/image';
 import { PremiumButton } from '@/components/ui/premium-button';
 import { Badge } from '@/components/ui/badge';
 import { Subscription } from '@/types/subscription';
@@ -44,19 +45,22 @@ export const EnhancedSubscriptionCard = ({
         const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
         
         return (
-          <img 
+          <Image 
             src={faviconUrl} 
             alt={subscription.name}
+            width={48}
+            height={48}
             className="w-12 h-12 rounded-xl object-cover shadow-sm"
+            unoptimized
             onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.style.display = 'none';
-              const parent = target.parentElement;
+              const img = e.currentTarget as HTMLImageElement;
+              img.style.display = 'none';
+              const parent = img.parentElement as HTMLElement | null;
               if (parent) {
                 if (subscription.fallbackIcon) {
-                  parent.innerHTML = `<div class="w-12 h-12 bg-gradient-to-br from-primary-100 to-primary-200 rounded-xl flex items-center justify-center text-xl font-semibold text-primary-700 shadow-sm">${subscription.fallbackIcon}</div>`;
+                  parent.innerHTML = `<div class=\"w-12 h-12 bg-gradient-to-br from-primary-100 to-primary-200 rounded-xl flex items-center justify-center text-xl font-semibold text-primary-700 shadow-sm\">${subscription.fallbackIcon}</div>`;
                 } else {
-                  parent.innerHTML = `<div class="w-12 h-12 bg-gradient-to-br from-neutral-100 to-neutral-200 rounded-xl flex items-center justify-center text-xl font-semibold text-neutral-700 shadow-sm">${subscription.name.charAt(0)}</div>`;
+                  parent.innerHTML = `<div class=\"w-12 h-12 bg-gradient-to-br from-neutral-100 to-neutral-200 rounded-xl flex items-center justify-center text-xl font-semibold text-neutral-700 shadow-sm\">${subscription.name.charAt(0)}</div>`;
                 }
               }
             }}

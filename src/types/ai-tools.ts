@@ -87,7 +87,7 @@ export const AI_TOOL_CATEGORY_LABEL: Record<AIToolCategory, string> = {
 };
 
 export const AI_TOOL_CATEGORY_COLORS: Record<AIToolCategory, string> = {
-  Chat: "bg-blue-100 text-blue-800",
+  Chat: "bg-orange-100 text-orange-800",
   Search: "bg-green-100 text-green-800",
   Roleplay: "bg-purple-100 text-purple-800",
   Image: "bg-pink-100 text-pink-800",

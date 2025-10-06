@@ -16,6 +16,7 @@ import {
   Plus
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { 
   DropdownMenu, 
@@ -38,7 +39,7 @@ interface SubscriptionsTableProps {
   onAddSubscription?: () => void;
 }
 
-type SortField = 'name' | 'plan' | 'cost' | 'billingCycle' | 'startDate' | 'status';
+type SortField = 'name' | 'category' | 'plan' | 'cost' | 'billingCycle' | 'startDate' | 'status';
 type SortOrder = 'asc' | 'desc';
 
 const SubscriptionsTable = memo(function SubscriptionsTable({
@@ -104,18 +105,18 @@ const SubscriptionsTable = memo(function SubscriptionsTable({
         const domain = new URL(subscription.url).hostname;
         return (
           <div className="relative w-8 h-8 flex items-center justify-center flex-shrink-0">
-            <img
+            <Image
               src={`https://www.google.com/s2/favicons?domain=${domain}&sz=64`}
               alt={`${subscription.name} favicon`}
+              width={32}
+              height={32}
               className="w-8 h-8 rounded-sm"
+              unoptimized
               onError={(e) => {
-                // Fallback to emoji icon if favicon fails to load
-                const target = e.target as HTMLImageElement;
-                target.style.display = 'none';
-                const fallback = target.nextElementSibling as HTMLElement;
-                if (fallback) {
-                  fallback.style.display = 'block';
-                }
+                const img = e.currentTarget as HTMLImageElement;
+                img.style.display = 'none';
+                const fallback = img.nextElementSibling as HTMLElement;
+                if (fallback) fallback.style.display = 'block';
               }}
             />
             <span className="text-lg hidden">
@@ -136,17 +137,19 @@ const SubscriptionsTable = memo(function SubscriptionsTable({
     // For other subscriptions, try to use logoUrl if available
     if (subscription.logoUrl) {
       return (
-        <img 
+        <Image 
           src={subscription.logoUrl} 
           alt={subscription.name}
+          width={32}
+          height={32}
           className="w-8 h-8 rounded-lg object-cover"
+          unoptimized
           onError={(e) => {
-            // Fallback to fallback icon or first letter
-            const target = e.target as HTMLImageElement;
-            target.style.display = 'none';
-            const parent = target.parentElement;
+            const img = e.currentTarget as HTMLImageElement;
+            img.style.display = 'none';
+            const parent = img.parentElement;
             if (parent) {
-              parent.innerHTML = `<div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center"><span class="text-orange-600 font-semibold text-xs">${subscription.name.charAt(0)}</span></div>`;
+              parent.innerHTML = `<div class=\"w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center\"><span class=\"text-orange-600 font-semibold text-xs\">${subscription.name.charAt(0)}</span></div>`;
             }
           }}
         />
@@ -196,6 +199,15 @@ const SubscriptionsTable = memo(function SubscriptionsTable({
                   {getSortIcon('name')}
                 </button>
               </th>
+          <th className="text-left p-4 font-medium text-gray-600">
+            <button
+              onClick={() => handleSort('category')}
+              className="flex items-center space-x-1 hover:text-gray-900 transition-colors"
+            >
+              <span>Category</span>
+              {getSortIcon('category')}
+            </button>
+          </th>
               <th className="text-left p-4 font-medium text-gray-600">
                 <button
                   onClick={() => handleSort('plan')}
@@ -266,13 +278,15 @@ const SubscriptionsTable = memo(function SubscriptionsTable({
                           </Badge>
                         )}
                       </div>
-                      <p className="text-sm text-gray-600 capitalize">{subscription.category}</p>
                       <div className="flex items-center space-x-1 text-xs text-gray-500">
                         <Calendar className="w-3 h-3" />
                         <span>{getRenewalText(subscription)}</span>
                       </div>
                     </div>
                   </div>
+                </td>
+                <td className="p-4">
+                  <span className="text-sm text-gray-700 capitalize">{subscription.category}</span>
                 </td>
                 <td className="p-4">
                   <span className="text-sm font-medium text-gray-900">

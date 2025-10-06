@@ -3,6 +3,8 @@
 import { X, ExternalLink, Calendar, DollarSign, User, Key, Shield, Globe } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import Image from 'next/image';
+import { PremiumButton } from '@/components/ui/premium-button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Subscription } from '@/types/subscription';
@@ -27,16 +29,19 @@ export default function SubscriptionDetailsModal({
   const getSubscriptionIcon = (subscription: Subscription) => {
     if (subscription.logoUrl) {
       return (
-        <img 
+        <Image 
           src={subscription.logoUrl} 
           alt={subscription.name}
+          width={64}
+          height={64}
           className="w-16 h-16 rounded-xl object-cover"
+          unoptimized
           onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            target.style.display = 'none';
-            const parent = target.parentElement;
+            const img = e.currentTarget as HTMLImageElement;
+            img.style.display = 'none';
+            const parent = img.parentElement;
             if (parent) {
-              parent.innerHTML = `<div class="w-16 h-16 bg-orange-100 rounded-xl flex items-center justify-center text-2xl">${subscription.fallbackIcon || subscription.name.charAt(0)}</div>`;
+              parent.innerHTML = `<div class=\"w-16 h-16 bg-orange-100 rounded-xl flex items-center justify-center text-2xl\">${subscription.fallbackIcon || subscription.name.charAt(0)}</div>`;
             }
           }}
         />
@@ -58,9 +63,9 @@ export default function SubscriptionDetailsModal({
             <DialogTitle className="modal-title text-2xl">
               Subscription Details
             </DialogTitle>
-            <Button variant="ghost" size="sm" onClick={onClose}>
+            <PremiumButton variant="ghost" size="sm" onClick={onClose}>
               <X className="w-4 h-4" />
-            </Button>
+            </PremiumButton>
           </div>
         </DialogHeader>
 
@@ -282,7 +287,7 @@ export default function SubscriptionDetailsModal({
               <CardContent>
                 <div className="flex flex-wrap gap-2">
                   {subscription.previouslyUsedPromotionCode.map((code: string, index: number) => (
-                    <Badge key={index} variant="outline" className="bg-blue-100 text-blue-800">
+                    <Badge key={index} variant="outline" className="bg-orange-100 text-orange-800">
                       {code}
                     </Badge>
                   ))}

@@ -2,6 +2,7 @@
 
 import { AlertTriangle, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { PremiumButton } from '@/components/ui/premium-button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 interface CancelConfirmationDialogProps {
@@ -56,31 +57,28 @@ export default function CancelConfirmationDialog({
         </div>
 
         <div className="flex justify-end space-x-3">
-          <Button
-            variant="outline"
+          <PremiumButton
+            variant="secondary"
             onClick={onClose}
             disabled={isLoading}
             className="px-4 py-2"
           >
             Continue Editing
-          </Button>
-          <Button
+          </PremiumButton>
+          <PremiumButton
+            variant="warning"
             onClick={onConfirm}
-            disabled={isLoading}
-            className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 transition-opacity duration-200 hover:opacity-90"
+            loading={!!isLoading}
+            className="px-4 py-2"
           >
-            {isLoading ? (
-              <div className="flex items-center space-x-2">
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                <span>Cancelling...</span>
-              </div>
-            ) : (
+            {!isLoading && (
               <div className="flex items-center space-x-2">
                 <X className="w-4 h-4" />
                 <span>Cancel Changes</span>
               </div>
             )}
-          </Button>
+            {isLoading && 'Cancelling...'}
+          </PremiumButton>
         </div>
       </DialogContent>
     </Dialog>

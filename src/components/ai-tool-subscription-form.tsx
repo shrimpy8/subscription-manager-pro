@@ -7,6 +7,9 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { EnhancedCard } from '@/components/ui/enhanced-card';
+import { PremiumButton } from '@/components/ui/premium-button';
+import { EnhancedInput } from '@/components/ui/enhanced-input';
 import { FormField, FormValidation } from '@/components/ui/form-field';
 import { validateSubscription } from '@/utils/validation';
 import { Badge } from '@/components/ui/badge';
@@ -209,26 +212,26 @@ export default function AIToolSubscriptionForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
+    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <header className="glass-card border-b border-orange-200/50 sticky top-0 z-30">
+        <header className="bg-white shadow-sm border-b border-neutral-200 sticky top-0 z-30">
           <div className="px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center space-x-4">
                 <div className="flex items-center">
-                  <ArrowLeft className="w-5 h-5 mr-2 text-gray-600" />
+                  <ArrowLeft className="w-5 h-5 mr-2 text-neutral-600" />
                   <button 
                     onClick={() => window.location.href = '/'}
-                    className="text-gray-600 hover:text-gray-800 cursor-pointer"
+                    className="text-neutral-600 hover:text-neutral-800 cursor-pointer transition-colors"
                   >
                     Back to Subscriptions
                   </button>
                 </div>
               </div>
               <div className="flex items-center space-x-4">
-                <h2 className="section-title">Add Subscription</h2>
-                <Badge variant="secondary" className="bg-orange-100 text-orange-800">
+                <h2 className="text-h2 text-neutral-900">Add Subscription</h2>
+                <Badge variant="secondary" className="bg-primary-100 text-primary-800">
                   New Entry
                 </Badge>
               </div>
@@ -238,16 +241,18 @@ export default function AIToolSubscriptionForm() {
 
         {/* Workflow Note */}
         <div className="px-4 sm:px-6 lg:px-8 mb-6">
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h4 className="text-sm font-medium text-blue-900 mb-2">
-              💡 Workflow Tip
-            </h4>
-            <p className="text-sm text-blue-800">
-              <strong>For AI Tools:</strong> First add the tool to your AI Tools list using &quot;Add AI Tool&quot;, 
-              then come back here to subscribe and track it. This ensures the tool appears in both your 
-              AI Tools browser and your subscription tracker.
-            </p>
-          </div>
+          <EnhancedCard variant="outlined" className="bg-primary-50 border-primary-200">
+            <div className="p-4">
+              <h4 className="text-sm font-semibold text-primary-900 mb-2 flex items-center">
+                💡 Workflow Tip
+              </h4>
+              <p className="text-sm text-primary-800">
+                <strong>For AI Tools:</strong> First add the tool to your AI Tools list using &quot;Add AI Tool&quot;, 
+                then come back here to subscribe and track it. This ensures the tool appears in both your 
+                AI Tools browser and your subscription tracker.
+              </p>
+            </div>
+          </EnhancedCard>
         </div>
 
         <form onSubmit={handleSubmit} className="px-4 sm:px-6 lg:px-8 pb-8">
@@ -255,18 +260,17 @@ export default function AIToolSubscriptionForm() {
             {/* Left Column */}
             <div className="space-y-6">
               {/* Basic Information */}
-              <Card className="border border-gray-200 shadow-sm">
+              <EnhancedCard variant="elevated" className="border border-neutral-200">
                 <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center text-lg font-semibold text-gray-900">
-                    <FileText className="w-5 h-5 mr-2 text-orange-600" />
+                  <CardTitle className="flex items-center text-h3 text-neutral-900">
+                    <FileText className="w-5 h-5 mr-2 text-primary-600" />
                     Basic Information
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <Label htmlFor="name" className="text-sm font-medium text-gray-700">Tool Name *</Label>
-                    <Input
-                      id="name"
+                    <Label htmlFor="name" className="text-caption font-medium text-neutral-700">Tool Name *</Label>
+                    <EnhancedInput
                       placeholder="e.g. ChatGPT"
                       value={formData.name}
                       onChange={(e) => handleInputChange('name', e.target.value)}
@@ -276,7 +280,7 @@ export default function AIToolSubscriptionForm() {
 
 
                   <div>
-                    <Label htmlFor="category" className="text-sm font-medium text-gray-700">Category *</Label>
+                    <Label htmlFor="category" className="text-caption font-medium text-neutral-700">Category *</Label>
                     <Select
                       value={formData.category === 'AI Tools' && formData.subcategory ? `ai-tools-${formData.subcategory}` : formData.category}
                       onValueChange={(value) => {
@@ -377,13 +381,13 @@ export default function AIToolSubscriptionForm() {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
+              </EnhancedCard>
 
               {/* Key Management */}
-              <Card className="border border-gray-200 shadow-sm">
+              <EnhancedCard variant="elevated" className="border border-neutral-200">
                 <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center text-lg font-semibold text-gray-900">
-                    <Key className="w-5 h-5 mr-2 text-orange-600" />
+                  <CardTitle className="flex items-center text-h3 text-neutral-900">
+                    <Key className="w-5 h-5 mr-2 text-primary-600" />
                     Key Management
                   </CardTitle>
                 </CardHeader>
@@ -452,13 +456,13 @@ export default function AIToolSubscriptionForm() {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
+              </EnhancedCard>
 
               {/* Usage */}
-              <Card className="border border-gray-200 shadow-sm">
+              <EnhancedCard variant="elevated" className="border border-neutral-200">
                 <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center text-lg font-semibold text-gray-900">
-                    <Shield className="w-5 h-5 mr-2 text-orange-600" />
+                  <CardTitle className="flex items-center text-h3 text-neutral-900">
+                    <Shield className="w-5 h-5 mr-2 text-primary-600" />
                     Usage
                   </CardTitle>
                 </CardHeader>
@@ -496,16 +500,16 @@ export default function AIToolSubscriptionForm() {
                     </label>
                   </div>
                 </CardContent>
-              </Card>
+              </EnhancedCard>
             </div>
 
             {/* Right Column */}
             <div className="space-y-6">
               {/* Billing Information */}
-              <Card className="border border-gray-200 shadow-sm">
+              <EnhancedCard variant="elevated" className="border border-neutral-200">
                 <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center text-lg font-semibold text-gray-900">
-                    <DollarSign className="w-5 h-5 mr-2 text-orange-600" />
+                  <CardTitle className="flex items-center text-h3 text-neutral-900">
+                    <DollarSign className="w-5 h-5 mr-2 text-primary-600" />
                     Billing Information
                   </CardTitle>
                 </CardHeader>
@@ -616,13 +620,13 @@ export default function AIToolSubscriptionForm() {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
+              </EnhancedCard>
 
               {/* Promo Details */}
-              <Card className="border border-gray-200 shadow-sm">
+              <EnhancedCard variant="elevated" className="border border-neutral-200">
                 <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center text-lg font-semibold text-gray-900">
-                    <Gift className="w-5 h-5 mr-2 text-orange-600" />
+                  <CardTitle className="flex items-center text-h3 text-neutral-900">
+                    <Gift className="w-5 h-5 mr-2 text-primary-600" />
                     Promo Details (optional)
                   </CardTitle>
                 </CardHeader>
@@ -685,13 +689,13 @@ export default function AIToolSubscriptionForm() {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
+              </EnhancedCard>
 
               {/* Miscellaneous */}
-              <Card className="border border-gray-200 shadow-sm">
+              <EnhancedCard variant="elevated" className="border border-neutral-200">
                 <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center text-lg font-semibold text-gray-900">
-                    <Shield className="w-5 h-5 mr-2 text-orange-600" />
+                  <CardTitle className="flex items-center text-h3 text-neutral-900">
+                    <Shield className="w-5 h-5 mr-2 text-primary-600" />
                     Miscellaneous
                   </CardTitle>
                 </CardHeader>
@@ -736,13 +740,13 @@ export default function AIToolSubscriptionForm() {
                     />
                   </div>
                 </CardContent>
-              </Card>
+              </EnhancedCard>
 
               {/* Personal Notes */}
-              <Card className="border border-gray-200 shadow-sm">
+              <EnhancedCard variant="elevated" className="border border-neutral-200">
                 <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center text-lg font-semibold text-gray-900">
-                    <FileText className="w-5 h-5 mr-2 text-orange-600" />
+                  <CardTitle className="flex items-center text-h3 text-neutral-900">
+                    <FileText className="w-5 h-5 mr-2 text-primary-600" />
                     Personal Notes (optional)
                   </CardTitle>
                 </CardHeader>
@@ -754,22 +758,22 @@ export default function AIToolSubscriptionForm() {
                     rows={4}
                   />
                 </CardContent>
-              </Card>
+              </EnhancedCard>
             </div>
           </div>
 
           {/* Footer Actions */}
-          <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
-            <Button 
+          <div className="flex justify-end space-x-4 pt-6 border-t border-neutral-200">
+            <PremiumButton 
               type="button" 
-              variant="outline"
+              variant="secondary"
               onClick={() => window.location.href = '/'}
             >
               Cancel
-            </Button>
-            <Button type="submit" className="gradient-bg hover:opacity-90">
+            </PremiumButton>
+            <PremiumButton type="submit" variant="gradient">
               Add Subscription
-            </Button>
+            </PremiumButton>
           </div>
         </form>
       </div>

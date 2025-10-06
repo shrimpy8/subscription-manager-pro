@@ -3,18 +3,19 @@
  * Apple-inspired design with enhanced visual hierarchy
  */
 
-import { useState, useEffect } from 'react';
-import { Plus, Grid, List, BarChart3, Download, DollarSign, CheckCircle, PiggyBank, TrendingUp } from 'lucide-react';
+import { useState } from 'react';
+import { Grid, List, BarChart3, DollarSign, CheckCircle, PiggyBank, TrendingUp } from 'lucide-react';
 import { EnhancedCard, MetricsCard } from '@/components/ui/enhanced-card';
+import Image from 'next/image';
 import { PremiumButton, ButtonGroup } from '@/components/ui/premium-button';
-import { SearchInput } from '@/components/ui/enhanced-input';
+// import { SearchInput } from '@/components/ui/enhanced-input';
 import { Subscription, SubscriptionFilters, ViewMode } from '@/types/subscription';
-import { formatCurrency, getDaysUntilRenewal, getStatusColor, getPriorityColor, generateId, toDate, getDefaultRenewalDate, getCurrentDate, formatDate } from '@/lib/utils';
-import EnhancedSubscriptionsTable from '@/components/enhanced-subscriptions-table';
+import { formatCurrency, getStatusColor } from '@/lib/utils';
+import SubscriptionsTable from '@/components/subscriptions-table';
 import SubscriptionDetailsModal from '@/components/subscription-details-modal';
 import DeleteConfirmationDialog from '@/components/delete-confirmation-dialog';
 import { LoadingPage } from '@/components/ui/loading-spinner';
-import { ToastContainer, useToast } from '@/components/ui/toast';
+import { ToastContainer } from '@/components/ui/toast';
 
 interface PremiumDashboardProps {
   subscriptions: Subscription[];
@@ -53,27 +54,30 @@ export default function PremiumDashboard({
   onViewDetails,
   onExport
 }: PremiumDashboardProps) {
-  const toast = useToast();
+  // const toast = useToast();
 
   // Local state for UI
   const [selectedSubscription, setSelectedSubscription] = useState<Subscription | null>(null);
   const [subscriptionToDelete, setSubscriptionToDelete] = useState<Subscription | null>(null);
 
   // Destructure loading states
-  const { initial, delete: deleteLoading, export: exportLoading } = loadingStates;
+  const { initial, delete: deleteLoading } = loadingStates;
 
   // Helper function to get subscription icon
   const getSubscriptionIcon = (subscription: Subscription) => {
     if (subscription.logoUrl) {
       return (
-        <img
+        <Image
           src={subscription.logoUrl}
           alt={`${subscription.name} logo`}
+          width={32}
+          height={32}
           className="w-8 h-8 rounded-lg object-cover"
+          unoptimized
           onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            target.style.display = 'none';
-            const fallback = target.nextElementSibling as HTMLElement;
+            const img = e.currentTarget as HTMLImageElement;
+            img.style.display = 'none';
+            const fallback = img.nextElementSibling as HTMLElement;
             if (fallback) fallback.style.display = 'flex';
           }}
         />
@@ -81,7 +85,7 @@ export default function PremiumDashboard({
     }
     
     return (
-      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm">
+      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-white font-semibold text-sm">
         {subscription.fallbackIcon || subscription.name.charAt(0).toUpperCase()}
       </div>
     );
@@ -94,11 +98,11 @@ export default function PremiumDashboard({
     if (sub.billingCycle === 'Yearly') return sum + (sub.cost / 12);
     return sum;
   }, 0);
-  const activeSubscriptions = subscriptions.filter(sub => sub.status === 'active').length;
-  const totalSavings = subscriptions.reduce((sum, sub) => {
-    if (sub.promoDiscount) return sum + sub.promoDiscount;
-    return sum;
-  }, 0);
+  const totalActiveSubscriptions = subscriptions.filter(sub => sub.status === 'active').length;
+  // const totalSavings = subscriptions.reduce((sum, sub) => {
+  //   if (sub.promoDiscount) return sum + sub.promoDiscount;
+  //   return sum;
+  // }, 0);
 
   // Note: filteredSubscriptions is managed by parent component
 
@@ -137,12 +141,6 @@ export default function PremiumDashboard({
                 Manage your subscriptions with ease
               </p>
             </div>
-            <div className="flex items-center space-x-4">
-              <PremiumButton variant="gradient" size="lg">
-                <Plus className="h-5 w-5 mr-2" />
-                Add Subscription
-              </PremiumButton>
-            </div>
           </div>
         </div>
       </div>
@@ -166,14 +164,14 @@ export default function PremiumDashboard({
           />
           <MetricsCard
             title="Active Services"
-            value={activeSubscriptions}
+            value={totalActiveSubscriptions}
             change={0}
             trend="neutral"
             icon={<CheckCircle className="h-4 w-4 text-primary-500" />}
           />
           <MetricsCard
             title="Total Savings"
-            value={formatCurrency(totalSavings, 'USD')}
+            value="$0.00"
             change={12}
             trend="up"
             icon={<PiggyBank className="h-4 w-4 text-success-500" />}
@@ -181,22 +179,14 @@ export default function PremiumDashboard({
         </div>
 
         {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-3">
             <EnhancedCard variant="elevated" padding="lg">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-h2 text-neutral-900">Subscription Overview</h2>
                 <ButtonGroup>
                   <PremiumButton
-                    variant={viewMode.type === 'list' ? 'primary' : 'ghost'}
-                    size="sm"
-                    onClick={() => onViewModeChange('list')}
-                  >
-                    <List className="h-4 w-4 mr-2" />
-                    List
-                  </PremiumButton>
-                  <PremiumButton
-                    variant={viewMode.type === 'grid' ? 'primary' : 'ghost'}
+                    variant={viewMode.type === 'grid' ? 'orange-gradient' : 'ghost'}
                     size="sm"
                     onClick={() => onViewModeChange('grid')}
                   >
@@ -204,7 +194,15 @@ export default function PremiumDashboard({
                     Grid
                   </PremiumButton>
                   <PremiumButton
-                    variant={viewMode.type === 'analytics' ? 'primary' : 'ghost'}
+                    variant={viewMode.type === 'list' ? 'orange-gradient' : 'ghost'}
+                    size="sm"
+                    onClick={() => onViewModeChange('list')}
+                  >
+                    <List className="h-4 w-4 mr-2" />
+                    List
+                  </PremiumButton>
+                  <PremiumButton
+                    variant={viewMode.type === 'analytics' ? 'orange-gradient' : 'ghost'}
                     size="sm"
                     onClick={() => onViewModeChange('analytics')}
                   >
@@ -215,7 +213,7 @@ export default function PremiumDashboard({
               </div>
 
               {viewMode.type === 'list' && (
-                <EnhancedSubscriptionsTable
+                <SubscriptionsTable
                   subscriptions={filteredSubscriptions}
                   onEdit={onEdit}
                   onDuplicate={onDuplicate}
@@ -226,7 +224,7 @@ export default function PremiumDashboard({
               )}
 
               {viewMode.type === 'grid' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-6">
                   {filteredSubscriptions.map((subscription) => (
                     <EnhancedCard key={subscription.id} variant="default" hover={true}>
                       <div className="p-4">
@@ -256,26 +254,6 @@ export default function PremiumDashboard({
                   ))}
                 </div>
               )}
-            </EnhancedCard>
-          </div>
-
-          <div>
-            <EnhancedCard variant="elevated" padding="lg">
-              <h3 className="text-h3 text-neutral-900 mb-4">Quick Actions</h3>
-              <div className="space-y-3">
-                <button className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base rounded-md flex items-center justify-center transition-colors">
-                  <Plus className="h-5 w-5 mr-3" />
-                  Add New Subscription
-                </button>
-                <PremiumButton variant="secondary" className="w-full h-10 text-sm font-medium">
-                  <Download className="h-4 w-4 mr-2" />
-                  Export Data
-                </PremiumButton>
-                <PremiumButton variant="secondary" className="w-full h-10 text-sm font-medium">
-                  <BarChart3 className="h-4 w-4 mr-2" />
-                  View Analytics
-                </PremiumButton>
-              </div>
             </EnhancedCard>
           </div>
         </div>

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { X, Save } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { PremiumButton } from '@/components/ui/premium-button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -139,9 +140,9 @@ export default function AddSubscriptionModal({ isOpen, onClose, onAdd }: AddSubs
             <DialogTitle className="modal-title text-2xl">
               Add New Subscription
             </DialogTitle>
-            <Button variant="ghost" size="sm" onClick={onClose}>
+            <PremiumButton variant="ghost" size="sm" onClick={onClose}>
               <X className="w-4 h-4" />
-            </Button>
+            </PremiumButton>
           </div>
         </DialogHeader>
 
@@ -397,9 +398,9 @@ export default function AddSubscriptionModal({ isOpen, onClose, onAdd }: AddSubs
                 </>
               )}
             </Button>
-            <Button type="button" variant="outline" onClick={onClose} className="flex-1">
+            <PremiumButton type="button" variant="secondary" onClick={onClose} className="flex-1">
               Cancel
-            </Button>
+            </PremiumButton>
           </div>
         </form>
       </DialogContent>

@@ -1,12 +1,15 @@
 "use client";
 
-import React, { useState, useEffect, memo, useMemo, useCallback } from 'react';
-import { Search, ExternalLink, Plus, Check, Filter, X, Eye, EyeOff, MessageSquare, Search as SearchIcon, Users, Image, Video, Music, FileText, Wrench, Code, Settings, Sparkles, Zap, Database, Globe, Calendar, Palette, Mic, TrendingUp, Server, Rocket } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import React, { useState, useEffect, memo } from 'react';
+import { Search, ExternalLink, Plus, Check, Filter, X, Eye, EyeOff, MessageSquare, Search as SearchIcon, Users, Image as ImageIcon, Video, Music, FileText, Wrench, Code, Settings, Sparkles, Zap, Database, Globe, Calendar, Palette, Mic, TrendingUp, Server, Rocket } from 'lucide-react';
+// import { Card, CardContent } from '@/components/ui/card';
+import { PremiumButton } from '@/components/ui/premium-button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { AITool, AIToolFilters, AIToolCategory } from '@/types/ai-tools';
+import { EnhancedCard } from '@/components/ui/enhanced-card';
+import Image from 'next/image';
+// import { EnhancedInput } from '@/components/ui/enhanced-input';
+import { AITool, AIToolFilters } from '@/types/ai-tools';
 import { aiTools, getAIToolsByCategory, searchAITools } from '@/lib/ai-tools-data';
 import { AI_TOOL_CATEGORY_ORDER, AI_TOOL_CATEGORY_LABEL, AI_TOOL_CATEGORY_COLORS } from '@/types/ai-tools';
 import { ErrorBoundary } from '@/components/error-boundary';
@@ -17,7 +20,7 @@ const CATEGORY_ICONS = {
   'Chat': MessageSquare,
   'Search': SearchIcon,
   'Roleplay': Users,
-  'Image': Image,
+  'Image': ImageIcon,
   'Video': Video,
   'Audio': Music,
   'Transcribe': FileText,
@@ -200,76 +203,76 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
       {/* Header with a16z ranking info */}
       <div className="text-center mb-8">
         <div className="flex items-center justify-center mb-4">
-          <div className="w-8 h-8 text-orange-600 mr-3">✨</div>
-          <h1 className="page-title">
+          <div className="w-8 h-8 text-primary-600 mr-3">✨</div>
+          <h1 className="text-h1 text-neutral-900">
             Gen AI Consumer Apps
           </h1>
         </div>
-        <p className="text-gray-600 max-w-2xl mx-auto">
+        <p className="text-body-lg text-neutral-600 max-w-2xl mx-auto">
           Track and explore the most innovative AI tools shaping the future of consumer technology
         </p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mb-8">
-        <Card className="glass-card">
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-orange-600">{filteredTools.length}</div>
-            <div className="text-sm text-gray-600">Visible Tools</div>
-          </CardContent>
-        </Card>
-        <Card className="glass-card">
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-orange-600">{aiTools.filter(tool => tool.originalRank <= 50).length}</div>
-            <div className="text-sm text-gray-600">a16z Ranked</div>
-            <div className="text-xs text-gray-500 mt-1">🏆 Top 50</div>
-          </CardContent>
-        </Card>
-        <Card className="glass-card">
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-orange-600">{aiTools.filter(tool => tool.originalRank > 50).length}</div>
-            <div className="text-sm text-gray-600">User Choice</div>
-            <div className="text-xs text-gray-500 mt-1">⭐ Additional</div>
-          </CardContent>
-        </Card>
-        <Card className="glass-card">
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-orange-600">{selectedTools.size}</div>
-            <div className="text-sm text-gray-600">Selected</div>
-          </CardContent>
-        </Card>
-        <Card className="glass-card">
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-orange-600">{trackedTools.size}</div>
-            <div className="text-sm text-gray-600">Subscribed</div>
-          </CardContent>
-        </Card>
-        <Card className="glass-card">
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-orange-600">{usingTools.size}</div>
-            <div className="text-sm text-gray-600">Using</div>
-          </CardContent>
-        </Card>
+        <EnhancedCard variant="glass" className="text-center">
+          <div className="p-4">
+            <div className="text-2xl font-bold text-primary-600">{filteredTools.length}</div>
+            <div className="text-sm text-neutral-600">Visible Tools</div>
+          </div>
+        </EnhancedCard>
+        <EnhancedCard variant="glass" className="text-center">
+          <div className="p-4">
+            <div className="text-2xl font-bold text-primary-600">{aiTools.filter(tool => tool.originalRank <= 50).length}</div>
+            <div className="text-sm text-neutral-600">a16z Ranked</div>
+            <div className="text-xs text-neutral-500 mt-1">🏆 Top 50</div>
+          </div>
+        </EnhancedCard>
+        <EnhancedCard variant="glass" className="text-center">
+          <div className="p-4">
+            <div className="text-2xl font-bold text-primary-600">{aiTools.filter(tool => tool.originalRank > 50).length}</div>
+            <div className="text-sm text-neutral-600">User Choice</div>
+            <div className="text-xs text-neutral-500 mt-1">⭐ Additional</div>
+          </div>
+        </EnhancedCard>
+        <EnhancedCard variant="glass" className="text-center">
+          <div className="p-4">
+            <div className="text-2xl font-bold text-primary-600">{selectedTools.size}</div>
+            <div className="text-sm text-neutral-600">Selected</div>
+          </div>
+        </EnhancedCard>
+        <EnhancedCard variant="glass" className="text-center">
+          <div className="p-4">
+            <div className="text-2xl font-bold text-primary-600">{trackedTools.size}</div>
+            <div className="text-sm text-neutral-600">Subscribed</div>
+          </div>
+        </EnhancedCard>
+        <EnhancedCard variant="glass" className="text-center">
+          <div className="p-4">
+            <div className="text-2xl font-bold text-primary-600">{usingTools.size}</div>
+            <div className="text-sm text-neutral-600">Using</div>
+          </div>
+        </EnhancedCard>
       </div>
 
       {/* Filters */}
-      <Card className="glass-card card-spacing">
-        <CardContent className="p-6">
+      <EnhancedCard variant="glass" className="card-spacing">
+        <div className="p-6">
           <div className="flex items-center justify-between element-spacing">
-            <h3 className="section-title flex items-center">
-              <Filter className="w-4 h-4 mr-2 text-orange-600" />
+            <h3 className="text-h3 text-neutral-900 flex items-center">
+              <Filter className="w-4 h-4 mr-2 text-primary-600" />
               Filters
               {activeFiltersCount > 0 && (
-                <Badge variant="secondary" className="ml-2 btn-secondary text-xs">
+                <Badge variant="secondary" className="ml-2 bg-primary-100 text-primary-800 text-xs">
                   {activeFiltersCount}
                 </Badge>
               )}
             </h3>
             {activeFiltersCount > 0 && (
-              <Button variant="outline" size="sm" onClick={clearFilters} className="h-7 px-2 text-xs">
+              <PremiumButton variant="secondary" size="sm" onClick={clearFilters} className="h-7 px-2 text-xs">
                 <X className="w-3 h-3 mr-1" />
                 Clear
-              </Button>
+              </PremiumButton>
             )}
           </div>
 
@@ -280,33 +283,33 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
               <div className="form-section">
                 <h4 className="form-section-title">Ranking</h4>
                 <div className="flex flex-wrap gap-1.5">
-                  <Button
-                    variant={filters.a16zRank === 'all' ? "default" : "outline"}
+                  <PremiumButton
+                    variant={filters.a16zRank === 'all' ? "primary" : "secondary"}
                     size="sm"
                     onClick={() => setFilters(prev => ({ ...prev, a16zRank: 'all' }))}
-                    className={`${filters.a16zRank === 'all' ? "gradient-bg" : ""} h-7 px-2 text-xs`}
+                    className="h-7 px-2 text-xs"
                   >
                     <Sparkles className="w-3 h-3 mr-1" />
                     All
-                  </Button>
-                  <Button
-                    variant={filters.a16zRank === 'a16z-ranked' ? "default" : "outline"}
+                  </PremiumButton>
+                  <PremiumButton
+                    variant={filters.a16zRank === 'a16z-ranked' ? "primary" : "secondary"}
                     size="sm"
                     onClick={() => setFilters(prev => ({ ...prev, a16zRank: 'a16z-ranked' }))}
-                    className={`${filters.a16zRank === 'a16z-ranked' ? "gradient-bg" : ""} h-7 px-2 text-xs`}
+                    className="h-7 px-2 text-xs"
                   >
                     <span className="w-3 h-3 mr-1">🏆</span>
                     a16z Rank
-                  </Button>
-                  <Button
-                    variant={filters.a16zRank === 'user-choice' ? "default" : "outline"}
+                  </PremiumButton>
+                  <PremiumButton
+                    variant={filters.a16zRank === 'user-choice' ? "primary" : "secondary"}
                     size="sm"
                     onClick={() => setFilters(prev => ({ ...prev, a16zRank: 'user-choice' }))}
-                    className={`${filters.a16zRank === 'user-choice' ? "gradient-bg" : ""} h-7 px-2 text-xs`}
+                    className="h-7 px-2 text-xs"
                   >
                     <span className="w-3 h-3 mr-1">⭐</span>
                     User Choice
-                  </Button>
+                  </PremiumButton>
                 </div>
               </div>
 
@@ -314,22 +317,22 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
               <div className="form-section">
                 <h4 className="form-section-title">Tracking</h4>
                 <div className="flex flex-wrap gap-1.5">
-                  <Button
-                    variant={filters.showSubscribedOnly ? "default" : "outline"}
+                  <PremiumButton
+                    variant={filters.showSubscribedOnly ? "primary" : "secondary"}
                     size="sm"
                     onClick={() => setFilters(prev => ({ ...prev, showSubscribedOnly: !prev.showSubscribedOnly }))}
-                    className={`${filters.showSubscribedOnly ? "gradient-bg" : ""} h-7 px-2 text-xs`}
+                    className="h-7 px-2 text-xs"
                   >
                     Subscribed
-                  </Button>
-                  <Button
-                    variant={filters.showUsingOnly ? "default" : "outline"}
+                  </PremiumButton>
+                  <PremiumButton
+                    variant={filters.showUsingOnly ? "primary" : "secondary"}
                     size="sm"
                     onClick={() => setFilters(prev => ({ ...prev, showUsingOnly: !prev.showUsingOnly }))}
-                    className={`${filters.showUsingOnly ? "gradient-bg" : ""} h-7 px-2 text-xs`}
+                    className="h-7 px-2 text-xs"
                   >
                     Using
-                  </Button>
+                  </PremiumButton>
                 </div>
               </div>
 
@@ -337,24 +340,24 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
               <div className="form-section">
                 <h4 className="form-section-title">Visibility</h4>
                 <div className="flex flex-wrap gap-1.5">
-                  <Button
-                    variant={showCNRegion ? "default" : "outline"}
+                  <PremiumButton
+                    variant={showCNRegion ? "primary" : "secondary"}
                     size="sm"
                     onClick={() => setShowCNRegion(!showCNRegion)}
-                    className={`${showCNRegion ? "gradient-bg" : ""} h-7 px-2 text-xs`}
+                    className="h-7 px-2 text-xs"
                   >
                     {showCNRegion ? <Eye className="w-3 h-3 mr-1" /> : <EyeOff className="w-3 h-3 mr-1" />}
                     CN Region
-                  </Button>
-                  <Button
-                    variant={showRoleplay ? "default" : "outline"}
+                  </PremiumButton>
+                  <PremiumButton
+                    variant={showRoleplay ? "primary" : "secondary"}
                     size="sm"
                     onClick={() => setShowRoleplay(!showRoleplay)}
-                    className={`${showRoleplay ? "gradient-bg" : ""} h-7 px-2 text-xs`}
+                    className="h-7 px-2 text-xs"
                   >
                     {showRoleplay ? <Eye className="w-3 h-3 mr-1" /> : <EyeOff className="w-3 h-3 mr-1" />}
                     Roleplay
-                  </Button>
+                  </PremiumButton>
                 </div>
               </div>
             </div>
@@ -363,22 +366,22 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
             <div className="form-section">
               <h4 className="form-section-title">Categories</h4>
               <div className="flex flex-wrap gap-1.5">
-                <Button
-                  variant={filters.category === 'all' ? "default" : "outline"}
+                <PremiumButton
+                  variant={filters.category === 'all' ? "orange-gradient" : "secondary"}
                   size="sm"
                   onClick={() => setFilters(prev => ({ ...prev, category: 'all' }))}
                   className={`${filters.category === 'all' ? "gradient-bg" : ""} h-7 px-2 text-xs`}
                 >
                   <Sparkles className="w-3 h-3 mr-1" />
                   All
-                </Button>
+                </PremiumButton>
                 {AI_TOOL_CATEGORY_ORDER.sort().map((category) => {
                   const Icon = CATEGORY_ICONS[category];
                   const count = aiTools.filter(tool => tool.category === category).length;
                   return (
-                    <Button
+                    <PremiumButton
                       key={category}
-                      variant={filters.category === category ? "default" : "outline"}
+                      variant={filters.category === category ? "orange-gradient" : "secondary"}
                       size="sm"
                       onClick={() => setFilters(prev => ({ ...prev, category }))}
                       className={`${filters.category === category ? "gradient-bg" : ""} h-7 px-2 text-xs`}
@@ -386,7 +389,7 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
                     >
                       <Icon className="w-3 h-3 mr-1" />
                       {AI_TOOL_CATEGORY_LABEL[category]} ({count})
-                    </Button>
+                    </PremiumButton>
                   );
                 })}
               </div>
@@ -406,8 +409,8 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </EnhancedCard>
 
       {/* Category Groups */}
       {Object.keys(groupedTools).length > 0 ? (
@@ -429,7 +432,7 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
                 </div>
 
                 {/* Tools Grid for this category */}
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4">
                   {categoryTools.map((tool) => {
                     const isSelected = selectedTools.has(tool.id);
                     const isSubscribed = tool.isSubscribed;
@@ -438,14 +441,17 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
                     const isCurrentlyUsing = usingTools.has(tool.id);
 
                     return (
-                      <Card
+                      <div
                         key={tool.id}
-                        className={`glass-card cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-105 ${
+                        className={`cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-105 ${
                           isSelected ? 'ring-2 ring-orange-500 shadow-lg' : ''
                         } ${isSubscribed ? 'border-orange-300' : ''}`}
                         onClick={() => handleToolToggle(tool)}
                       >
-                        <CardContent className="p-3">
+                        <EnhancedCard
+                          variant="glass"
+                        >
+                        <div className="p-3">
           {/* a16z Ranking Badge */}
           <div className="absolute top-2 left-2">
             <Badge variant="outline" className="bg-orange-100 text-orange-800 border-orange-300 text-xs font-bold">
@@ -471,35 +477,23 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
             </div>
           )}
 
-                          {/* Checkbox */}
-                          <div className="absolute top-2 right-2">
-                            <div 
-                              className={`w-4 h-4 rounded border-2 transition-all duration-200 flex items-center justify-center cursor-pointer ${
-                                isSelected 
-                                  ? 'bg-orange-500 border-orange-500' 
-                                  : 'border-gray-300 hover:border-gray-400'
-                              }`}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleToolToggle(tool);
-                              }}
-                            >
-                              {isSelected && <Check className="w-2.5 h-2.5 text-white" />}
-                            </div>
-                          </div>
+                          {/* Checkbox removed per design cleanup */}
 
                           {/* Line 1: Icon + Tool Name */}
                           <div className="flex items-center space-x-2 mb-2 mt-4">
                             <div className="relative w-10 h-10 flex items-center justify-center flex-shrink-0">
-                              <img
+                              <Image
                                 src={`https://www.google.com/s2/favicons?domain=${new URL(tool.url).hostname}&sz=64`}
                                 alt={`${tool.name} favicon`}
+                                width={32}
+                                height={32}
                                 className="w-8 h-8 rounded-sm"
+                                unoptimized
                                 onError={(e) => {
                                   // Fallback to emoji icon if favicon fails to load
-                                  const target = e.target as HTMLImageElement;
-                                  target.style.display = 'none';
-                                  const fallback = target.nextElementSibling as HTMLElement;
+                                  const img = e.currentTarget as HTMLImageElement;
+                                  img.style.display = 'none';
+                                  const fallback = img.nextElementSibling as HTMLElement;
                                   if (fallback) {
                                     fallback.style.display = 'block';
                                   }
@@ -509,7 +503,7 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
                                 {tool.fallbackIcon}
                               </span>
                             </div>
-                            <h3 className="font-semibold text-gray-900 text-xs line-clamp-1 flex-1">
+                            <h3 className="font-semibold text-gray-900 text-base line-clamp-1 flex-1">
                               {tool.name}
                             </h3>
                           </div>
@@ -519,29 +513,29 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
                             {/* Show Track/Using buttons only for non-CN/Region and non-Roleplay tools */}
                             {!tool.flags?.includes('cn-region') && tool.category !== 'Roleplay' ? (
                               <>
-                                <Button
-                                  variant={isTracked ? "default" : "outline"}
+                                <PremiumButton
+                                  variant={isTracked ? "orange-gradient" : "secondary"}
                                   size="sm"
-                                  className={`flex-1 text-xs h-6 px-2 ${isTracked ? "gradient-bg" : ""}`}
+                                  className={`flex-1 text-sm h-7 px-3 ${isTracked ? "gradient-bg" : ""}`}
                                   onClick={(e) => handleAddToSubscriptions(tool, e)}
                                 >
                                   {isTracked ? <Check className="w-3 h-3 mr-1" /> : <Plus className="w-3 h-3 mr-1" />}
                                   Subscribe
-                                </Button>
-                                <Button
-                                  variant={isCurrentlyUsing ? "default" : "outline"}
+                                </PremiumButton>
+                                <PremiumButton
+                                  variant={isCurrentlyUsing ? "orange-gradient" : "secondary"}
                                   size="sm"
-                                  className={`flex-1 text-xs h-6 px-2 ${isCurrentlyUsing ? "gradient-bg" : ""}`}
+                                  className={`flex-1 text-sm h-7 px-3 ${isCurrentlyUsing ? "gradient-bg" : ""}`}
                                   onClick={(e) => handleMarkAsUsing(tool, e)}
                                 >
                                   {isCurrentlyUsing ? <Check className="w-3 h-3 mr-1" /> : <Plus className="w-3 h-3 mr-1" />}
                                   Using
-                                </Button>
+                                </PremiumButton>
                               </>
                             ) : (
                               <div className="flex-1" />
                             )}
-                            <Button
+                            <PremiumButton
                               variant="ghost"
                               size="sm"
                               className="text-xs h-6 px-2"
@@ -551,10 +545,11 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
                               }}
                             >
                               <ExternalLink className="w-3 h-3" />
-                            </Button>
+                            </PremiumButton>
                           </div>
-                        </CardContent>
-                      </Card>
+                        </div>
+                        </EnhancedCard>
+                      </div>
                     );
                   })}
                 </div>
@@ -564,18 +559,18 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
         </div>
       ) : (
         /* Empty State */
-        <Card className="glass-card">
-          <CardContent className="p-8 text-center">
+        <EnhancedCard variant="glass" className="text-center">
+          <div className="p-8">
             <div className="text-gray-500 mb-4">
               <Search className="w-12 h-12 mx-auto mb-2 opacity-50" />
               <h3 className="text-lg font-semibold mb-2">No tools found</h3>
               <p>Try adjusting your filters or search terms.</p>
             </div>
-            <Button variant="outline" onClick={clearFilters}>
+            <PremiumButton variant="secondary" onClick={clearFilters}>
               Clear Filters
-            </Button>
-          </CardContent>
-        </Card>
+            </PremiumButton>
+          </div>
+        </EnhancedCard>
       )}
 
       {/* Footer */}

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { Plus, Download } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { PremiumButton } from '@/components/ui/premium-button';
 import { Badge } from '@/components/ui/badge';
 import { Subscription, SubscriptionFilters, ViewMode } from '@/types/subscription';
 import { loadSubscriptions, saveSubscriptions, exportSubscriptionsToCSV, downloadCSV } from '@/lib/subscription-persistence';
@@ -230,8 +230,8 @@ export default function HomePage() {
               
               {currentTab === 'subscriptions' && (
                 <div className="flex items-center space-x-4">
-                  <Button 
-                    variant="outline"
+                  <PremiumButton 
+                    variant="secondary"
                     disabled={exportLoading.isLoading}
                     onClick={async () => {
                       try {
@@ -256,26 +256,26 @@ export default function HomePage() {
                   >
                     <Download className="w-4 h-4 mr-2" />
                     {exportLoading.isLoading ? (exportLoading.loadingMessage || 'Exporting...') : 'Export CSV'}
-                  </Button>
-                  <Button 
-                    className="btn-primary"
+                  </PremiumButton>
+                  <PremiumButton 
+                    variant="orange-gradient"
                     onClick={() => window.location.href = '/ai-tool-form'}
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     Add Subscription
-                  </Button>
+                  </PremiumButton>
                 </div>
               )}
               
               {currentTab === 'ai-tools' && (
                 <div className="flex items-center space-x-4">
-                  <Button 
-                    className="btn-primary"
+                  <PremiumButton 
+                    variant="orange-gradient"
                     onClick={() => window.location.href = '/add-ai-tool'}
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     Add AI Tool
-                  </Button>
+                  </PremiumButton>
                 </div>
               )}
             </div>

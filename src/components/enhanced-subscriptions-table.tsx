@@ -20,13 +20,14 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { 
+    import { 
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
   DropdownMenuSeparator, 
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
+    import Image from 'next/image';
 import { Subscription } from '@/types/subscription';
 import { formatCurrency, getDaysUntilRenewal, getStatusColor, getPriorityColor, toDate, formatDate } from '@/lib/utils';
 import { ErrorBoundary } from '@/components/error-boundary';
@@ -131,30 +132,32 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
     );
   });
 
-  const getSubscriptionIcon = (subscription: Subscription) => {
+      const getSubscriptionIcon = (subscription: Subscription) => {
+        // Helper that prefers logoUrl, then favicon from URL, else fallback letter box
+        const size = 32;
+        const commonClass = "w-8 h-8 rounded-lg object-cover";
+        const altText = `${subscription.name} logo`;
+
     if (subscription.url) {
       try {
         const domain = new URL(subscription.url).hostname;
         const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
         
         return (
-          <img 
-            src={faviconUrl} 
-            alt={subscription.name}
-            className="w-8 h-8 rounded-lg object-cover"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.style.display = 'none';
-              const parent = target.parentElement;
-              if (parent) {
-                if (subscription.fallbackIcon) {
-                  parent.innerHTML = `<div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center text-lg">${subscription.fallbackIcon}</div>`;
-                } else {
-                  parent.innerHTML = `<div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center"><span class="text-orange-600 font-semibold text-sm">${subscription.name.charAt(0)}</span></div>`;
-                }
-              }
-            }}
-          />
+              <Image 
+                src={faviconUrl}
+                alt={altText}
+                width={size}
+                height={size}
+                className={commonClass}
+                unoptimized
+                onError={(e) => {
+                  const img = e.currentTarget as HTMLImageElement;
+                  img.style.display = 'none';
+                  const fallback = img.nextElementSibling as HTMLElement;
+                  if (fallback) fallback.style.display = 'flex';
+                }}
+              />
         );
       } catch {
         // If URL parsing fails, fall through to other methods
@@ -163,23 +166,20 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
 
     if (subscription.logoUrl) {
       return (
-        <img 
-          src={subscription.logoUrl} 
-          alt={subscription.name}
-          className="w-8 h-8 rounded-lg object-cover"
-          onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            target.style.display = 'none';
-            const parent = target.parentElement;
-            if (parent) {
-              if (subscription.fallbackIcon) {
-                parent.innerHTML = `<div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center text-lg">${subscription.fallbackIcon}</div>`;
-              } else {
-                parent.innerHTML = `<div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center"><span class="text-orange-600 font-semibold text-sm">${subscription.name.charAt(0)}</span></div>`;
-              }
-            }
-          }}
-        />
+              <Image 
+                src={subscription.logoUrl}
+                alt={altText}
+                width={size}
+                height={size}
+                className={commonClass}
+                unoptimized
+                onError={(e) => {
+                  const img = e.currentTarget as HTMLImageElement;
+                  img.style.display = 'none';
+                  const fallback = img.nextElementSibling as HTMLElement;
+                  if (fallback) fallback.style.display = 'flex';
+                }}
+              />
       );
     }
 
@@ -191,13 +191,13 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
       );
     }
 
-    return (
-      <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
-        <span className="text-orange-600 font-semibold text-sm">
-          {subscription.name.charAt(0)}
-        </span>
-      </div>
-    );
+          return (
+            <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+              <span className="text-orange-600 font-semibold text-sm">
+                {subscription.name.charAt(0)}
+              </span>
+            </div>
+          );
   };
 
   if (subscriptions.length === 0) {
@@ -314,7 +314,7 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
                   {/* Billing Cycle */}
                   <td className="py-4 pl-4">
                     <div className="flex items-center space-x-1">
-                      <Clock className="w-3 h-3 text-blue-600" />
+                      <Clock className="w-3 h-3 text-orange-600" />
                       <span className="text-sm text-gray-600">{subscription.billingCycle}</span>
                     </div>
                   </td>

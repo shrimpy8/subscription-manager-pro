@@ -7,15 +7,11 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 
-interface PremiumButtonProps {
+interface PremiumButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
-  variant?: 'primary' | 'secondary' | 'ghost' | 'gradient' | 'success' | 'warning' | 'error';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'gradient' | 'orange-gradient' | 'success' | 'warning' | 'error';
   size?: 'sm' | 'md' | 'lg';
   loading?: boolean;
-  disabled?: boolean;
-  className?: string;
-  onClick?: () => void;
-  type?: 'button' | 'submit' | 'reset';
 }
 
 export const PremiumButton = ({
@@ -23,14 +19,13 @@ export const PremiumButton = ({
   variant = 'primary',
   size = 'md',
   loading = false,
-  disabled = false,
+  disabled,
   className,
-  onClick,
-  type = 'button'
+  ...rest
 }: PremiumButtonProps) => {
   return (
     <Button
-      type={type}
+      type={rest.type || 'button'}
       className={cn(
         'relative overflow-hidden transition-all duration-300 ease-out btn-animate',
         'focus:ring-2 focus:ring-offset-2',
@@ -41,6 +36,7 @@ export const PremiumButton = ({
           'bg-neutral-100 hover:bg-neutral-200 text-neutral-900 focus:ring-neutral-500': variant === 'secondary',
           'bg-transparent hover:bg-neutral-100 text-neutral-700 focus:ring-neutral-500': variant === 'ghost',
           'bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white focus:ring-primary-500': variant === 'gradient',
+          'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white focus:ring-orange-500': variant === 'orange-gradient',
           'bg-success-500 hover:bg-success-600 text-white focus:ring-success-500': variant === 'success',
           'bg-warning-500 hover:bg-warning-600 text-white focus:ring-warning-500': variant === 'warning',
           'bg-error-500 hover:bg-error-600 text-white focus:ring-error-500': variant === 'error',
@@ -52,8 +48,8 @@ export const PremiumButton = ({
         },
         className
       )}
-      onClick={onClick}
       disabled={disabled || loading}
+      {...rest}
     >
       {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
       {children}

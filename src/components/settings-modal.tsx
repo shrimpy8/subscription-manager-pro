@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { X, Download, Upload, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { PremiumButton } from '@/components/ui/premium-button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Subscription } from '@/types/subscription';
 import { handleError } from '@/utils/error-handler';
@@ -97,9 +98,9 @@ export default function SettingsModal({ isOpen, onClose, subscriptions, onSubscr
       <div className="modal-content">
         <div className="modal-header">
           <h2 className="modal-title">Settings</h2>
-          <Button variant="ghost" size="sm" onClick={onClose}>
+          <PremiumButton variant="ghost" size="sm" onClick={onClose}>
             <X className="w-4 h-4" />
-          </Button>
+          </PremiumButton>
         </div>
 
         <div className="space-y-4">
