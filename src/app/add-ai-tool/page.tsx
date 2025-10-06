@@ -117,7 +117,7 @@ export default function AddAIToolPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
+  <div className="min-h-screen bg-gradient-to-br from-neutral-100 to-neutral-200">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <header className="glass-card border-b border-orange-200/50 sticky top-0 z-30">
@@ -144,7 +144,7 @@ export default function AddAIToolPage() {
           </div>
         </header>
 
-        <form onSubmit={handleSubmit} className="px-4 sm:px-6 lg:px-8 pb-8">
+        <form onSubmit={handleSubmit} className="px-4 sm:px-6 lg:px-8 mt-4 pb-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Left Column - Basic Information */}
             <div className="space-y-6">

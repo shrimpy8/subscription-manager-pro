@@ -81,7 +81,7 @@ export default function AIToolsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100">
+  <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-200">
       <PageHeader
         title="Trending AI Tools"
         badgeText={`${aiTools.length} Tools`}

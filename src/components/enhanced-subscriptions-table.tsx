@@ -214,7 +214,7 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
             </div>
             {onAddSubscription && (
               <PremiumButton
-                variant="primary"
+                variant="gradient"
                 onClick={onAddSubscription}
                 className="mt-4"
               >

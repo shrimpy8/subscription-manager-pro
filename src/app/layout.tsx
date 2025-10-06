@@ -19,7 +19,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <ErrorBoundary>
-          <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
+          <div className="min-h-screen bg-gradient-to-br from-neutral-100 to-neutral-200">
             {children}
           </div>
         </ErrorBoundary>

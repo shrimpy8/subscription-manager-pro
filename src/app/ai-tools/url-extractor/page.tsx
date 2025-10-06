@@ -2,7 +2,7 @@ import { URLExtractorDemo } from '@/components/url-extractor-demo';
 
 export default function URLExtractorPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
+  <div className="min-h-screen bg-gradient-to-br from-neutral-100 to-neutral-200">
       <div className="container mx-auto py-8">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">URL to Tool Name Extractor</h1>

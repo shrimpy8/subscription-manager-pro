@@ -103,7 +103,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100">
+    <div className="min-h-screen bg-gradient-to-br from-neutral-100 to-neutral-200">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <header className="bg-white shadow-sm border-b border-neutral-200 sticky top-0 z-30">
@@ -125,15 +125,14 @@ export default function SettingsPage() {
               </div>
             </div>
           </div>
+          {/* Subtitle (consistent with PageHeader style) */}
+          <div className="px-4 sm:px-6 lg:px-8 pb-4 -mt-2">
+            <p className="text-sm text-neutral-600">Manage your subscription data and application preferences.</p>
+          </div>
         </header>
 
         {/* Content */}
         <div className="px-4 sm:px-6 lg:px-8 py-8">
-          <div className="mb-6">
-            <p className="text-body-lg text-neutral-600">
-              Manage your subscription data and application preferences.
-            </p>
-          </div>
 
           {/* Settings Content */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

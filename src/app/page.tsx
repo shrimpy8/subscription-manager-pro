@@ -207,7 +207,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100">
+    <div className="min-h-screen bg-gradient-to-br from-neutral-100 to-neutral-200">
       {/* Sidebar */}
       <Sidebar 
         currentTab={currentTab} 

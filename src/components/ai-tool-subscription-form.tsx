@@ -211,7 +211,7 @@ export default function AIToolSubscriptionForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100">
+    <div className="min-h-screen bg-gradient-to-br from-neutral-100 to-neutral-200">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <header className="bg-white shadow-sm border-b border-neutral-200 sticky top-0 z-30">
@@ -239,9 +239,9 @@ export default function AIToolSubscriptionForm() {
         </header>
 
         {/* Workflow Note */}
-        <div className="px-4 sm:px-6 lg:px-8 mb-6">
+        <div className="px-4 sm:px-6 lg:px-8 mt-4 mb-6">
           <EnhancedCard variant="outlined" className="bg-primary-50 border-primary-200">
-            <div className="p-4">
+            <div className="p-2 md:p-3">
               <h4 className="text-sm font-semibold text-primary-900 mb-2 flex items-center">
                 💡 Workflow Tip
               </h4>

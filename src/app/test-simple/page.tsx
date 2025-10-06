@@ -11,7 +11,7 @@ export default function TestSimple() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 flex items-center justify-center">
+  <div className="min-h-screen bg-gradient-to-br from-neutral-100 to-neutral-200 flex items-center justify-center">
       <div className="text-center">
         <h1 className="text-2xl font-bold text-orange-600 mb-4">Test Simple Page</h1>
         <p className="text-gray-600">{data}</p>

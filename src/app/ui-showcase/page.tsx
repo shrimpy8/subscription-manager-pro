@@ -92,7 +92,7 @@ export default function UIShowcasePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100">
+  <div className="min-h-screen bg-gradient-to-br from-neutral-100 to-neutral-200">
       {/* Hero Section */}
       <div className="bg-white shadow-sm border-b border-neutral-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
