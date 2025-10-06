@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Subscription } from '@/types/subscription';
+import { subscriptionCreateSchema, subscriptionsBulkSchema } from '@/lib/validation/schemas';
 import { sampleSubscriptions } from '@/lib/sample-data';
 
 // Mock data store (in production, this would be a database)
@@ -30,7 +31,12 @@ export async function GET() {
  */
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const json = await request.json();
+    const parsed = subscriptionCreateSchema.safeParse(json);
+    if (!parsed.success) {
+      return NextResponse.json({ success: false, error: 'Invalid data', details: parsed.error.flatten() }, { status: 400 });
+    }
+    const body = parsed.data;
     
     // Apply favicon logic for AI tools
     let logo = body.logo;
@@ -46,10 +52,27 @@ export async function POST(request: NextRequest) {
     
     const subscription: Subscription = {
       id: `sub-${Date.now()}`,
-      ...body,
-      logo: logo,
+      name: body.name,
+      category: body.category,
+      subcategory: body.subcategory || '',
+      plan: body.plan || '',
+      cost: body.cost ?? 0,
+      currency: body.currency || 'USD',
+      billingCycle: body.billingCycle,
+      status: body.status,
       startDate: new Date(body.startDate || Date.now()),
-      renewalDate: new Date(body.renewalDate || Date.now() + 30 * 24 * 60 * 60 * 1000)
+      renewalDate: new Date(body.renewalDate || Date.now() + 30 * 24 * 60 * 60 * 1000),
+      url: body.url || '',
+      description: body.description || '',
+      notes: body.notes || '',
+      accountEmail: body.accountEmail || '',
+      priority: body.priority,
+      usageFrequency: body.usageFrequency,
+      logo: logo,
+      tags: [],
+      autoRenew: body.autoRenew ?? true,
+      // defaults for optional analytics-related fields
+      alternativeServices: [],
     };
 
     subscriptions.push(subscription);
@@ -73,17 +96,12 @@ export async function POST(request: NextRequest) {
  */
 export async function PUT(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { subscriptions: updatedSubscriptions } = body;
-
-    if (!Array.isArray(updatedSubscriptions)) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid data format' },
-        { status: 400 }
-      );
+    const json = await request.json();
+    const parsed = subscriptionsBulkSchema.safeParse(json);
+    if (!parsed.success) {
+      return NextResponse.json({ success: false, error: 'Invalid data', details: parsed.error.flatten() }, { status: 400 });
     }
-
-    subscriptions = updatedSubscriptions;
+    subscriptions = parsed.data.subscriptions as Subscription[];
 
     return NextResponse.json({
       success: true,

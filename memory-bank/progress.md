@@ -465,3 +465,18 @@ The project is complete and functional with excellent code quality, comprehensiv
 
 ### Next
 - Implement HH2-173: add zod schemas and centralized API error responses step-by-step, validating each route with a clean build before moving to the next.
+
+## 2025-10-06 17:52 – URL tampering mitigations
+
+### Highlights
+- Added URL param validation utilities and guarded update route by existence in local data.
+- Coerced dashboard query params (tab/view) to safe values; hardened export API format param.
+
+### Linear
+- Done: HH2-175 (URL parameter validation & URL→UI sanitization – client-only phase).
+
+### Build/Quality
+- Full build clean (no errors); only existing warnings remain.
+
+### Next
+- Begin HH2-173: API input validation (zod) + centralized error responses, applied incrementally per route with lint/build checks at each step.
