@@ -11,7 +11,8 @@ const subscriptions: Subscription[] = [];
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const format = searchParams.get('format') || 'csv';
+    const rawFormat = (searchParams.get('format') || '').toLowerCase();
+    const format = rawFormat === 'json' ? 'json' : 'csv';
 
     if (format === 'csv') {
       const headers = [

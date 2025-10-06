@@ -52,12 +52,12 @@ export default function HomePage() {
   const [selectedSubscription, setSelectedSubscription] = useState<Subscription | null>(null);
   const [subscriptionToDelete, setSubscriptionToDelete] = useState<Subscription | null>(null);
   
-  // Handle URL parameters to set the current tab and view mode
+  // Handle URL parameters to set the current tab and view mode (validated/coerced)
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
-      const tab = urlParams.get('tab');
-      const view = urlParams.get('view');
+      const tab = (urlParams.get('tab') || '').toLowerCase();
+      const view = (urlParams.get('view') || '').toLowerCase();
       
       if (tab === 'ai-tools') {
         setCurrentTab('ai-tools');
