@@ -14,7 +14,6 @@ import { Subscription, SubscriptionFilters, ViewMode } from '@/types/subscriptio
 import { formatCurrency, getStatusColor } from '@/lib/utils';
 import SubscriptionsTable from '@/components/subscriptions-table';
 import SubscriptionDetailsModal from '@/components/subscription-details-modal';
-import DeleteConfirmationDialog from '@/components/delete-confirmation-dialog';
 import { LoadingPage } from '@/components/ui/loading-spinner';
 import { ToastContainer } from '@/components/ui/toast';
 
@@ -59,10 +58,10 @@ export default function PremiumDashboard({
 
   // Local state for UI
   const [selectedSubscription, setSelectedSubscription] = useState<Subscription | null>(null);
-  const [subscriptionToDelete, setSubscriptionToDelete] = useState<Subscription | null>(null);
+  // Delete confirmation is handled by parent page to avoid double dialogs
 
   // Destructure loading states
-  const { initial, delete: deleteLoading } = loadingStates;
+  const { initial } = loadingStates;
 
   // Helper function to get subscription icon
   const getSubscriptionIcon = (subscription: Subscription) => {
@@ -204,7 +203,7 @@ export default function PremiumDashboard({
                   subscriptions={filteredSubscriptions}
                   onEdit={onEdit}
                   onDuplicate={onDuplicate}
-                  onDelete={(sub) => setSubscriptionToDelete(sub)}
+                  onDelete={(sub) => onDelete(sub)}
                   onPause={onPause}
                   onViewDetails={onViewDetails}
                 />
@@ -260,15 +259,7 @@ export default function PremiumDashboard({
         />
       )}
 
-      {subscriptionToDelete && (
-        <DeleteConfirmationDialog
-          isOpen={!!subscriptionToDelete}
-          subscription={subscriptionToDelete}
-          onClose={() => setSubscriptionToDelete(null)}
-          onConfirm={() => onDelete(subscriptionToDelete)}
-          isLoading={deleteLoading.isLoading}
-        />
-      )}
+      {/* Delete dialog handled by parent page to avoid duplicate overlays */}
 
       <ToastContainer />
     </div>
