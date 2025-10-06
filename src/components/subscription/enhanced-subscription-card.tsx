@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { Subscription } from '@/types/subscription';
 import { AI_TOOL_CATEGORY_LABEL } from '@/types/ai-tools';
 import { formatCurrency, getDaysUntilRenewal, getStatusColor, getPriorityColor } from '@/lib/utils';
+import { sanitizeInput } from '@/lib/xss';
 
 interface EnhancedSubscriptionCardProps {
   subscription: Subscription;
@@ -126,7 +127,7 @@ export const EnhancedSubscriptionCard = ({
           {getSubscriptionIcon(subscription)}
           <div className="flex-1 min-w-0">
             <h3 className="text-h4 text-neutral-900 truncate group-hover:text-primary-600 transition-colors">
-              {subscription.name}
+              {sanitizeInput(subscription.name)}
             </h3>
             <p className="text-body-sm text-neutral-600">
               {subscription.category === 'AI Tools' && subscription.subcategory
@@ -270,7 +271,7 @@ export const EnhancedSubscriptionCard = ({
         {/* Description */}
         {subscription.description && (
           <p className="text-body-sm text-neutral-600 line-clamp-2">
-            {subscription.description}
+            {sanitizeInput(subscription.description)}
           </p>
         )}
       </div>

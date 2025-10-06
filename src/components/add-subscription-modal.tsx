@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Subscription } from '@/types/subscription';
 import { generateId, getCurrentDate, getDefaultRenewalDate } from '@/lib/utils';
+import { sanitizeInput } from '@/lib/xss';
 import { validateSubscription } from '@/utils/validation';
 import { useLoadingState } from '@/hooks/use-loading-state';
 import { LoadingButton } from '@/components/ui/loading-spinner';
@@ -100,7 +101,7 @@ export default function AddSubscriptionModal({ isOpen, onClose, onAdd }: AddSubs
       }
 
       onAdd(subscription);
-      toast.success(`Successfully added "${subscription.name}"!`);
+      toast.success(`Successfully added "${sanitizeInput(subscription.name)}"!`);
       onClose();
       
       // Reset form

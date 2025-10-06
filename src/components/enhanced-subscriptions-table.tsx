@@ -30,6 +30,7 @@ import { Badge } from '@/components/ui/badge';
     import Image from 'next/image';
 import { Subscription } from '@/types/subscription';
 import { formatCurrency, getDaysUntilRenewal, getStatusColor, getPriorityColor, toDate, formatDate } from '@/lib/utils';
+import { sanitizeInput } from '@/lib/xss';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { EnhancedCard } from '@/components/ui/enhanced-card';
 import { PremiumButton } from '@/components/ui/premium-button';
@@ -280,7 +281,7 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center mb-1">
                           <h3 className="text-sm font-semibold text-gray-900">
-                            {subscription.name}
+                            {sanitizeInput(subscription.name)}
                           </h3>
                         </div>
                         <div className="flex items-center space-x-2">

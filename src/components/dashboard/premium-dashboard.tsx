@@ -12,6 +12,7 @@ import { PremiumButton, ButtonGroup } from '@/components/ui/premium-button';
 // import { SearchInput } from '@/components/ui/enhanced-input';
 import { Subscription, SubscriptionFilters, ViewMode } from '@/types/subscription';
 import { formatCurrency, getStatusColor } from '@/lib/utils';
+import { sanitizeInput } from '@/lib/xss';
 import SubscriptionsTable from '@/components/subscriptions-table';
 import SubscriptionDetailsModal from '@/components/subscription-details-modal';
 import { LoadingPage } from '@/components/ui/loading-spinner';
@@ -219,7 +220,7 @@ export default function PremiumDashboard({
                             {getSubscriptionIcon(subscription)}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h3 className="text-sm text-neutral-900 leading-tight">{subscription.name}</h3>
+                            <h3 className="text-sm text-neutral-900 leading-tight">{sanitizeInput(subscription.name)}</h3>
                             <p className="text-xs text-neutral-600 leading-tight">
                               {(AI_TOOL_CATEGORY_LABEL as Record<string,string>)[subscription.category]
                                 || (subscription.category === 'AI Tools' && subscription.subcategory

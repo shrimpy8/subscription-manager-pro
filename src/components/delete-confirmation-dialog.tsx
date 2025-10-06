@@ -1,6 +1,7 @@
 "use client";
 
 import { AlertTriangle, Trash2 } from 'lucide-react';
+import { sanitizeInput } from '@/lib/xss';
 import { PremiumButton } from '@/components/ui/premium-button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Subscription } from '@/types/subscription';
@@ -60,11 +61,11 @@ export default function DeleteConfirmationDialog({
                 <div className="bg-white rounded border border-red-200 p-3 space-y-2">
                   <div className="flex items-center space-x-2">
                     <span className="text-sm font-medium text-gray-900">Name:</span>
-                    <span className="text-sm text-gray-700">{subscription.name}</span>
+                    <span className="text-sm text-gray-700">{sanitizeInput(subscription.name)}</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <span className="text-sm font-medium text-gray-900">Plan:</span>
-                    <span className="text-sm text-gray-700">{subscription.plan}</span>
+                    <span className="text-sm text-gray-700">{sanitizeInput(subscription.plan)}</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <span className="text-sm font-medium text-gray-900">Cost:</span>

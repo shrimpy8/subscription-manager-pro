@@ -14,6 +14,7 @@ import { aiTools, getAIToolsByCategory, searchAITools } from '@/lib/ai-tools-dat
 import { AI_TOOL_CATEGORY_ORDER, AI_TOOL_CATEGORY_LABEL, AI_TOOL_CATEGORY_COLORS } from '@/types/ai-tools';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { LoadingInline } from '@/components/ui/loading-spinner';
+import { sanitizeInput, sanitizeURL } from '@/lib/xss';
 
 // Category icon mapping
 const CATEGORY_ICONS = {
@@ -492,7 +493,7 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
                               </span>
                             </div>
                             <h3 className="font-semibold text-gray-900 text-base line-clamp-1 flex-1">
-                              {tool.name}
+                              {sanitizeInput(tool.name)}
                             </h3>
                           </div>
 
@@ -529,7 +530,7 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
                               className="text-xs h-6 px-2"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                window.open(tool.url, '_blank', 'noopener,noreferrer');
+                                window.open(sanitizeURL(tool.url), '_blank', 'noopener,noreferrer');
                               }}
                             >
                               <ExternalLink className="w-3 h-3" />

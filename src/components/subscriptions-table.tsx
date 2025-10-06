@@ -29,6 +29,7 @@ import {
 import { Subscription } from '@/types/subscription';
 import { AI_TOOL_CATEGORY_LABEL } from '@/types/ai-tools';
 import { formatCurrency, getDaysUntilRenewal, getStatusColor, getPriorityColor, toDate, formatDate } from '@/lib/utils';
+import { sanitizeInput } from '@/lib/xss';
 import { ErrorBoundary } from '@/components/error-boundary';
 
 interface SubscriptionsTableProps {
@@ -281,7 +282,7 @@ const SubscriptionsTable = memo(function SubscriptionsTable({
                     {getSubscriptionIcon(subscription)}
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center space-x-2">
-                        <p className="font-medium text-gray-900 truncate">{subscription.name}</p>
+                        <p className="font-medium text-gray-900 truncate">{sanitizeInput(subscription.name)}</p>
                         {subscription.chinaRegionOnly && (
                           <Badge variant="outline" className="bg-red-100 text-red-800 border-red-300 text-xs">
                             CN Region

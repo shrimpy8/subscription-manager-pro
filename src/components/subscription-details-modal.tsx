@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Subscription } from '@/types/subscription';
 import { toDate, formatDate } from '@/lib/utils';
 import { formatCurrency, getDaysUntilRenewal } from '@/lib/utils';
-import { sanitizeInput } from '@/lib/xss';
+import { sanitizeInput, sanitizeURL } from '@/lib/xss';
 
 interface SubscriptionDetailsModalProps {
   isOpen: boolean;
@@ -75,7 +75,7 @@ export default function SubscriptionDetailsModal({
             {getSubscriptionIcon(subscription)}
             <div className="flex-1">
               <div className="flex items-center space-x-3 mb-2">
-                <h2 className="text-h3 text-neutral-900">{subscription.name}</h2>
+                <h2 className="text-h3 text-neutral-900">{sanitizeInput(subscription.name)}</h2>
                 <Badge className={subscription.status === 'active' ? 'bg-green-100 text-green-800' : 
                                  subscription.status === 'paused' ? 'bg-yellow-100 text-yellow-800' : 
                                  'bg-red-100 text-red-800'}>
@@ -96,7 +96,7 @@ export default function SubscriptionDetailsModal({
               <p className="text-sm text-neutral-600">{sanitizeInput(subscription.description || '')}</p>
             </div>
             <PremiumButton 
-              onClick={() => window.open(subscription.url, '_blank')}
+              onClick={() => window.open(sanitizeURL(subscription.url), '_blank')}
               variant="gradient"
             >
               <ExternalLink className="w-4 h-4 mr-2" />
@@ -270,7 +270,7 @@ export default function SubscriptionDetailsModal({
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-700 whitespace-pre-wrap">{subscription.notes}</p>
+                <p className="text-gray-700 whitespace-pre-wrap">{sanitizeInput(subscription.notes)}</p>
               </CardContent>
             </Card>
           )}
