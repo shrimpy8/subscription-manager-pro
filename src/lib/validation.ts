@@ -83,9 +83,9 @@ export function validateSubscription(data: Partial<Subscription>): ValidationRes
 
   // Required fields
   const requiredFields: (keyof Subscription)[] = [
-    'name', 'category', 'status', 'cost', 'currency', 'billingCycle',
-    'url', 'accountEmail', 'renewalDate', 'startDate', 'priority',
-    'usageFrequency', 'autoRenew'
+    'name', 'category', 'status', 'cost', 'currency', 'billing_cycle',
+    'url', 'account_email', 'renewal_date', 'start_date', 'usage_importance',
+    'usage_frequency', 'auto_renew'
   ];
 
   for (const field of requiredFields) {
@@ -95,8 +95,8 @@ export function validateSubscription(data: Partial<Subscription>): ValidationRes
   }
 
   // Email validation
-  if (data.accountEmail && !isValidEmail(data.accountEmail)) {
-    errors.accountEmail = ['Invalid email format'];
+  if (data.account_email && !isValidEmail(data.account_email)) {
+    errors.account_email = ['Invalid email format'];
   }
 
   // URL validation
@@ -110,8 +110,8 @@ export function validateSubscription(data: Partial<Subscription>): ValidationRes
   }
 
   // Billing cycle validation
-  if (data.billingCycle && !['Monthly', 'Yearly', 'Weekly', 'Quarterly', 'Free'].includes(data.billingCycle)) {
-    errors.billingCycle = ['Invalid billing cycle'];
+  if (data.billing_cycle && !['Monthly', 'Yearly', 'Weekly', 'Quarterly', 'Free'].includes(data.billing_cycle)) {
+    errors.billing_cycle = ['Invalid billing cycle'];
   }
 
   // Category validation

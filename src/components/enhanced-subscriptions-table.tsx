@@ -46,7 +46,7 @@ interface EnhancedSubscriptionsTableProps {
   onAddSubscription?: () => void;
 }
 
-type SortField = 'name' | 'plan' | 'cost' | 'billingCycle' | 'startDate' | 'status' | 'priority';
+type SortField = 'name' | 'plan' | 'cost' | 'billing_cycle' | 'start_date' | 'status' | 'usage_importance';
 type SortOrder = 'asc' | 'desc';
 
 const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
@@ -88,13 +88,13 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
           aValue = a.cost;
           bValue = b.cost;
           break;
-        case 'billingCycle':
-          aValue = a.billingCycle.toLowerCase();
-          bValue = b.billingCycle.toLowerCase();
+        case 'billing_cycle':
+          aValue = a.billing_cycle.toLowerCase();
+          bValue = b.billing_cycle.toLowerCase();
           break;
-        case 'startDate':
-          aValue = toDate(a.startDate);
-          bValue = toDate(b.startDate);
+        case 'start_date':
+          aValue = toDate(a.start_date);
+          bValue = toDate(b.start_date);
           break;
         case 'status':
           aValue = a.status.toLowerCase();
@@ -133,73 +133,53 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
     );
   });
 
-      const getSubscriptionIcon = (subscription: Subscription) => {
-        // Helper that prefers logoUrl, then favicon from URL, else fallback letter box
-        const size = 32;
-        const commonClass = "w-8 h-8 rounded-lg object-cover";
-        const altText = `${subscription.name} logo`;
+  const getSubscriptionIcon = (subscription: Subscription) => {
+    // Match list view: favicon first with inline fallback element
+    const size = 32
+    const commonClass = "w-8 h-8 rounded-lg object-cover"
+    const altText = `${subscription.name} favicon`
 
     if (subscription.url) {
       try {
-        const domain = new URL(subscription.url).hostname;
-        const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
-        
+        const domain = new URL(subscription.url).hostname
+        const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`
         return (
-              <Image 
-                src={faviconUrl}
-                alt={altText}
-                width={size}
-                height={size}
-                className={commonClass}
-                unoptimized
-                onError={(e) => {
-                  const img = e.currentTarget as HTMLImageElement;
-                  img.style.display = 'none';
-                  const fallback = img.nextElementSibling as HTMLElement;
-                  if (fallback) fallback.style.display = 'flex';
-                }}
-              />
-        );
+          <div className="relative w-8 h-8 flex items-center justify-center flex-shrink-0">
+            <Image
+              src={faviconUrl}
+              alt={altText}
+              width={size}
+              height={size}
+              className={commonClass}
+              unoptimized
+              onError={(e) => {
+                const img = e.currentTarget as HTMLImageElement
+                img.style.display = 'none'
+                const fallback = img.nextElementSibling as HTMLElement
+                if (fallback) fallback.style.display = 'flex'
+              }}
+            />
+            <div className="hidden w-8 h-8 bg-orange-100 rounded-lg items-center justify-center">
+              <span className="text-orange-600 font-semibold text-sm">
+                {subscription.fallback_icon || subscription.name.charAt(0)}
+              </span>
+            </div>
+          </div>
+        )
       } catch {
-        // If URL parsing fails, fall through to other methods
+        // fall through
       }
     }
 
-    if (subscription.logoUrl) {
-      return (
-              <Image 
-                src={subscription.logoUrl}
-                alt={altText}
-                width={size}
-                height={size}
-                className={commonClass}
-                unoptimized
-                onError={(e) => {
-                  const img = e.currentTarget as HTMLImageElement;
-                  img.style.display = 'none';
-                  const fallback = img.nextElementSibling as HTMLElement;
-                  if (fallback) fallback.style.display = 'flex';
-                }}
-              />
-      );
-    }
-
-    if (subscription.fallbackIcon) {
-      return (
-        <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center text-lg">
-          {subscription.fallbackIcon}
-        </div>
-      );
-    }
-
-          return (
-            <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
-              <span className="text-orange-600 font-semibold text-sm">
-                {subscription.name.charAt(0)}
-              </span>
-            </div>
-          );
-  };
+    // If no URL or favicon fails before render time, show fallback
+    return (
+      <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+        <span className="text-orange-600 font-semibold text-sm">
+          {subscription.fallback_icon || subscription.name.charAt(0)}
+        </span>
+      </div>
+    )
+  }
 
   if (subscriptions.length === 0) {
     return (
@@ -253,7 +233,7 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
                   </SortButton>
                 </th>
                 <th className="text-left py-4 pl-4 w-1/12">
-                  <SortButton field="billingCycle">
+                  <SortButton field="billing_cycle">
                     <span className="font-semibold text-orange-800">Billing</span>
                   </SortButton>
                 </th>
@@ -263,7 +243,7 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
                   </SortButton>
                 </th>
                 <th className="text-left py-4 pl-4 w-1/12">
-                  <SortButton field="priority">
+                  <SortButton field="usage_importance">
                     <span className="font-semibold text-orange-800">Priority</span>
                   </SortButton>
                 </th>
@@ -287,9 +267,9 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
                         <div className="flex items-center space-x-2">
                           <Calendar className="w-3 h-3 text-gray-400" />
                           <span className="text-xs text-gray-600">
-                            Renews in {getDaysUntilRenewal(subscription.renewalDate)} days
+                            Renews in {getDaysUntilRenewal(subscription.renewal_date)} days
                           </span>
-                          {getDaysUntilRenewal(subscription.renewalDate) <= 7 && (
+                          {getDaysUntilRenewal(subscription.renewal_date) <= 7 && (
                             <AlertTriangle className="w-3 h-3 text-yellow-500" />
                           )}
                         </div>
@@ -316,7 +296,7 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
                   <td className="py-4 pl-4">
                     <div className="flex items-center space-x-1">
                       <Clock className="w-3 h-3 text-orange-600" />
-                      <span className="text-sm text-gray-600">{subscription.billingCycle}</span>
+                      <span className="text-sm text-gray-600">{subscription.billing_cycle}</span>
                     </div>
                   </td>
 
@@ -329,8 +309,8 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
 
                   {/* Priority */}
                   <td className="py-4 pl-4">
-                    <Badge className={getPriorityColor(subscription.priority)}>
-                      {subscription.priority}
+                    <Badge className={getPriorityColor(subscription.usage_importance)}>
+                      {subscription.usage_importance}
                     </Badge>
                   </td>
 

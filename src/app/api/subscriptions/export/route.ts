@@ -44,19 +44,19 @@ export async function GET(request: NextRequest) {
         sub.plan || '',
         sub.cost.toString(),
         sub.currency,
-        sub.billingCycle,
+        sub.billing_cycle,
         sub.status,
-        sub.startDate.toISOString().split('T')[0],
-        sub.renewalDate.toISOString().split('T')[0],
-        sub.priority,
-        sub.usageFrequency,
+        sub.start_date.toISOString().split('T')[0],
+        sub.renewal_date.toISOString().split('T')[0],
+        sub.usage_importance,
+        sub.usage_frequency,
         sub.url,
         sub.description,
         sub.notes,
-        sub.accountEmail,
-        sub.autoRenew ? 'Yes' : 'No',
-        sub.safeForWork ? 'Yes' : 'No',
-        sub.chinaRegionOnly ? 'Yes' : 'No'
+        sub.account_email,
+        sub.auto_renew ? 'Yes' : 'No',
+        sub.safe_for_work ? 'Yes' : 'No',
+        sub.china_region_only ? 'Yes' : 'No'
       ]);
 
       const csvContent = [headers, ...rows]

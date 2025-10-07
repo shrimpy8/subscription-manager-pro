@@ -42,7 +42,7 @@ interface SubscriptionsTableProps {
   onAddSubscription?: () => void;
 }
 
-type SortField = 'name' | 'category' | 'plan' | 'cost' | 'billingCycle' | 'startDate' | 'status';
+type SortField = 'name' | 'category' | 'plan' | 'cost' | 'billing_cycle' | 'start_date' | 'status';
 type SortOrder = 'asc' | 'desc';
 
 const SubscriptionsTable = memo(function SubscriptionsTable({
@@ -74,9 +74,9 @@ const SubscriptionsTable = memo(function SubscriptionsTable({
     if (sortField === 'cost') {
       aValue = a.cost;
       bValue = b.cost;
-    } else if (sortField === 'startDate') {
-      aValue = toDate(a.startDate);
-      bValue = toDate(b.startDate);
+    } else if (sortField === 'start_date') {
+      aValue = toDate(a.start_date);
+      bValue = toDate(b.start_date);
     } else if (typeof aValue === 'string' && typeof bValue === 'string') {
       aValue = aValue.toLowerCase();
       bValue = bValue.toLowerCase();
@@ -123,7 +123,7 @@ const SubscriptionsTable = memo(function SubscriptionsTable({
               }}
             />
             <span className="text-lg hidden">
-              {subscription.fallbackIcon || subscription.name.charAt(0)}
+              {subscription.fallback_icon || subscription.name.charAt(0)}
             </span>
           </div>
         );
@@ -131,17 +131,17 @@ const SubscriptionsTable = memo(function SubscriptionsTable({
         // If URL parsing fails, fall back to emoji
         return (
           <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center text-lg">
-            {subscription.fallbackIcon || subscription.name.charAt(0)}
+            {subscription.fallback_icon || subscription.name.charAt(0)}
           </div>
         );
       }
     }
 
     // For other subscriptions, try to use logoUrl if available
-    if (subscription.logoUrl) {
+    if (subscription.logo_url) {
       return (
         <Image 
-          src={subscription.logoUrl} 
+          src={subscription.logo_url} 
           alt={subscription.name}
           width={32}
           height={32}
@@ -160,10 +160,10 @@ const SubscriptionsTable = memo(function SubscriptionsTable({
     }
 
     // Use fallback icon if available
-    if (subscription.fallbackIcon) {
+    if (subscription.fallback_icon) {
       return (
         <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center text-lg">
-          {subscription.fallbackIcon}
+          {subscription.fallback_icon}
         </div>
       );
     }
@@ -179,7 +179,7 @@ const SubscriptionsTable = memo(function SubscriptionsTable({
   };
 
   const getRenewalText = (subscription: Subscription) => {
-    const days = getDaysUntilRenewal(subscription.renewalDate);
+    const days = getDaysUntilRenewal(subscription.renewal_date);
     if (days === 0) return 'Renews today';
     if (days === 1) return 'Renews tomorrow';
     if (days < 0) return `Expired ${Math.abs(days)} days ago`;
@@ -244,20 +244,20 @@ const SubscriptionsTable = memo(function SubscriptionsTable({
               </th>
               <th className="text-left p-4 font-medium text-gray-600">
                 <button
-                  onClick={() => handleSort('billingCycle')}
+                  onClick={() => handleSort('billing_cycle')}
                   className="flex items-center space-x-1 hover:text-gray-900 transition-colors"
                 >
                   <span>Billing</span>
-                  {getSortIcon('billingCycle')}
+                  {getSortIcon('billing_cycle')}
                 </button>
               </th>
               <th className="text-left p-4 font-medium text-gray-600">
                 <button
-                  onClick={() => handleSort('startDate')}
+                  onClick={() => handleSort('start_date')}
                   className="flex items-center space-x-1 hover:text-gray-900 transition-colors"
                 >
                   <span>Started</span>
-                  {getSortIcon('startDate')}
+                  {getSortIcon('start_date')}
                 </button>
               </th>
               <th className="text-left p-4 font-medium text-gray-600">
@@ -283,12 +283,12 @@ const SubscriptionsTable = memo(function SubscriptionsTable({
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center space-x-2">
                         <p className="font-medium text-gray-900 truncate">{sanitizeInput(subscription.name)}</p>
-                        {subscription.chinaRegionOnly && (
+                        {subscription.china_region_only && (
                           <Badge variant="outline" className="bg-red-100 text-red-800 border-red-300 text-xs">
                             CN Region
                           </Badge>
                         )}
-                        {subscription.safeForWork === false && (
+                        {subscription.safe_for_work === false && (
                           <Badge variant="outline" className="bg-purple-100 text-purple-800 border-purple-300 text-xs">
                             NSFW
                           </Badge>
@@ -316,21 +316,21 @@ const SubscriptionsTable = memo(function SubscriptionsTable({
                       {formatCurrency(subscription.cost, subscription.currency)}
                     </span>
                   </div>
-                  {subscription.latestPromotionCode && (
+                  {subscription.latest_promocode && (
                     <p className="text-xs text-green-600 mt-1">
-                      -{subscription.latestPromotionCode}
+                      -{subscription.latest_promocode}
                     </p>
                   )}
                 </td>
                 <td className="p-4">
                   <span className="text-sm text-gray-600 capitalize">
-                    {subscription.billingCycle}
+                    {subscription.billing_cycle}
                   </span>
                 </td>
                 <td className="p-4">
                   <div className="flex items-center space-x-1 text-sm text-gray-600">
                     <Calendar className="w-4 h-4" />
-                    <span>{formatDate(subscription.startDate, 'short')}</span>
+                    <span>{formatDate(subscription.start_date, 'short')}</span>
                   </div>
                 </td>
                 <td className="p-4">

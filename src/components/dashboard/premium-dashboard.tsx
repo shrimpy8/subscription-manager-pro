@@ -66,10 +66,10 @@ export default function PremiumDashboard({
 
   // Helper function to get subscription icon
   const getSubscriptionIcon = (subscription: Subscription) => {
-    if (subscription.logoUrl) {
+    if (subscription.logo_url) {
       return (
         <Image
-          src={subscription.logoUrl}
+          src={subscription.logo_url}
           alt={`${subscription.name} logo`}
           width={32}
           height={32}
@@ -87,7 +87,7 @@ export default function PremiumDashboard({
     
     return (
       <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-white font-semibold text-sm">
-        {subscription.fallbackIcon || subscription.name.charAt(0).toUpperCase()}
+        {subscription.fallback_icon || subscription.name.charAt(0).toUpperCase()}
       </div>
     );
   };
@@ -95,8 +95,8 @@ export default function PremiumDashboard({
   // Calculate metrics
   const totalSubscriptions = subscriptions.length;
   const totalMonthlyCost = subscriptions.reduce((sum, sub) => {
-    if (sub.billingCycle === 'Monthly') return sum + sub.cost;
-    if (sub.billingCycle === 'Yearly') return sum + (sub.cost / 12);
+    if (sub.billing_cycle === 'Monthly') return sum + sub.cost;
+    if (sub.billing_cycle === 'Yearly') return sum + (sub.cost / 12);
     return sum;
   }, 0);
   const totalActiveSubscriptions = subscriptions.filter(sub => sub.status === 'active').length;

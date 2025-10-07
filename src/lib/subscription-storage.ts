@@ -28,9 +28,9 @@ export function loadSubscriptions(): Subscription[] {
     // Convert date strings back to Date objects
     return subscriptions.map((sub: Subscription) => ({
       ...sub,
-      renewalDate: new Date(sub.renewalDate),
-      startDate: new Date(sub.startDate),
-      lastUsed: sub.lastUsed ? new Date(sub.lastUsed) : undefined
+      renewal_date: new Date(sub.renewal_date),
+      start_date: new Date(sub.start_date),
+      last_used: sub.last_used ? new Date(sub.last_used) : undefined
     }))
   } catch (error) {
     handleError(
@@ -220,24 +220,23 @@ export function importSubscriptions(jsonData: string): { success: number; errors
         logo: sub.logo || '',
         cost: Number(sub.cost),
         currency: sub.currency || 'USD',
-        billingCycle: sub.billingCycle || 'Monthly',
+        billing_cycle: sub.billingCycle || 'Monthly',
         category: sub.category || 'Other',
         description: sub.description || '',
         url: sub.url || '',
         status: sub.status || 'active',
-        accountEmail: sub.accountEmail || '',
-        promoCode: sub.promoCode,
-        promoDiscount: sub.promoDiscount,
+        account_email: sub.accountEmail || '',
+        promo_code: sub.promoCode,
+        promo_discount: sub.promoDiscount,
         notes: sub.notes,
-        renewalDate: sub.renewalDate ? new Date(sub.renewalDate) : new Date(),
-        startDate: sub.startDate ? new Date(sub.startDate) : new Date(),
+        renewal_date: sub.renewalDate ? new Date(sub.renewalDate) : new Date(),
+        start_date: sub.startDate ? new Date(sub.startDate) : new Date(),
         tags: sub.tags || [],
-        priority: sub.priority || 'medium',
-        usageFrequency: sub.usageFrequency || 'monthly',
-        productivityScore: sub.productivityScore,
-        alternativeServices: sub.alternativeServices || [],
-        lastUsed: sub.lastUsed ? new Date(sub.lastUsed) : undefined,
-        autoRenew: sub.autoRenew !== undefined ? sub.autoRenew : true
+        usage_importance: (sub.priority as 'high' | 'medium' | 'low') || 'medium',
+        usage_frequency: (sub.usageFrequency as 'daily' | 'weekly' | 'monthly' | 'rarely') || 'monthly',
+        alternative_services: sub.alternativeServices || [],
+        last_used: sub.lastUsed ? new Date(sub.lastUsed) : undefined,
+        auto_renew: sub.autoRenew !== undefined ? sub.autoRenew : true
       }
       
       existing.push(newSub)

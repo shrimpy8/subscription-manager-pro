@@ -78,18 +78,18 @@ export default function AddSubscriptionModal({ isOpen, onClose, onAdd }: AddSubs
         status: formData.status,
         cost: parseFloat(formData.cost) || 0,
         currency: formData.currency,
-        billingCycle: formData.billingCycle,
+        billing_cycle: formData.billingCycle,
         plan: formData.plan,
-        renewalDate: new Date(formData.renewalDate || getDefaultRenewalDate()),
-        startDate: new Date(formData.startDate || getCurrentDate()),
-        priority: formData.priority,
-        usageFrequency: formData.usageFrequency as 'daily' | 'weekly' | 'monthly' | 'rarely',
+        renewal_date: new Date(formData.renewalDate || getDefaultRenewalDate()),
+        start_date: new Date(formData.startDate || getCurrentDate()),
+        usage_importance: formData.priority,
+        usage_frequency: formData.usageFrequency as 'daily' | 'weekly' | 'monthly' | 'rarely',
         notes: formData.notes || undefined,
         url: formData.url || '',
-        accountEmail: formData.email || '',
+        account_email: formData.email || '',
         description: formData.description || '',
         logo: formData.logo || '',
-        autoRenew: formData.autoRenew
+        auto_renew: formData.autoRenew
       };
 
       // Validate subscription

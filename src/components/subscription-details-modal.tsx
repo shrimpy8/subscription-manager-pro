@@ -27,10 +27,10 @@ export default function SubscriptionDetailsModal({
   // Using centralized date utility function
 
   const getSubscriptionIcon = (subscription: Subscription) => {
-    if (subscription.logoUrl) {
+    if (subscription.logo_url) {
       return (
         <Image 
-          src={subscription.logoUrl} 
+          src={subscription.logo_url} 
           alt={subscription.name}
           width={64}
           height={64}
@@ -41,7 +41,7 @@ export default function SubscriptionDetailsModal({
             img.style.display = 'none';
             const parent = img.parentElement;
             if (parent) {
-              parent.innerHTML = `<div class=\"w-16 h-16 bg-orange-100 rounded-xl flex items-center justify-center text-2xl\">${subscription.fallbackIcon || subscription.name.charAt(0)}</div>`;
+              parent.innerHTML = `<div class=\"w-16 h-16 bg-orange-100 rounded-xl flex items-center justify-center text-2xl\">${subscription.fallback_icon || subscription.name.charAt(0)}</div>`;
             }
           }}
         />
@@ -50,7 +50,7 @@ export default function SubscriptionDetailsModal({
 
     return (
       <div className="w-16 h-16 bg-orange-100 rounded-xl flex items-center justify-center text-2xl">
-        {subscription.fallbackIcon || subscription.name.charAt(0)}
+        {subscription.fallback_icon || subscription.name.charAt(0)}
       </div>
     );
   };
@@ -81,12 +81,12 @@ export default function SubscriptionDetailsModal({
                                  'bg-red-100 text-red-800'}>
                   {subscription.status}
                 </Badge>
-                {subscription.chinaRegionOnly && (
+                {subscription.china_region_only && (
                   <Badge variant="outline" className="bg-red-100 text-red-800 border-red-300">
                     CN Region
                   </Badge>
                 )}
-                {subscription.safeForWork === false && (
+                {subscription.safe_for_work === false && (
                   <Badge variant="outline" className="bg-purple-100 text-purple-800 border-purple-300">
                     NSFW
                   </Badge>
@@ -123,25 +123,25 @@ export default function SubscriptionDetailsModal({
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-neutral-600">Billing Cycle</span>
-                  <span className="text-sm font-medium text-neutral-900">{subscription.billingCycle}</span>
+                  <span className="text-sm font-medium text-neutral-900">{subscription.billing_cycle}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-neutral-600">Priority</span>
-                  <Badge className={subscription.priority === 'high' ? 'bg-red-100 text-red-800' : 
-                                   subscription.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' : 
+                  <Badge className={subscription.usage_importance === 'high' ? 'bg-red-100 text-red-800' : 
+                                   subscription.usage_importance === 'medium' ? 'bg-yellow-100 text-yellow-800' : 
                                    'bg-green-100 text-green-800'}>
-                    {subscription.priority}
+                    {subscription.usage_importance}
                   </Badge>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-neutral-600">Auto Renew</span>
-                  <span className="text-sm font-medium text-neutral-900">{subscription.autoRenew ? 'Yes' : 'No'}</span>
+                  <span className="text-sm font-medium text-neutral-900">{subscription.auto_renew ? 'Yes' : 'No'}</span>
                 </div>
-                {subscription.latestPromotionCode && (
+                {subscription.latest_promocode && (
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-neutral-600">Latest Promo</span>
                     <Badge variant="outline" className="bg-green-100 text-green-800">
-                      {subscription.latestPromotionCode}
+                      {subscription.latest_promocode}
                     </Badge>
                   </div>
                 )}
@@ -159,22 +159,22 @@ export default function SubscriptionDetailsModal({
               <CardContent className="space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-neutral-600">Start Date</span>
-                  <span className="text-sm font-medium text-neutral-900">{formatDate(subscription.startDate, 'long')}</span>
+                  <span className="text-sm font-medium text-neutral-900">{formatDate(subscription.start_date, 'long')}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-neutral-600">Renewal Date</span>
-                  <span className="text-sm font-medium text-neutral-900">{formatDate(subscription.renewalDate, 'long')}</span>
+                  <span className="text-sm font-medium text-neutral-900">{formatDate(subscription.renewal_date, 'long')}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-neutral-600">Days Until Renewal</span>
                   <span className="text-sm font-medium text-orange-600">
-                    {getDaysUntilRenewal(subscription.renewalDate)} days
+                    {getDaysUntilRenewal(subscription.renewal_date)} days
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-neutral-600">Usage Frequency</span>
                   <Badge variant="outline" className="bg-neutral-50">
-                    {subscription.usageFrequency}
+                    {subscription.usage_frequency}
                   </Badge>
                 </div>
               </CardContent>
@@ -191,13 +191,13 @@ export default function SubscriptionDetailsModal({
               <CardContent className="space-y-4">
                 <div>
                   <span className="text-sm text-neutral-600 block mb-1">Current Email</span>
-                  <span className="text-sm font-medium text-neutral-900">{sanitizeInput(subscription.accountEmail || 'Not set')}</span>
+                  <span className="text-sm font-medium text-neutral-900">{sanitizeInput(subscription.account_email || 'Not set')}</span>
                 </div>
-                {subscription.accountEmailsUsedPreviously && subscription.accountEmailsUsedPreviously.length > 0 && (
+                {subscription.account_emails_used_previously && subscription.account_emails_used_previously.length > 0 && (
                   <div>
                     <span className="text-sm text-neutral-600 block mb-1">Previous Emails</span>
                     <div className="space-y-1">
-                      {subscription.accountEmailsUsedPreviously.map((email: string, index: number) => (
+                      {subscription.account_emails_used_previously.map((email: string, index: number) => (
                         <span key={index} className="text-xs text-neutral-500 block">{email}</span>
                       ))}
                     </div>
@@ -224,11 +224,11 @@ export default function SubscriptionDetailsModal({
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {subscription.apiAccessKeys && subscription.apiAccessKeys.length > 0 && (
+                {subscription.api_access_keys && subscription.api_access_keys.length > 0 && (
                   <div>
                     <span className="text-sm text-neutral-600 block mb-1">API Keys</span>
                     <div className="space-y-1">
-                      {subscription.apiAccessKeys.map((key: string, index: number) => (
+                      {subscription.api_access_keys.map((key: string, index: number) => (
                         <div key={index} className="text-sm font-mono bg-gray-100 p-2 rounded">
                           {key.substring(0, 8)}...{key.substring(key.length - 4)}
                         </div>
@@ -236,24 +236,24 @@ export default function SubscriptionDetailsModal({
                     </div>
                   </div>
                 )}
-                {subscription.secretKey && (
+                {subscription.secret_key && (
                   <div>
                     <span className="text-sm text-neutral-600 block mb-1">Secret Key</span>
                     <div className="text-sm font-mono bg-gray-100 p-2 rounded">
-                      {subscription.secretKey.substring(0, 8)}...{subscription.secretKey.substring(subscription.secretKey.length - 4)}
+                      {subscription.secret_key.substring(0, 8)}...{subscription.secret_key.substring(subscription.secret_key.length - 4)}
                     </div>
                   </div>
                 )}
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-neutral-600">Safe for Work</span>
-                  <Badge variant="outline" className={subscription.safeForWork ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
-                    {subscription.safeForWork ? 'Yes' : 'No'}
+                  <Badge variant="outline" className={subscription.safe_for_work ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
+                    {subscription.safe_for_work ? 'Yes' : 'No'}
                   </Badge>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-neutral-600">China Region Only</span>
-                  <Badge variant="outline" className={subscription.chinaRegionOnly ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}>
-                    {subscription.chinaRegionOnly ? 'Yes' : 'No'}
+                  <Badge variant="outline" className={subscription.china_region_only ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}>
+                    {subscription.china_region_only ? 'Yes' : 'No'}
                   </Badge>
                 </div>
               </CardContent>
@@ -276,7 +276,7 @@ export default function SubscriptionDetailsModal({
           )}
 
           {/* Promotion History */}
-          {subscription.previouslyUsedPromotionCode && subscription.previouslyUsedPromotionCode.length > 0 && (
+          {subscription.previously_used_promotion_code && subscription.previously_used_promotion_code.length > 0 && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center card-title">
@@ -286,7 +286,7 @@ export default function SubscriptionDetailsModal({
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
-                  {subscription.previouslyUsedPromotionCode.map((code: string, index: number) => (
+                  {subscription.previously_used_promotion_code.map((code: string, index: number) => (
                     <Badge key={index} variant="outline" className="bg-orange-100 text-orange-800">
                       {code}
                     </Badge>

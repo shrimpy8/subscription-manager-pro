@@ -124,8 +124,8 @@ async function saveSubscriptionsToAPI(subscriptions: Subscription[]): Promise<vo
 function ensureDateObjects(subscriptions: Subscription[]): Subscription[] {
   return subscriptions.map(sub => ({
     ...sub,
-    startDate: toDate(sub.startDate),
-    renewalDate: toDate(sub.renewalDate)
+    start_date: toDate(sub.start_date),
+    renewal_date: toDate(sub.renewal_date)
   }));
 }
 
@@ -141,29 +141,29 @@ function transformJsonToSubscriptions(jsonData: AIToolJsonData[]): Subscription[
     status: (item.status?.toLowerCase() as 'active' | 'paused' | 'canceled') || 'active',
     cost: item.cost || 0,
     currency: item.currency || 'USD',
-    billingCycle: (item.billingCycle as 'Monthly' | 'Yearly' | 'Weekly' | 'Quarterly' | 'Free') || 'Monthly',
-    renewalDate: item.renewalDate ? toDate(item.renewalDate) : getDefaultRenewalDate(),
-    startDate: item.startDate ? toDate(item.startDate) : getCurrentDate(),
-    priority: mapUsageImportanceToPriority(item.usageImportance),
-    usageFrequency: (item.usageFrequency?.toLowerCase() as 'daily' | 'weekly' | 'monthly' | 'rarely') || 'monthly',
+    billing_cycle: (item.billing_cycle as 'Monthly' | 'Yearly' | 'Weekly' | 'Quarterly' | 'Free') || 'Monthly',
+    renewal_date: item.renewal_date ? toDate(item.renewal_date) : getDefaultRenewalDate(),
+    start_date: item.start_date ? toDate(item.start_date) : getCurrentDate(),
+    usage_importance: mapUsageImportanceToPriority(item.usage_importance),
+    usage_frequency: (item.usage_frequency?.toLowerCase() as 'daily' | 'weekly' | 'monthly' | 'rarely') || 'monthly',
     url: item.url || '',
     description: item.description || '',
     notes: item.notes || '',
-    accountEmail: item.accountEmailInUse || '',
-    autoRenew: true,
+    account_email: item.account_email || '',
+    auto_renew: true,
     // Additional fields from JSON
     plan: item.plan || 'Free',
-    logo: item.logoUrl || '', // Map logoUrl to logo field
-    logoUrl: item.logoUrl || '',
-    fallbackIcon: item.fallbackIcon || '🔧',
-    safeForWork: determineSafeForWork(item.category, item.subcategory),
-    chinaRegionOnly: determineChinaRegionOnly(item.name),
-    a16zRank: getActualA16zRank(item.name),
-    apiAccessKeys: item.apiAccessKeys || [],
-    secretKey: item.secretKey || '',
-    previouslyUsedPromotionCode: item.previouslyUsedPromotionCode || [],
-    latestPromotionCode: item.latestPromotionCode || '',
-    accountEmailsUsedPreviously: item.accountEmailsUsedPreviously || []
+    logo: item.logo_url || '', // Map logo_url to logo field
+    logo_url: item.logo_url || '',
+    fallback_icon: item.fallback_icon || '🔧',
+    safe_for_work: determineSafeForWork(item.category, item.subcategory),
+    china_region_only: determineChinaRegionOnly(item.name),
+    a16z_rank: getActualA16zRank(item.name),
+    api_access_keys: item.api_access_keys || [],
+    secret_key: item.secret_key || '',
+    previously_used_promotion_code: item.previously_used_promotion_code || [],
+    latest_promocode: item.latest_promocode || '',
+    account_emails_used_previously: item.account_emails_used_previously || []
   }));
 }
 
@@ -257,20 +257,20 @@ export function exportSubscriptionsToCSV(subscriptions: Subscription[]): string 
     sub.plan || '',
     sub.cost.toString(),
     sub.currency,
-    sub.billingCycle,
+    sub.billing_cycle,
     sub.status,
-    formatDate(sub.startDate, 'input'),
-    formatDate(sub.renewalDate, 'input'),
-    sub.priority,
-    sub.usageFrequency,
+    formatDate(sub.start_date, 'input'),
+    formatDate(sub.renewal_date, 'input'),
+    sub.usage_importance,
+    sub.usage_frequency,
     sub.url,
     sub.description,
     sub.notes,
-    sub.accountEmail,
-    sub.autoRenew ? 'Yes' : 'No',
-    sub.safeForWork ? 'Yes' : 'No',
-    sub.chinaRegionOnly ? 'Yes' : 'No',
-    sub.a16zRank ? sub.a16zRank.toString() : ''
+    sub.account_email,
+    sub.auto_renew ? 'Yes' : 'No',
+    sub.safe_for_work ? 'Yes' : 'No',
+    sub.china_region_only ? 'Yes' : 'No',
+    sub.a16z_rank ? sub.a16z_rank.toString() : ''
   ]);
 
   const csvContent = [headers, ...rows]

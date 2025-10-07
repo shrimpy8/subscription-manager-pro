@@ -15,39 +15,38 @@ export interface Subscription {
   logo: string;
   cost: number;
   currency: string;
-  billingCycle: 'Monthly' | 'Yearly' | 'Weekly' | 'Quarterly' | 'Free';
+  billing_cycle: 'Monthly' | 'Yearly' | 'Weekly' | 'Quarterly' | 'Free';
   category: SubscriptionCategory;
   subcategory?: string; // For AI Tools subcategories
   description: string;
   url: string;
   status: 'active' | 'paused' | 'canceled';
-  accountEmail: string;
-  promoCode?: string;
-  promoDiscount?: number;
+  account_email: string;
+  promo_code?: string;
+  promo_discount?: number;
   notes?: string;
-  renewalDate: Date;
-  startDate: Date;
+  renewal_date: Date;
+  start_date: Date;
   
   // Enhanced features from AI Tools Tracker
   tags?: string[];
-  priority: 'high' | 'medium' | 'low';
-  usageFrequency: 'daily' | 'weekly' | 'monthly' | 'rarely';
-  productivityScore?: number; // User-rated 1-10
-  alternativeServices?: string[];
-  lastUsed?: Date;
-  autoRenew: boolean;
+  usage_importance: 'high' | 'medium' | 'low';
+  usage_frequency: 'daily' | 'weekly' | 'monthly' | 'rarely';
+  alternative_services?: string[];
+  last_used?: Date;
+  auto_renew: boolean;
   
   // Additional fields from toolsSubscription.json
-  logoUrl?: string;
-  fallbackIcon?: string;
-  safeForWork?: boolean;
-  chinaRegionOnly?: boolean;
-  a16zRank?: number; // a16z ranking (1-50 for ranked, >50 for user choice)
-  apiAccessKeys?: string[];
-  secretKey?: string;
-  previouslyUsedPromotionCode?: string[];
-  latestPromotionCode?: string;
-  accountEmailsUsedPreviously?: string[];
+  logo_url?: string;
+  fallback_icon?: string;
+  safe_for_work?: boolean;
+  china_region_only?: boolean;
+  a16z_rank?: number; // a16z ranking (1-50 for ranked, >50 for user choice)
+  api_access_keys?: string[];
+  secret_key?: string;
+  previously_used_promotion_code?: string[];
+  latest_promocode?: string;
+  account_emails_used_previously?: string[];
 }
 
 export type SubscriptionCategory = 
@@ -99,9 +98,9 @@ export interface SubscriptionFilters {
   category: SubscriptionCategory | 'all';
   subcategory: string | 'all';
   status: 'active' | 'paused' | 'canceled' | 'all';
-  billingCycle: string | 'all';
-  priority: 'high' | 'medium' | 'low' | 'all';
-  usageFrequency: 'daily' | 'weekly' | 'monthly' | 'rarely' | 'all';
+  billing_cycle: string | 'all';
+  usage_importance: 'high' | 'medium' | 'low' | 'all';
+  usage_frequency: 'daily' | 'weekly' | 'monthly' | 'rarely' | 'all';
   costRange: {
     min: number;
     max: number;
@@ -134,9 +133,9 @@ export interface SubscriptionAnalytics {
 
 export interface ViewMode {
   type: 'grid' | 'list' | 'analytics';
-  sortBy: 'name' | 'cost' | 'renewalDate' | 'category' | 'priority' | 'usageFrequency';
+  sortBy: 'name' | 'cost' | 'renewal_date' | 'category' | 'usage_importance' | 'usage_frequency';
   sortOrder: 'asc' | 'desc';
-  groupBy?: 'category' | 'status' | 'priority' | 'billingCycle';
+  groupBy?: 'category' | 'status' | 'usage_importance' | 'billing_cycle';
 }
 
 // Enhanced from AI Tools Tracker - URL state management
@@ -155,27 +154,27 @@ export interface AIToolJsonData {
   subcategory: string;
   description: string;
   url: string;
-  logoUrl: string;
+  logo_url: string;
   plan: string;
   cost: number;
   currency: string;
-  billingCycle: string;
+  billing_cycle: string;
   status: string;
-  usageImportance: string;
-  usageFrequency: string;
-  startDate?: string;
-  renewalDate?: string;
+  usage_importance: string;
+  usage_frequency: string;
+  start_date?: string;
+  renewal_date?: string;
   notes?: string;
-  accountEmailInUse?: string;
-  fallbackIcon?: string;
-  safeForWork?: string;
-  chinaRegionOnly?: string;
-  a16zRank?: number; // a16z ranking (1-50 for ranked, >50 for user choice)
-  apiAccessKeys?: string[];
-  secretKey?: string;
-  previouslyUsedPromotionCode?: string[];
-  latestPromotionCode?: string;
-  accountEmailsUsedPreviously?: string[];
+  account_email?: string;
+  fallback_icon?: string;
+  safe_for_work?: string;
+  china_region_only?: string;
+  a16z_rank?: number; // a16z ranking (1-50 for ranked, >50 for user choice)
+  api_access_keys?: string[];
+  secret_key?: string;
+  previously_used_promotion_code?: string[];
+  latest_promocode?: string;
+  account_emails_used_previously?: string[];
 }
 
 // API Response interfaces

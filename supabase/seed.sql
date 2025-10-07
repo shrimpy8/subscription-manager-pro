@@ -20,12 +20,12 @@ BEGIN
   INSERT INTO subscriptions (
     name, plan, cost, currency, billing_cycle,
     category, subcategory, description, url,
-    status, priority, usage_frequency,
+    status, usage_importance, usage_frequency,
     account_email, auto_renew,
     start_date, renewal_date,
     logo_url, fallback_icon,
     safe_for_work, china_region_only, a16z_rank,
-    latest_promotion_code, notes
+    latest_promocode, notes
   ) VALUES (
     'ChatGPT', 'Plus', 20.00, 'USD', 'Monthly',
     'AI Tools', 'Chat', 'Advanced AI assistant with GPT-4 access, faster responses, and priority access during peak hours.',
@@ -47,11 +47,11 @@ BEGIN
     (chatgpt_id, 'Primary', 'sk-example123'),
     (chatgpt_id, 'Backup', 'sk-backup456');
 
-  INSERT INTO subscription_promo_codes (subscription_id, promo_code, used_at) VALUES
+  INSERT INTO subscription_previous_promocodes (subscription_id, promo_code, used_at) VALUES
     (chatgpt_id, 'XYZ20', '2024-07-05'),
     (chatgpt_id, 'LABOR25', '2024-09-01');
 
-  INSERT INTO subscription_account_emails (subscription_id, email, used_at) VALUES
+  INSERT INTO subscription_previous_accountemails (subscription_id, email, used_at) VALUES
     (chatgpt_id, 'myemail1@domain.com', '2024-07-05'),
     (chatgpt_id, 'testemail@domain.com', '2024-08-15');
 
@@ -64,7 +64,7 @@ BEGIN
   INSERT INTO subscriptions (
     name, plan, cost, currency, billing_cycle,
     category, subcategory, description, url,
-    status, priority, usage_frequency,
+    status, usage_importance, usage_frequency,
     account_email, auto_renew,
     start_date, renewal_date,
     logo_url, fallback_icon,
@@ -98,7 +98,7 @@ BEGIN
   INSERT INTO subscriptions (
     name, plan, cost, currency, billing_cycle,
     category, description, url,
-    status, priority, usage_frequency,
+    status, usage_importance, usage_frequency,
     account_email, auto_renew,
     start_date, renewal_date,
     logo_url, fallback_icon,
@@ -118,7 +118,7 @@ BEGIN
     (spotify_id, 'Music'),
     (spotify_id, 'Entertainment');
 
-  INSERT INTO subscription_promo_codes (subscription_id, promo_code, used_at) VALUES
+  INSERT INTO subscription_previous_promocodes (subscription_id, promo_code, used_at) VALUES
     (spotify_id, 'STUDENT2024', '2024-01-01');
 
   INSERT INTO subscription_alternatives (subscription_id, service_name) VALUES
@@ -130,11 +130,11 @@ BEGIN
   INSERT INTO subscriptions (
     name, plan, cost, currency, billing_cycle,
     category, description, url,
-    status, priority, usage_frequency,
+    status, usage_importance, usage_frequency,
     account_email, auto_renew,
     start_date, renewal_date,
     logo_url, fallback_icon,
-    safe_for_work, productivity_score, notes
+    safe_for_work, notes
   ) VALUES (
     'Netflix', 'Standard', 15.49, 'USD', 'Monthly',
     'Streaming Service', 'Video streaming platform with movies and TV shows.',
@@ -143,7 +143,7 @@ BEGIN
     'family@example.com', true,
     '2023-06-01', '2024-12-01',
     'https://icons.duckduckgo.com/ip3/netflix.com.ico', '🎬',
-    true, 3, 'Shared with family'
+    true, 'Shared with family'
   ) RETURNING id INTO netflix_id;
 
   INSERT INTO subscription_alternatives (subscription_id, service_name) VALUES
@@ -155,11 +155,11 @@ BEGIN
   INSERT INTO subscriptions (
     name, plan, cost, currency, billing_cycle,
     category, description, url,
-    status, priority, usage_frequency,
+    status, usage_importance, usage_frequency,
     account_email, auto_renew,
     start_date, renewal_date,
     logo_url, fallback_icon,
-    safe_for_work, productivity_score, notes
+    safe_for_work, notes
   ) VALUES (
     'GitHub', 'Pro', 4.00, 'USD', 'Monthly',
     'Development Tools', 'Code hosting platform with collaboration features.',
@@ -168,7 +168,7 @@ BEGIN
     'dev@example.com', true,
     '2023-01-01', '2025-01-01',
     'https://icons.duckduckgo.com/ip3/github.com.ico', '💻',
-    true, 10, 'Essential for work'
+    true, 'Essential for work'
   ) RETURNING id INTO github_id;
 
   INSERT INTO subscription_tags (subscription_id, tag) VALUES
@@ -180,11 +180,11 @@ BEGIN
   INSERT INTO subscriptions (
     name, plan, cost, currency, billing_cycle,
     category, description, url,
-    status, priority, usage_frequency,
+    status, usage_importance, usage_frequency,
     account_email, auto_renew,
     start_date, renewal_date,
     logo_url, fallback_icon,
-    safe_for_work, productivity_score, last_used
+    safe_for_work, last_used
   ) VALUES (
     'Notion', 'Plus', 10.00, 'USD', 'Monthly',
     'Productivity', 'All-in-one workspace for notes, tasks, and databases.',
@@ -193,7 +193,7 @@ BEGIN
     'user@example.com', true,
     '2024-03-01', '2025-03-01',
     'https://icons.duckduckgo.com/ip3/notion.so.ico', '📝',
-    true, 9, NOW() - INTERVAL '2 hours'
+    true, NOW() - INTERVAL '2 hours'
   ) RETURNING id INTO notion_id;
 
   INSERT INTO subscription_tags (subscription_id, tag) VALUES
@@ -205,7 +205,7 @@ BEGIN
   INSERT INTO subscriptions (
     name, plan, cost, currency, billing_cycle,
     category, description, url,
-    status, priority, usage_frequency,
+    status, usage_importance, usage_frequency,
     account_email, auto_renew,
     start_date, renewal_date,
     logo_url, fallback_icon,

@@ -65,8 +65,8 @@ export async function POST(
           id: `sub-${Date.now()}`,
           name: `${subscription.name} (Copy)`,
           status: 'active',
-          startDate: new Date(),
-          renewalDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+          start_date: new Date(),
+          renewal_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
         };
         subscriptions.push(duplicated);
         result = duplicated;

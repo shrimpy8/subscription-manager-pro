@@ -266,22 +266,22 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
           plan: foundSubscription.plan || 'Free',
           cost: foundSubscription.cost || 0,
           currency: foundSubscription.currency || 'USD',
-          billingCycle: foundSubscription.billingCycle || 'Monthly',
+          billingCycle: foundSubscription.billing_cycle || 'Monthly',
           status: foundSubscription.status || 'active',
-          accountEmailInUse: foundSubscription.accountEmail || '',
+          accountEmailInUse: foundSubscription.account_email || '',
           notes: foundSubscription.notes || '',
-          renewalDate: foundSubscription.renewalDate || new Date(),
-          startDate: foundSubscription.startDate || new Date(),
-          fallbackIcon: foundSubscription.fallbackIcon || '🤖',
-          previouslyUsedPromotionCode: foundSubscription.previouslyUsedPromotionCode || [],
-          latestPromotionCode: foundSubscription.latestPromotionCode || '',
-          usageFrequency: foundSubscription.usageFrequency || 'monthly',
+          renewalDate: foundSubscription.renewal_date || new Date(),
+          startDate: foundSubscription.start_date || new Date(),
+          fallbackIcon: foundSubscription.fallback_icon || '🤖',
+          previouslyUsedPromotionCode: foundSubscription.previously_used_promotion_code || [],
+          latestPromotionCode: foundSubscription.latest_promocode || '',
+          usageFrequency: foundSubscription.usage_frequency || 'monthly',
           usageImportance: 'Medium', // Default value since usageImportance is not in Subscription type
-          accountEmailsUsedPreviously: foundSubscription.accountEmailsUsedPreviously || [],
-          apiAccessKeys: foundSubscription.apiAccessKeys || [],
-          secretKey: foundSubscription.secretKey || '',
-          chinaRegionOnly: foundSubscription.chinaRegionOnly || false,
-          safeForWork: foundSubscription.safeForWork || true
+          accountEmailsUsedPreviously: foundSubscription.account_emails_used_previously || [],
+          apiAccessKeys: foundSubscription.api_access_keys || [],
+          secretKey: foundSubscription.secret_key || '',
+          chinaRegionOnly: foundSubscription.china_region_only || false,
+          safeForWork: foundSubscription.safe_for_work || true
         };
 
         setFormData(subscriptionFormData);

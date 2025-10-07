@@ -7,7 +7,18 @@
 
 import { Subscription } from '@/types/subscription';
 import { handleSubscriptionError } from '@/utils/error-handler';
-import { generateId } from '@/lib/utils';
+
+// Generate a proper UUID v4 (fallback if crypto.randomUUID is not available)
+function generateUUIDv4(): string {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
 
 // Type for the raw data from toolsSubscription.json
 interface ToolsSubscriptionData {
@@ -44,27 +55,29 @@ interface ToolsSubscriptionData {
  */
 export function transformToolsSubscriptionData(rawData: ToolsSubscriptionData[]): Subscription[] {
   return rawData.map(item => ({
-    id: generateId(), // Generate new ID for subscription manager
+    id: generateUUIDv4(),
     name: item.name,
     plan: item.plan,
     logo: item.logoUrl || item.fallbackIcon,
+    logo_url: item.logoUrl || undefined,
     cost: item.cost,
     currency: item.currency,
-    billingCycle: item.billingCycle as 'Monthly' | 'Yearly' | 'Weekly' | 'Quarterly' | 'Free',
+    billing_cycle: item.billingCycle as 'Monthly' | 'Yearly' | 'Weekly' | 'Quarterly' | 'Free',
     category: 'AI Tools' as const,
     subcategory: item.subcategory,
     description: item.description,
     url: item.url,
     status: item.status.toLowerCase() as 'active' | 'paused' | 'canceled',
-    accountEmail: item.accountEmailInUse,
-    promoCode: item.latestPromotionCode || undefined,
+    account_email: item.accountEmailInUse,
+    promo_code: item.latestPromotionCode || undefined,
     notes: item.notes,
-    renewalDate: new Date(item.renewalDate),
-    startDate: new Date(item.startDate),
+    renewal_date: new Date(item.renewalDate),
+    start_date: new Date(item.startDate),
     tags: [item.subcategory],
-    priority: mapUsageImportanceToPriority(item.usageImportance),
-    usageFrequency: mapUsageFrequency(item.usageFrequency),
-    autoRenew: true
+    usage_importance: mapUsageImportanceToPriority(item.usageImportance),
+    usage_frequency: mapUsageFrequency(item.usageFrequency),
+    auto_renew: true,
+    fallback_icon: item.fallbackIcon || '📦'
   }));
 }
 

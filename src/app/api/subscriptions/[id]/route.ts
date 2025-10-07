@@ -92,8 +92,8 @@ export async function PUT(
       ...subscriptions[subscriptionIndex],
       ...validatedData,
       logo: logo,
-      startDate: validatedData.startDate ? new Date(validatedData.startDate) : subscriptions[subscriptionIndex].startDate,
-      renewalDate: validatedData.renewalDate ? new Date(validatedData.renewalDate) : subscriptions[subscriptionIndex].renewalDate,
+      start_date: validatedData.start_date ? new Date(validatedData.start_date) : subscriptions[subscriptionIndex].start_date,
+      renewal_date: validatedData.renewal_date ? new Date(validatedData.renewal_date) : subscriptions[subscriptionIndex].renewal_date,
       id: resolvedParams.id // Ensure ID doesn't change
     };
 

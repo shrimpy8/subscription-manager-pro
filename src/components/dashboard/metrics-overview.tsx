@@ -23,20 +23,20 @@ export const MetricsOverview = ({ subscriptions, className }: MetricsOverviewPro
 
   // Cost calculations
   const totalMonthlyCost = subscriptions.reduce((sum, sub) => {
-    if (sub.billingCycle === 'Monthly') return sum + sub.cost;
-    if (sub.billingCycle === 'Yearly') return sum + (sub.cost / 12);
+    if (sub.billing_cycle === 'Monthly') return sum + sub.cost;
+    if (sub.billing_cycle === 'Yearly') return sum + (sub.cost / 12);
     return sum;
   }, 0);
 
   const totalYearlyCost = subscriptions.reduce((sum, sub) => {
-    if (sub.billingCycle === 'Monthly') return sum + (sub.cost * 12);
-    if (sub.billingCycle === 'Yearly') return sum + sub.cost;
+    if (sub.billing_cycle === 'Monthly') return sum + (sub.cost * 12);
+    if (sub.billing_cycle === 'Yearly') return sum + sub.cost;
     return sum;
   }, 0);
 
   // Savings calculations
   const totalSavings = subscriptions.reduce((sum, sub) => {
-    if (sub.promoDiscount) return sum + sub.promoDiscount;
+    if (sub.promo_discount) return sum + sub.promo_discount;
     return sum;
   }, 0);
 
@@ -44,12 +44,12 @@ export const MetricsOverview = ({ subscriptions, className }: MetricsOverviewPro
 
   // Renewal tracking
   const upcomingRenewals = subscriptions.filter(sub => {
-    const daysUntilRenewal = getDaysUntilRenewal(sub.renewalDate);
+    const daysUntilRenewal = getDaysUntilRenewal(sub.renewal_date);
     return daysUntilRenewal <= 30 && daysUntilRenewal > 0;
   }).length;
 
   const overdueRenewals = subscriptions.filter(sub => {
-    const daysUntilRenewal = getDaysUntilRenewal(sub.renewalDate);
+    const daysUntilRenewal = getDaysUntilRenewal(sub.renewal_date);
     return daysUntilRenewal < 0;
   }).length;
 
@@ -64,9 +64,9 @@ export const MetricsOverview = ({ subscriptions, className }: MetricsOverviewPro
   );
 
   // Priority breakdown
-  const highPrioritySubscriptions = subscriptions.filter(sub => sub.priority === 'high').length;
-  const mediumPrioritySubscriptions = subscriptions.filter(sub => sub.priority === 'medium').length;
-  const lowPrioritySubscriptions = subscriptions.filter(sub => sub.priority === 'low').length;
+  const highPrioritySubscriptions = subscriptions.filter(sub => sub.usage_importance === 'high').length;
+  const mediumPrioritySubscriptions = subscriptions.filter(sub => sub.usage_importance === 'medium').length;
+  const lowPrioritySubscriptions = subscriptions.filter(sub => sub.usage_importance === 'low').length;
 
   return (
     <div className={`space-y-6 ${className}`}>

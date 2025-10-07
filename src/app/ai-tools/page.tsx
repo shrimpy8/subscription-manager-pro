@@ -43,22 +43,22 @@ export default function AIToolsPage() {
       category: 'AI Tools', // Map to subscription category
       status: 'active',
       cost: 0, // Default cost, user can update later
-      billingCycle: 'Monthly',
-      renewalDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
-      priority: 'medium',
-      usageFrequency: 'monthly',
+      billing_cycle: 'Monthly',
+      renewal_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+      usage_importance: 'medium',
+      usage_frequency: 'monthly',
       url: tool.url,
       notes: `Added from AI Tools Browser - ${tool.category} category`,
       tags: [tool.category],
       plan: 'Free', // Default plan
       logo: `https://www.google.com/s2/favicons?domain=${new URL(tool.url).hostname}&sz=64`,
-      fallbackIcon: tool.fallbackIcon,
+      fallback_icon: tool.fallbackIcon,
       currency: 'USD',
       description: '',
       subcategory: '',
-      startDate: new Date(),
-      autoRenew: true,
-      accountEmail: '' // Default empty email
+      start_date: new Date(),
+      auto_renew: true,
+      account_email: '' // Default empty email
     };
 
     // Add to subscriptions

@@ -35,54 +35,56 @@ export const EnhancedSubscriptionCard = ({
 }: EnhancedSubscriptionCardProps) => {
   const [showActions, setShowActions] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [logoFailed, setLogoFailed] = useState(false);
+  const [faviconFailed, setFaviconFailed] = useState(false);
 
-  const daysUntilRenewal = getDaysUntilRenewal(subscription.renewalDate);
+  const daysUntilRenewal = getDaysUntilRenewal(subscription.renewal_date);
   const isOverdue = daysUntilRenewal < 0;
   const isUpcoming = daysUntilRenewal <= 30 && daysUntilRenewal > 0;
 
   const getSubscriptionIcon = (subscription: Subscription) => {
-    if (subscription.url) {
+    // 1) Prefer site favicon (like list view)
+    if (subscription.url && !faviconFailed) {
       try {
-        const domain = new URL(subscription.url).hostname;
-        const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+        const domain = new URL(subscription.url).hostname
+        const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`
         
         return (
-          <Image 
-            src={faviconUrl} 
+          <img
+            src={faviconUrl}
             alt={subscription.name}
             width={48}
             height={48}
             className="w-12 h-12 rounded-xl object-cover shadow-sm"
-            unoptimized
-            onError={(e) => {
-              const img = e.currentTarget as HTMLImageElement;
-              img.style.display = 'none';
-              const parent = img.parentElement as HTMLElement | null;
-              if (parent) {
-                if (subscription.fallbackIcon) {
-                  parent.innerHTML = `<div class=\"w-12 h-12 bg-gradient-to-br from-primary-100 to-primary-200 rounded-xl flex items-center justify-center text-xl font-semibold text-primary-700 shadow-sm\">${subscription.fallbackIcon}</div>`;
-                } else {
-                  parent.innerHTML = `<div class=\"w-12 h-12 bg-gradient-to-br from-neutral-100 to-neutral-200 rounded-xl flex items-center justify-center text-xl font-semibold text-neutral-700 shadow-sm\">${subscription.name.charAt(0)}</div>`;
-                }
-              }
-            }}
+            onError={() => setFaviconFailed(true)}
           />
-        );
+        )
       } catch {
-        return (
-          <div className="w-12 h-12 bg-gradient-to-br from-neutral-100 to-neutral-200 rounded-xl flex items-center justify-center text-xl font-semibold text-neutral-700 shadow-sm">
-            {subscription.fallbackIcon || subscription.name.charAt(0)}
-          </div>
-        );
+        // fall through to next option
       }
     }
     
+    // 2) Then try explicit logo_url
+    if (subscription.logo_url && !logoFailed) {
+      return (
+        <img
+          src={subscription.logo_url}
+          alt={subscription.name}
+          width={48}
+          height={48}
+          className="w-12 h-12 rounded-xl object-cover shadow-sm"
+          onError={() => setLogoFailed(true)}
+        />
+      )
+    }
+
+    // 3) Final fallback: emoji or initial
     return (
       <div className="w-12 h-12 bg-gradient-to-br from-neutral-100 to-neutral-200 rounded-xl flex items-center justify-center text-xl font-semibold text-neutral-700 shadow-sm">
-        {subscription.fallbackIcon || subscription.name.charAt(0)}
+        {subscription.fallback_icon || subscription.name.charAt(0)}
       </div>
-    );
-  };
+    )
+  }
 
   const getRenewalStatus = () => {
     if (isOverdue) {
@@ -244,7 +246,7 @@ export const EnhancedSubscriptionCard = ({
             </span>
           </div>
           <span className="text-body-sm text-neutral-600">
-            {subscription.billingCycle}
+            {subscription.billing_cycle}
           </span>
         </div>
 
@@ -262,9 +264,9 @@ export const EnhancedSubscriptionCard = ({
           <span className="text-body-sm text-neutral-600">Priority</span>
           <Badge 
             variant="outline" 
-            className={`${getPriorityColor(subscription.priority)} text-xs font-medium`}
+            className={`${getPriorityColor(subscription.usage_importance)} text-xs font-medium`}
           >
-            {subscription.priority}
+            {subscription.usage_importance}
           </Badge>
         </div>
 
@@ -280,7 +282,7 @@ export const EnhancedSubscriptionCard = ({
       <div className="mt-4 pt-4 border-t border-neutral-100">
         <div className="flex items-center justify-between">
           <span className="text-caption text-neutral-500">
-            Added {new Date(subscription.startDate).toLocaleDateString()}
+            Added {new Date(subscription.start_date).toLocaleDateString()}
           </span>
           {subscription.url && (
             <a

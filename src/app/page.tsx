@@ -29,9 +29,9 @@ export default function HomePage() {
     category: 'all',
     subcategory: 'all',
     status: 'all',
-    billingCycle: 'all',
-    priority: 'all',
-    usageFrequency: 'all',
+    billing_cycle: 'all',
+    usage_importance: 'all',
+    usage_frequency: 'all',
     costRange: { min: 0, max: 1000 },
     tags: [],
     showExpiringSoon: false,
@@ -123,13 +123,13 @@ export default function HomePage() {
         (filters.category !== 'AI Tools');
       
       const matchesStatus = filters.status === 'all' || sub.status === filters.status;
-      const matchesPriority = filters.priority === 'all' || sub.priority === filters.priority;
-      const matchesUsage = filters.usageFrequency === 'all' || sub.usageFrequency === filters.usageFrequency;
+      const matchesPriority = filters.usage_importance === 'all' || sub.usage_importance === filters.usage_importance;
+      const matchesUsage = filters.usage_frequency === 'all' || sub.usage_frequency === filters.usage_frequency;
       const matchesCost = sub.cost >= filters.costRange.min && sub.cost <= filters.costRange.max;
       
       // AI Tools Tracker enhanced filtering
-      const matchesExpiringSoon = !filters.showExpiringSoon || getDaysUntilRenewal(sub.renewalDate) <= 7;
-      const matchesUnused = !filters.showUnused || sub.usageFrequency === 'rarely';
+      const matchesExpiringSoon = !filters.showExpiringSoon || getDaysUntilRenewal(sub.renewal_date) <= 7;
+      const matchesUnused = !filters.showUnused || sub.usage_frequency === 'rarely';
       
       return matchesSearch && matchesCategory && matchesSubcategory && matchesStatus && matchesPriority && 
              matchesUsage && matchesCost && matchesExpiringSoon && matchesUnused;
@@ -141,9 +141,9 @@ export default function HomePage() {
       if (viewMode.sortBy === 'cost') {
         aValue = a.cost;
         bValue = b.cost;
-      } else if (viewMode.sortBy === 'renewalDate') {
-        aValue = toDate(a.renewalDate);
-        bValue = toDate(b.renewalDate);
+      } else if (viewMode.sortBy === 'renewal_date') {
+        aValue = toDate(a.renewal_date);
+        bValue = toDate(b.renewal_date);
       } else if (typeof aValue === 'string' && typeof bValue === 'string') {
         aValue = aValue.toLowerCase();
         bValue = bValue.toLowerCase();
@@ -286,8 +286,8 @@ export default function HomePage() {
                   id: generateId(),
                   name: `${subscription.name}_Copy`,
                   status: 'active' as const,
-                  startDate: getCurrentDate(),
-                  renewalDate: getDefaultRenewalDate()
+                  start_date: getCurrentDate(),
+                  renewal_date: getDefaultRenewalDate()
                 };
                 const updatedSubscriptions = [...subscriptions, duplicated];
                 
@@ -391,19 +391,19 @@ export default function HomePage() {
                   subcategory: tool.category, // Use AI tool category as subcategory
                   status: 'active',
                   cost: 0,
-                  billingCycle: 'Monthly',
-                  renewalDate: getDefaultRenewalDate(),
-                  startDate: getCurrentDate(),
-                  priority: 'medium',
-                  usageFrequency: 'monthly',
+                  billing_cycle: 'Monthly',
+                  renewal_date: getDefaultRenewalDate(),
+                  start_date: getCurrentDate(),
+                  usage_importance: 'medium',
+                  usage_frequency: 'monthly',
                   url: tool.url,
                   description: `AI tool from ${tool.category} category`,
                   notes: `Added from AI Tools Browser - ${tool.category} category`,
-                  accountEmail: '',
-                  autoRenew: true,
+                  account_email: '',
+                  auto_renew: true,
                   plan: 'Free',
                   logo: `https://www.google.com/s2/favicons?domain=${new URL(tool.url).hostname}&sz=64`,
-                  fallbackIcon: tool.fallbackIcon,
+                  fallback_icon: tool.fallbackIcon,
                   currency: 'USD'
                 };
                 

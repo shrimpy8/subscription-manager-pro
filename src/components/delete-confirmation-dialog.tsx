@@ -70,7 +70,7 @@ export default function DeleteConfirmationDialog({
                   <div className="flex items-center space-x-2">
                     <span className="text-sm font-medium text-gray-900">Cost:</span>
                     <span className="text-sm text-gray-700">
-                      {formatCurrency(subscription.cost)} / {subscription.billingCycle}
+                      {formatCurrency(subscription.cost)} / {subscription.billing_cycle}
                     </span>
                   </div>
                   <div className="flex items-center space-x-2">

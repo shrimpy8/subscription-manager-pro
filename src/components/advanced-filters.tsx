@@ -68,9 +68,9 @@ export function AdvancedFilters({ filters, onFiltersChange, onClearFilters }: Ad
     filters.category !== 'all',
     filters.subcategory !== 'all',
     filters.status !== 'all',
-    filters.billingCycle !== 'all',
-    filters.priority !== 'all',
-    filters.usageFrequency !== 'all',
+    filters.billing_cycle !== 'all',
+    filters.usage_importance !== 'all',
+    filters.usage_frequency !== 'all',
     filters.showExpiringSoon,
     filters.showUnused,
     filters.tags.length > 0
@@ -85,9 +85,9 @@ export function AdvancedFilters({ filters, onFiltersChange, onClearFilters }: Ad
       category: 'all',
       subcategory: 'all',
       status: 'all',
-      billingCycle: 'all',
-      priority: 'all',
-      usageFrequency: 'all',
+      billing_cycle: 'all',
+      usage_importance: 'all',
+      usage_frequency: 'all',
       showExpiringSoon: false,
       showUnused: false,
       tags: []
@@ -155,11 +155,11 @@ export function AdvancedFilters({ filters, onFiltersChange, onClearFilters }: Ad
                 </Badge>
               )}
               
-              {filters.priority !== 'all' && (
+              {filters.usage_importance !== 'all' && (
                 <Badge className="filter-chip-active">
-                  Priority: {filters.priority}
+                  Priority: {filters.usage_importance}
                   <button
-                    onClick={() => removeFilter('priority')}
+                    onClick={() => removeFilter('usage_importance')}
                     className="ml-2 hover:bg-orange-700 rounded-full p-0.5"
                   >
                     <X className="w-3 h-3" />
@@ -167,11 +167,11 @@ export function AdvancedFilters({ filters, onFiltersChange, onClearFilters }: Ad
                 </Badge>
               )}
               
-              {filters.usageFrequency !== 'all' && (
+              {filters.usage_frequency !== 'all' && (
                 <Badge className="filter-chip-active">
-                  Usage: {filters.usageFrequency}
+                  Usage: {filters.usage_frequency}
                   <button
-                    onClick={() => removeFilter('usageFrequency')}
+                    onClick={() => removeFilter('usage_frequency')}
                     className="ml-2 hover:bg-orange-700 rounded-full p-0.5"
                   >
                     <X className="w-3 h-3" />
@@ -313,8 +313,8 @@ export function AdvancedFilters({ filters, onFiltersChange, onClearFilters }: Ad
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">Priority</label>
                   <Select
-                    value={filters.priority}
-                    onValueChange={(value) => handleFilterChange('priority', value)}
+                    value={filters.usage_importance}
+                    onValueChange={(value) => handleFilterChange('usage_importance', value)}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="All Priorities" />
@@ -334,8 +334,8 @@ export function AdvancedFilters({ filters, onFiltersChange, onClearFilters }: Ad
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">Usage Frequency</label>
                   <Select
-                    value={filters.usageFrequency}
-                    onValueChange={(value) => handleFilterChange('usageFrequency', value)}
+                    value={filters.usage_frequency}
+                    onValueChange={(value) => handleFilterChange('usage_frequency', value)}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="All Frequencies" />
