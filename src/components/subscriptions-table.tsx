@@ -398,7 +398,7 @@ const SubscriptionsTable = memo(function SubscriptionsTable({
           <p className="text-gray-600 mb-4">Get started by adding your first subscription.</p>
           <PremiumButton 
             variant="gradient"
-            onClick={() => window.location.href = '/ai-tool-form'}
+            onClick={() => window.location.href = '/add-subscription'}
           >
             <Plus className="w-4 h-4 mr-2" />
             Add Subscription

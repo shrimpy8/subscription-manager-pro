@@ -1,7 +1,10 @@
-import AIToolSubscriptionForm from '@/components/ai-tool-subscription-form';
+"use client";
 
-export default function AIToolFormPage() {
-  return <AIToolSubscriptionForm />;
+import { useEffect } from 'react';
+
+export default function RedirectAiToolForm() {
+  useEffect(() => {
+    window.location.replace('/add-subscription');
+  }, []);
+  return null;
 }
-
-

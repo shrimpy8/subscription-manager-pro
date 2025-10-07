@@ -253,7 +253,7 @@ export default function HomePage() {
               label: 'Add Subscription',
               variant: 'orange-gradient',
               iconLeft: <Plus className="w-4 h-4 mr-2" />,
-              onClick: () => (window.location.href = '/ai-tool-form')
+              onClick: () => (window.location.href = '/add-subscription')
             }
           ] : [
             {

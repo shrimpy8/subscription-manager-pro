@@ -156,7 +156,7 @@ subscription-manager-pro/
 - **Category Filtering**: Filter by AI tool categories and subcategories
 - **One-click Subscription**: Add tools directly to your subscription list
 
-### ➕ Add Subscription (`/ai-tool-form`)
+### ➕ Add Subscription (`/add-subscription`)
 - **Comprehensive Form**: Add new subscriptions with detailed information
 - **AI Tool Integration**: Pre-populate data from AI tools browser
 - **Validation**: Real-time form validation and error handling
