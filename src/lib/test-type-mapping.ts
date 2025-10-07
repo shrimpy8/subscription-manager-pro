@@ -30,8 +30,7 @@ export function runTypeMappingTest() {
     url: 'https://test.com',
     status: 'active',
     account_email: 'test@example.com',
-    promo_code: 'SAVE20',
-    promo_discount: 20,
+    // promo fields removed
     notes: 'Test notes',
     renewal_date: new Date('2024-12-01'),
     start_date: new Date('2024-01-01'),

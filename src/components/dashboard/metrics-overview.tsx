@@ -34,13 +34,12 @@ export const MetricsOverview = ({ subscriptions, className }: MetricsOverviewPro
     return sum;
   }, 0);
 
-  // Savings calculations
-  const totalSavings = subscriptions.reduce((sum, sub) => {
-    if (sub.promo_discount) return sum + sub.promo_discount;
-    return sum;
-  }, 0);
-
-  const savingsPercentage = totalYearlyCost > 0 ? (totalSavings / totalYearlyCost) * 100 : 0;
+  // Savings calculations (temporarily disabled due to removal of promo fields)
+  // const totalSavings = subscriptions.reduce((sum, sub) => {
+  //   if (sub.promo_discount) return sum + sub.promo_discount;
+  //   return sum;
+  // }, 0);
+  // const savingsPercentage = totalYearlyCost > 0 ? (totalSavings / totalYearlyCost) * 100 : 0;
 
   // Renewal tracking
   const upcomingRenewals = subscriptions.filter(sub => {
@@ -93,13 +92,17 @@ export const MetricsOverview = ({ subscriptions, className }: MetricsOverviewPro
           trend="neutral"
           icon={<CheckCircle className="h-4 w-4 text-success-500" />}
         />
-        <MetricsCard
+        {/**
+         * Total Savings card disabled because promo fields are being removed.
+         * Keep for reference; re-enable if/when an alternative savings model is introduced.
+         */}
+        {/* <MetricsCard
           title="Total Savings"
           value={formatCurrency(totalSavings, 'USD')}
           change={12}
           trend="up"
           icon={<PiggyBank className="h-4 w-4 text-success-500" />}
-        />
+        /> */}
       </div>
 
       {/* Status Overview */}
@@ -165,10 +168,11 @@ export const MetricsOverview = ({ subscriptions, className }: MetricsOverviewPro
               <span className="text-body text-neutral-700">Yearly Cost</span>
               <span className="text-h4 text-neutral-900">{formatCurrency(totalYearlyCost, 'USD')}</span>
             </div>
-            <div className="flex items-center justify-between">
+            {/** Savings Rate disabled due to promo fields removal */}
+            {/* <div className="flex items-center justify-between">
               <span className="text-body text-neutral-700">Savings Rate</span>
               <span className="text-h4 text-success-600">{savingsPercentage.toFixed(1)}%</span>
-            </div>
+            </div> */}
           </div>
         </EnhancedCard>
 

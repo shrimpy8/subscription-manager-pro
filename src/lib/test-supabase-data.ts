@@ -47,8 +47,7 @@ function createTestSubscription(id: string): Subscription {
     url: `https://test-${id}.com`,
     status: 'active',
     account_email: `test-${id}@supabase.com`,
-    promo_code: 'TEST20',
-    promo_discount: 20,
+    // promo fields removed
     notes: `Test notes for ${id}`,
     renewal_date: new Date('2024-12-01'),
     start_date: new Date('2024-01-01'),

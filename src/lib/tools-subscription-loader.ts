@@ -69,7 +69,6 @@ export function transformToolsSubscriptionData(rawData: ToolsSubscriptionData[])
     url: item.url,
     status: item.status.toLowerCase() as 'active' | 'paused' | 'canceled',
     account_email: item.accountEmailInUse,
-    promo_code: item.latestPromotionCode || undefined,
     notes: item.notes,
     renewal_date: new Date(item.renewalDate),
     start_date: new Date(item.startDate),

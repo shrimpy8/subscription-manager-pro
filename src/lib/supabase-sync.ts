@@ -126,8 +126,6 @@ interface LegacyCSVSubscription {
   previouslyUsedPromotionCode?: string[]
   latestPromotionCode?: string
   secretKey?: string
-  promoCode?: string
-  promoDiscount?: number
   'Safe for Work'?: string | boolean
   safeForWork?: boolean
   'China Region Only'?: string | boolean
@@ -189,8 +187,6 @@ export function getLocalSubscriptions(): Subscription[] {
       previously_used_promotion_code: sub.previouslyUsedPromotionCode || undefined,
       latest_promocode: sub.latestPromotionCode || undefined,
       secret_key: sub.secretKey || undefined,
-      promo_code: sub.promoCode || undefined,
-      promo_discount: typeof sub.promoDiscount === 'number' ? sub.promoDiscount : undefined,
       safe_for_work: (sub['Safe for Work'] === 'Yes') || (sub['Safe for Work'] === true) || (sub.safeForWork === true) || false,
       china_region_only: (sub['China Region Only'] === 'Yes') || (sub['China Region Only'] === true) || (sub.chinaRegionOnly === true) || false,
       a16z_rank: sub['a16z Rank'] ? parseInt(sub['a16z Rank'] as string) : undefined,

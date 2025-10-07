@@ -41,8 +41,6 @@ export function subscriptionToSupabase(subscription: Subscription): SupabaseSubs
     url: subscription.url,
     status: subscription.status,
     account_email: subscription.account_email,
-    promo_code: subscription.promo_code || null,
-    promo_discount: subscription.promo_discount || null,
     notes: subscription.notes || null,
     renewal_date: subscription.renewal_date.toISOString(),
     start_date: subscription.start_date.toISOString(),
@@ -78,8 +76,6 @@ export function supabaseToSubscription(supabaseSub: SupabaseSubscription): Subsc
     url: supabaseSub.url || '',
     status: supabaseSub.status as Subscription['status'],
     account_email: supabaseSub.account_email || '',
-    promo_code: supabaseSub.promo_code || undefined,
-    promo_discount: supabaseSub.promo_discount || undefined,
     notes: supabaseSub.notes || undefined,
     renewal_date: new Date(supabaseSub.renewal_date),
     start_date: new Date(supabaseSub.start_date),
@@ -107,7 +103,8 @@ export function supabaseToSubscription(supabaseSub: SupabaseSubscription): Subsc
  * Transform Supabase full subscription (with relationships) to localStorage format
  */
 export function supabaseFullToSubscription(supabaseFull: SupabaseSubscriptionFull): Subscription {
-  const baseSubscription = supabaseToSubscription(supabaseFull as SupabaseSubscription)
+  // Cast through unknown to align view row type with table row type expectations
+  const baseSubscription = supabaseToSubscription(supabaseFull as unknown as SupabaseSubscription)
   
   // Add relationship data
   return {

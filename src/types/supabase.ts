@@ -300,15 +300,16 @@ export type Database = {
           currency: string | null
           description: string | null
           fallback_icon: string | null
+          iam_using_it: boolean
           id: string
           last_used: string | null
           latest_promocode: string | null
           logo_url: string | null
           name: string
+          no_subscription: boolean
+          not_in_a16z: boolean
           notes: string | null
           plan: string | null
-          promo_code: string | null
-          promo_discount: number | null
           renewal_date: string
           safe_for_work: boolean | null
           secret_key: string | null
@@ -332,15 +333,16 @@ export type Database = {
           currency?: string | null
           description?: string | null
           fallback_icon?: string | null
+          iam_using_it?: boolean
           id?: string
           last_used?: string | null
           latest_promocode?: string | null
           logo_url?: string | null
           name: string
+          no_subscription?: boolean
+          not_in_a16z?: boolean
           notes?: string | null
           plan?: string | null
-          promo_code?: string | null
-          promo_discount?: number | null
           renewal_date?: string
           safe_for_work?: boolean | null
           secret_key?: string | null
@@ -364,15 +366,16 @@ export type Database = {
           currency?: string | null
           description?: string | null
           fallback_icon?: string | null
+          iam_using_it?: boolean
           id?: string
           last_used?: string | null
           latest_promocode?: string | null
           logo_url?: string | null
           name?: string
+          no_subscription?: boolean
+          not_in_a16z?: boolean
           notes?: string | null
           plan?: string | null
-          promo_code?: string | null
-          promo_discount?: number | null
           renewal_date?: string
           safe_for_work?: boolean | null
           secret_key?: string | null
@@ -478,8 +481,6 @@ export type Database = {
           name: string | null
           notes: string | null
           plan: string | null
-          promo_code: string | null
-          promo_discount: number | null
           renewal_date: string | null
           safe_for_work: boolean | null
           secret_key: string | null
@@ -511,8 +512,6 @@ export type Database = {
           name?: string | null
           notes?: string | null
           plan?: string | null
-          promo_code?: string | null
-          promo_discount?: number | null
           renewal_date?: string | null
           safe_for_work?: boolean | null
           secret_key?: string | null
@@ -544,8 +543,6 @@ export type Database = {
           name?: string | null
           notes?: string | null
           plan?: string | null
-          promo_code?: string | null
-          promo_discount?: number | null
           renewal_date?: string | null
           safe_for_work?: boolean | null
           secret_key?: string | null
@@ -582,8 +579,6 @@ export type Database = {
           name: string | null
           notes: string | null
           plan: string | null
-          promo_code: string | null
-          promo_discount: number | null
           promotions: Json | null
           renewal_date: string | null
           safe_for_work: boolean | null
@@ -619,8 +614,6 @@ export type Database = {
           name?: string | null
           notes?: string | null
           plan?: string | null
-          promo_code?: string | null
-          promo_discount?: number | null
           promotions?: never
           renewal_date?: string | null
           safe_for_work?: boolean | null
@@ -656,8 +649,6 @@ export type Database = {
           name?: string | null
           notes?: string | null
           plan?: string | null
-          promo_code?: string | null
-          promo_discount?: number | null
           promotions?: never
           renewal_date?: string | null
           safe_for_work?: boolean | null

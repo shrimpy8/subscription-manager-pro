@@ -71,8 +71,7 @@ function createTestSubscriptions(): Subscription[] {
       url: 'https://test-1.com',
       status: 'active',
       account_email: 'test1@example.com',
-      promo_code: 'TEST20',
-      promo_discount: 20,
+      // promo fields removed
       notes: 'Test notes 1',
       renewal_date: new Date('2024-12-01'),
       start_date: new Date('2024-01-01'),
@@ -107,8 +106,7 @@ function createTestSubscriptions(): Subscription[] {
       url: 'https://test-2.com',
       status: 'paused',
       account_email: 'test2@example.com',
-      promo_code: 'SAVE50',
-      promo_discount: 50,
+      // promo fields removed
       notes: 'Test notes 2',
       renewal_date: new Date('2025-01-01'),
       start_date: new Date('2024-01-01'),
