@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, memo } from 'react';
-import { Search, ExternalLink, Plus, Check, Filter, X, Eye, EyeOff, MessageSquare, Search as SearchIcon, Users, Image as ImageIcon, Video, Music, FileText, Wrench, Code, Settings, Sparkles, Zap, Database, Globe, Calendar, Palette, Mic, TrendingUp, Server, Rocket } from 'lucide-react';
+import { Search, ExternalLink, Plus, Check, Filter, X, Eye, EyeOff, Sparkles } from 'lucide-react';
 // import { Card, CardContent } from '@/components/ui/card';
 import { PremiumButton } from '@/components/ui/premium-button';
 import { Input } from '@/components/ui/input';
@@ -146,7 +146,7 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
 
     console.log('🔍 AIToolsBrowser: Filtered tools:', tools.length, 'from', aiTools.length, 'total');
     return tools;
-  }, [aiTools, filters, showCNRegion, showNSFW, trackedTools, usingTools]);
+  }, [aiTools, filters, showCNRegion, showNSFW, trackedTools, usingTools, subscriptions]);
 
   // Group tools by subcategory (from database)
   const groupedTools = React.useMemo(() => {
