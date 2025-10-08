@@ -173,7 +173,7 @@ export async function productionHealthCheck() {
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH'
     
     const client = createClient(supabaseUrl, supabaseAnonKey)
-    const { data, error } = await client
+    const { error } = await client
       .from('subscriptions')
       .select('id')
       .limit(1)

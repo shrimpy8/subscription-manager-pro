@@ -1,4 +1,4 @@
-import { Subscription, AIToolJsonData, SubscriptionApiResponse, SubscriptionCategory } from '@/types/subscription';
+import { Subscription, AIToolJsonData, SubscriptionCategory } from '@/types/subscription';
 import { handleApiError, handleSubscriptionError } from '@/utils/error-handler';
 import { getCurrentDateISO, toDate, getDefaultRenewalDate, getCurrentDate, formatDate } from '@/lib/utils';
 import { getAIToolByName } from '@/lib/ai-tools-data';
@@ -95,28 +95,28 @@ export async function saveSubscriptions(subscriptions: Subscription[]): Promise<
 /**
  * Save subscriptions to API
  */
-async function saveSubscriptionsToAPI(subscriptions: Subscription[]): Promise<void> {
-  try {
-    const response = await fetch('/api/subscriptions', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ subscriptions }),
-    });
+// async function saveSubscriptionsToAPI(subscriptions: Subscription[]): Promise<void> {
+//   try {
+//     const response = await fetch('/api/subscriptions', {
+//       method: 'PUT',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify({ subscriptions }),
+//     });
 
-    if (!response.ok) {
-      throw new Error('Failed to save to API');
-    }
-  } catch (error) {
-    handleApiError(
-      error as Error,
-      '/api/subscriptions',
-      { component: 'subscription-persistence' }
-    );
-    throw error;
-  }
-}
+//     if (!response.ok) {
+//       throw new Error('Failed to save to API');
+//     }
+//   } catch (error) {
+//     handleApiError(
+//       error as Error,
+//       '/api/subscriptions',
+//       { component: 'subscription-persistence' }
+//     );
+//     throw error;
+//   }
+// }
 
 /**
  * Ensure dates are properly converted to Date objects

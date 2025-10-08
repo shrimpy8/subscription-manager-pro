@@ -5,18 +5,11 @@
  * Validates data transformation and relationship queries
  */
 
-import { supabase, supabaseAdmin } from './supabase'
+import { supabase } from './supabase'
 import { 
   subscriptionToSupabase, 
   supabaseToSubscription, 
-  supabaseFullToSubscription,
-  createSubscriptionRelationships,
-  SupabaseSubscription,
-  SupabaseTag,
-  SupabaseAlternative,
-  SupabaseApiKey,
-  SupabasePromoCode,
-  SupabaseAccountEmail
+  createSubscriptionRelationships
 } from './supabase-types'
 import { Subscription } from '@/types/subscription'
 

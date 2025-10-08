@@ -295,7 +295,7 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
     };
 
     loadSubscription();
-  }, [subscriptionId, router]);
+  }, [subscriptionId, router, toast]);
 
   const handleInputChange = (field: keyof UpdateSubscriptionFormData, value: string | number | boolean) => {
     if (field === 'startDate' || field === 'renewalDate') {

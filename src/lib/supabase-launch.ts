@@ -5,7 +5,7 @@
  */
 
 import { SupabaseProduction } from './supabase-production'
-import { createProductionClient, createProductionAdminClient } from './supabase-production'
+import { createProductionClient } from './supabase-production'
 
 export interface LaunchStatus {
   step: string
@@ -69,7 +69,7 @@ export async function launchProductionSupabase(): Promise<LaunchResult> {
   // Step 2: Test Database Connection
   const connectionStep = await executeStep('Test Database Connection', async () => {
     const client = createProductionClient()
-    const { data, error } = await client.from('subscriptions').select('count').limit(1)
+    const { error } = await client.from('subscriptions').select('count').limit(1)
     
     if (error) {
       throw new Error(`Database connection failed: ${error.message}`)
@@ -127,7 +127,7 @@ export async function launchProductionSupabase(): Promise<LaunchResult> {
     }
     
     // Test Read
-    const { data, error: readError } = await client.from('subscriptions').select('*').eq('id', testId).single()
+    const { error: readError } = await client.from('subscriptions').select('*').eq('id', testId).single()
     
     if (readError) {
       throw new Error(`Read operation failed: ${readError.message}`)
@@ -161,7 +161,7 @@ export async function launchProductionSupabase(): Promise<LaunchResult> {
     const client = createProductionClient()
     
     // This should fail if RLS is properly configured (no auth)
-    const { data, error } = await client.from('subscriptions').select('*').limit(1)
+    const { error } = await client.from('subscriptions').select('*').limit(1)
     
     if (!error) {
       warnings.push('RLS may not be properly configured - data accessible without authentication')
@@ -177,7 +177,7 @@ export async function launchProductionSupabase(): Promise<LaunchResult> {
     const startTime = Date.now()
     
     // Test query performance
-    const { data, error } = await client.from('subscriptions').select('*').limit(100)
+    const { error } = await client.from('subscriptions').select('*').limit(100)
     
     const duration = Date.now() - startTime
     

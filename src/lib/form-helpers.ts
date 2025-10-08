@@ -6,7 +6,7 @@
  */
 
 import { ValidationValue, ValidationRule, ValidationResult } from '@/utils/validation';
-import { isString, isNumber, isBoolean, isDate, isArray, isValidEmail, isValidUrl } from '@/utils/type-guards';
+import { isString, isNumber, isArray, isValidEmail, isValidUrl } from '@/utils/type-guards';
 
 /**
  * Form field configuration

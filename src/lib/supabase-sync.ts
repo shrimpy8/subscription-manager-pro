@@ -396,7 +396,7 @@ export async function syncBidirectional(options: Partial<SyncOptions> = {}): Pro
     result.conflicts = conflicts
     
     // Merge subscriptions
-    const mergedSubscriptions = mergeSubscriptions(localSubscriptions, remoteSubscriptions, conflicts, opts)
+    const mergedSubscriptions = mergeSubscriptions(localSubscriptions, remoteSubscriptions)
     
     // Save to both localStorage and Supabase
     const [localSaved, remoteResult2] = await Promise.all([
@@ -492,31 +492,29 @@ async function resolveConflicts(
 /**
  * Merge two subscriptions
  */
-function mergeSubscription(local: Subscription, remote: Subscription): Subscription {
-  // Use the most recent version of each field
-  const merged: Subscription = { ...local }
+// function mergeSubscription(local: Subscription, remote: Subscription): Subscription {
+//   // Use the most recent version of each field
+//   const merged: Subscription = { ...local }
   
-  // Compare timestamps if available
-  const localTime = local.last_used?.getTime() || 0
-  const remoteTime = remote.last_used?.getTime() || 0
+//   // Compare timestamps if available
+//   const localTime = local.last_used?.getTime() || 0
+//   const remoteTime = remote.last_used?.getTime() || 0
   
-  if (remoteTime > localTime) {
-    // Remote is newer, use remote values
-    return { ...remote, ...local }
-  } else {
-    // Local is newer, use local values
-    return { ...local, ...remote }
-  }
-}
+//   if (remoteTime > localTime) {
+//     // Remote is newer, use remote values
+//     return { ...remote, ...local }
+//   } else {
+//     // Local is newer, use local values
+//     return { ...local, ...remote }
+//   }
+// }
 
 /**
  * Merge subscriptions from both sources
  */
 function mergeSubscriptions(
   local: Subscription[],
-  remote: Subscription[],
-  conflicts: Conflict[],
-  options: SyncOptions
+  remote: Subscription[]
 ): Subscription[] {
   const merged: Subscription[] = []
   const processedIds = new Set<string>()

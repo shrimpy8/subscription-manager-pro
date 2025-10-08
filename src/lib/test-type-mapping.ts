@@ -4,7 +4,6 @@
 import { 
   subscriptionToSupabase, 
   supabaseToSubscription, 
-  supabaseFullToSubscription,
   createSubscriptionRelationships,
   isValidSupabaseSubscription,
   isValidSubscription,

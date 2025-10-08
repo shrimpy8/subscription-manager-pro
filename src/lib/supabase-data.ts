@@ -5,37 +5,35 @@
  * data transformation utilities, and error handling.
  */
 
-import { supabase, supabaseAdmin } from './supabase'
+import { supabase } from './supabase'
 
 // Server-side proxy helper
-async function proxyRequest(endpoint: string, method: string = 'GET', body?: Record<string, unknown>) {
-  const url = `/api/supabase-proxy?endpoint=${encodeURIComponent(endpoint)}`
-  const response = await fetch(url, {
-    method,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: body ? JSON.stringify(body) : undefined
-  })
+// async function proxyRequest(endpoint: string, method: string = 'GET', body?: Record<string, unknown>) {
+//   const url = `/api/supabase-proxy?endpoint=${encodeURIComponent(endpoint)}`
+//   const response = await fetch(url, {
+//     method,
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: body ? JSON.stringify(body) : undefined
+//   })
   
-  if (!response.ok) {
-    throw new Error(`Proxy request failed: ${response.status}`)
-  }
+//   if (!response.ok) {
+//     throw new Error(`Proxy request failed: ${response.status}`)
+//   }
   
-  const result = await response.json()
-  if (!result.success) {
-    throw new Error(result.error || 'Proxy request failed')
-  }
+//   const result = await response.json()
+//   if (!result.success) {
+//     throw new Error(result.error || 'Proxy request failed')
+//   }
   
-  return result.data
-}
+//   return result.data
+// }
 import { 
   subscriptionToSupabase, 
   supabaseToSubscription, 
   supabaseFullToSubscription,
   createSubscriptionRelationships,
-  SupabaseSubscriptionInsert,
-  SupabaseSubscriptionUpdate,
   SupabaseSubscriptionFull
 } from './supabase-types'
 import { Subscription } from '@/types/subscription'

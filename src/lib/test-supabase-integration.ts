@@ -309,7 +309,7 @@ async function testDataAccessLayer(): Promise<IntegrationTestResult[]> {
  */
 async function testDataSynchronization(): Promise<IntegrationTestResult[]> {
   const results: IntegrationTestResult[] = []
-  const testSubscriptions = createTestSubscriptions()
+  // const testSubscriptions = createTestSubscriptions()
   
   // Test Sync to Supabase
   const syncToStart = performance.now()

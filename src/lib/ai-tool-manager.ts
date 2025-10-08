@@ -8,7 +8,7 @@
 import { AITool, AIToolCategory, AIToolFlag } from '@/types/ai-tools';
 import { aiTools } from './ai-tools-data';
 import { categorizeAITool, suggestNewCategoryName, type CategorizationResult } from './ai-tool-categorizer';
-import { generateId } from './utils';
+// import { generateId } from './utils';
 
 export interface NewToolData {
   name: string;

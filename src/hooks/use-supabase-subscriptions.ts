@@ -68,11 +68,6 @@ export function useSupabaseSubscriptions(): UseSupabaseSubscriptionsReturn {
     }
   }, [])
   
-  // Load subscriptions on mount
-  useEffect(() => {
-    refreshSubscriptions()
-  }, [])
-  
   // Cleanup on unmount
   useEffect(() => {
     return () => {
@@ -116,6 +111,11 @@ export function useSupabaseSubscriptions(): UseSupabaseSubscriptionsReturn {
       setLoading(false)
     }
   }, [isOnline])
+  
+  // Load subscriptions on mount
+  useEffect(() => {
+    refreshSubscriptions()
+  }, [refreshSubscriptions])
   
   // Create subscription
   const createSubscription = useCallback(async (subscription: Subscription): Promise<boolean> => {
