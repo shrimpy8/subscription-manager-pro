@@ -41,6 +41,7 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
   
   const [filters, setFilters] = useState<AIToolFilters>({
     subcategory: 'all',
+    category: 'all',
     searchTerm: '',
     showSubscribedOnly: false,
     showUsingOnly: false,
@@ -98,6 +99,17 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
           sub.name.toLowerCase() === tool.name.toLowerCase()
         );
         return matchingSubscription?.subcategory === filters.subcategory;
+      });
+    }
+
+    // Apply category filter (map AI tools to subscription categories)
+    if (filters.category !== 'all') {
+      tools = tools.filter(tool => {
+        // Find matching subscription by name
+        const matchingSubscription = subscriptions.find(sub => 
+          sub.name.toLowerCase() === tool.name.toLowerCase()
+        );
+        return matchingSubscription?.category === filters.category;
       });
     }
 
@@ -230,6 +242,7 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
   const clearFilters = () => {
     setFilters({
       subcategory: 'all',
+      category: 'all',
       searchTerm: '',
       showSubscribedOnly: false,
       showUsingOnly: false,
@@ -240,6 +253,7 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
 
   const activeFiltersCount = [
     filters.subcategory !== 'all',
+    filters.category !== 'all',
     filters.searchTerm,
     filters.showSubscribedOnly,
     filters.showUsingOnly,
@@ -349,143 +363,184 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
           </div>
 
           <div className="space-y-4">
-            {/* Three Main Filter Panels */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Ranking Panel */}
-              <div className="form-section">
-                <h4 className="form-section-title">Ranking</h4>
-                <div className="flex flex-wrap gap-1.5">
-                  <PremiumButton
-                    variant={filters.a16zRank === 'all' ? "primary" : "secondary"}
-                    size="sm"
-                    onClick={() => setFilters(prev => ({ ...prev, a16zRank: 'all' }))}
-                    className="h-7 px-2 text-xs"
-                  >
-                    <Sparkles className="w-3 h-3 mr-1" />
-                    All
-                  </PremiumButton>
-                  <PremiumButton
-                    variant={filters.a16zRank === 'a16z-ranked' ? "primary" : "secondary"}
-                    size="sm"
-                    onClick={() => setFilters(prev => ({ ...prev, a16zRank: 'a16z-ranked' }))}
-                    className="h-7 px-2 text-xs"
-                  >
-                    <span className="w-3 h-3 mr-1">🏆</span>
-                    a16z Rank
-                  </PremiumButton>
-                  <PremiumButton
-                    variant={filters.a16zRank === 'user-choice' ? "primary" : "secondary"}
-                    size="sm"
-                    onClick={() => setFilters(prev => ({ ...prev, a16zRank: 'user-choice' }))}
-                    className="h-7 px-2 text-xs"
-                  >
-                    <span className="w-3 h-3 mr-1">⭐</span>
-                    User Choice
-                  </PremiumButton>
-                  <PremiumButton
-                    variant={filters.a16zRank === 'no-rank' ? "primary" : "secondary"}
-                    size="sm"
-                    onClick={() => setFilters(prev => ({ ...prev, a16zRank: 'no-rank' }))}
-                    className="h-7 px-2 text-xs"
-                  >
-                    <span className="w-3 h-3 mr-1">🚫</span>
-                    No Rank
-                  </PremiumButton>
-                </div>
-              </div>
-
-              {/* Tracking Panel */}
-              <div className="form-section">
-                <h4 className="form-section-title">Tracking</h4>
-                <div className="flex flex-wrap gap-1.5">
-                  <PremiumButton
-                    variant={filters.showSubscribedOnly ? "primary" : "secondary"}
-                    size="sm"
-                    onClick={() => setFilters(prev => ({ ...prev, showSubscribedOnly: !prev.showSubscribedOnly }))}
-                    className="h-7 px-2 text-xs"
-                  >
-                    Subscribed
-                  </PremiumButton>
-                  <PremiumButton
-                    variant={filters.showUsingOnly ? "primary" : "secondary"}
-                    size="sm"
-                    onClick={() => setFilters(prev => ({ ...prev, showUsingOnly: !prev.showUsingOnly }))}
-                    className="h-7 px-2 text-xs"
-                  >
-                    Using
-                  </PremiumButton>
-                </div>
-              </div>
-
-              {/* Visibility Panel */}
-              <div className="form-section">
-                <h4 className="form-section-title">Visibility</h4>
-                <div className="flex flex-wrap gap-1.5">
-                  <PremiumButton
-                    variant={showCNRegion ? "primary" : "secondary"}
-                    size="sm"
-                    onClick={() => setShowCNRegion(!showCNRegion)}
-                    className="h-7 px-2 text-xs"
-                  >
-                    {showCNRegion ? <Eye className="w-3 h-3 mr-1" /> : <EyeOff className="w-3 h-3 mr-1" />}
-                    CN Region
-                  </PremiumButton>
-                  {/* Roleplay toggle removed per requirement */}
-                  <PremiumButton
-                    variant={showNSFW ? "primary" : "secondary"}
-                    size="sm"
-                    onClick={() => setShowNSFW(!showNSFW)}
-                    className="h-7 px-2 text-xs"
-                  >
-                    {showNSFW ? <Eye className="w-3 h-3 mr-1" /> : <EyeOff className="w-3 h-3 mr-1" />}
-                    NSFW
-                  </PremiumButton>
-                </div>
-              </div>
-            </div>
-
-            {/* Subcategory Filters - Dynamically derived from database */}
+            {/* Search Field - Full Width */}
             <div className="form-section">
-              <h4 className="form-section-title">Subcategories</h4>
-              <div className="flex flex-wrap gap-1.5">
-                <PremiumButton
-                  variant={filters.subcategory === 'all' ? "orange-gradient" : "secondary"}
-                  size="sm"
-                  onClick={() => setFilters(prev => ({ ...prev, subcategory: 'all' }))}
-                  className={`${filters.subcategory === 'all' ? "gradient-bg" : ""} h-7 px-2 text-xs`}
-                >
-                  <Sparkles className="w-3 h-3 mr-1" />
-                  All
-                </PremiumButton>
-                {subcategoryOptions.map((subcategory) => {
-                  const count = subscriptions.filter(sub => sub.subcategory === subcategory).length;
-                  return (
-                    <PremiumButton
-                      key={subcategory}
-                      variant={filters.subcategory === subcategory ? "orange-gradient" : "secondary"}
-                      size="sm"
-                      onClick={() => setFilters(prev => ({ ...prev, subcategory }))}
-                      className={`${filters.subcategory === subcategory ? "gradient-bg" : ""} h-7 px-2 text-xs`}
-                      title={`${subcategory} (${count} tools)`}
-                    >
-                      {subcategory} ({count})
-                    </PremiumButton>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Search Field - Moved to bottom */}
-            <div className="form-section">
-              <h4 className="form-section-title">Search</h4>
-              <div className="relative">
+              <h4 className="form-section-title">SEARCH</h4>
+              <div className="relative mt-2">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <Input
                   placeholder="Search tools..."
                   value={filters.searchTerm}
                   onChange={(e) => setFilters(prev => ({ ...prev, searchTerm: e.target.value }))}
-                  className="pl-10"
+                  className="pl-10 w-full"
                 />
+              </div>
+            </div>
+
+            {/* Two-Column Filter Layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Left Column - Filter Groups */}
+              <div className="space-y-4">
+                {/* Ranking Section */}
+                <div className="form-section">
+                  <h4 className="form-section-title">Ranking</h4>
+                  <div className="space-y-2">
+                    <div className="flex flex-wrap gap-1.5">
+                      <PremiumButton
+                        variant={filters.a16zRank === 'all' ? "primary" : "secondary"}
+                        size="sm"
+                        onClick={() => setFilters(prev => ({ ...prev, a16zRank: 'all' }))}
+                        className="h-7 px-2 text-xs"
+                      >
+                        <Sparkles className="w-3 h-3 mr-1" />
+                        All
+                      </PremiumButton>
+                      <PremiumButton
+                        variant={filters.a16zRank === 'user-choice' ? "primary" : "secondary"}
+                        size="sm"
+                        onClick={() => setFilters(prev => ({ ...prev, a16zRank: 'user-choice' }))}
+                        className="h-7 px-2 text-xs"
+                      >
+                        <span className="w-3 h-3 mr-1">⭐</span>
+                        User choice
+                      </PremiumButton>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      <PremiumButton
+                        variant={filters.a16zRank === 'a16z-ranked' ? "primary" : "secondary"}
+                        size="sm"
+                        onClick={() => setFilters(prev => ({ ...prev, a16zRank: 'a16z-ranked' }))}
+                        className="h-7 px-2 text-xs"
+                      >
+                        <span className="w-3 h-3 mr-1">🏆</span>
+                        a16z rank
+                      </PremiumButton>
+                      <PremiumButton
+                        variant={filters.a16zRank === 'no-rank' ? "primary" : "secondary"}
+                        size="sm"
+                        onClick={() => setFilters(prev => ({ ...prev, a16zRank: 'no-rank' }))}
+                        className="h-7 px-2 text-xs"
+                      >
+                        <span className="w-3 h-3 mr-1">🚫</span>
+                        no rank
+                      </PremiumButton>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Tracking Section */}
+                <div className="form-section">
+                  <h4 className="form-section-title">Tracking</h4>
+                  <div className="flex flex-wrap gap-1.5">
+                    <PremiumButton
+                      variant={filters.showSubscribedOnly ? "primary" : "secondary"}
+                      size="sm"
+                      onClick={() => setFilters(prev => ({ ...prev, showSubscribedOnly: !prev.showSubscribedOnly }))}
+                      className="h-7 px-2 text-xs"
+                    >
+                      Subscribe
+                    </PremiumButton>
+                    <PremiumButton
+                      variant={filters.showUsingOnly ? "primary" : "secondary"}
+                      size="sm"
+                      onClick={() => setFilters(prev => ({ ...prev, showUsingOnly: !prev.showUsingOnly }))}
+                      className="h-7 px-2 text-xs"
+                    >
+                      Using
+                    </PremiumButton>
+                  </div>
+                </div>
+
+                {/* Visibility Section */}
+                <div className="form-section">
+                  <h4 className="form-section-title">Visibility</h4>
+                  <div className="flex flex-wrap gap-1.5">
+                    <PremiumButton
+                      variant={showCNRegion ? "primary" : "secondary"}
+                      size="sm"
+                      onClick={() => setShowCNRegion(!showCNRegion)}
+                      className="h-7 px-2 text-xs"
+                    >
+                      {showCNRegion ? <Eye className="w-3 h-3 mr-1" /> : <EyeOff className="w-3 h-3 mr-1" />}
+                      CN Region
+                    </PremiumButton>
+                    <PremiumButton
+                      variant={showNSFW ? "primary" : "secondary"}
+                      size="sm"
+                      onClick={() => setShowNSFW(!showNSFW)}
+                      className="h-7 px-2 text-xs"
+                    >
+                      {showNSFW ? <Eye className="w-3 h-3 mr-1" /> : <EyeOff className="w-3 h-3 mr-1" />}
+                      NSFW
+                    </PremiumButton>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Right Column - Category Filters */}
+              <div className="space-y-6">
+                {/* Category Section */}
+                <div className="form-section">
+                  <h4 className="form-section-title">Category</h4>
+                  <div className="flex flex-wrap gap-1.5">
+                    <PremiumButton
+                      variant={filters.category === 'all' ? "primary" : "secondary"}
+                      size="sm"
+                      onClick={() => setFilters(prev => ({ ...prev, category: 'all' }))}
+                      className="h-7 px-2 text-xs"
+                    >
+                      All
+                    </PremiumButton>
+                    <PremiumButton
+                      variant={filters.category === 'AI Tools' ? "primary" : "secondary"}
+                      size="sm"
+                      onClick={() => setFilters(prev => ({ ...prev, category: 'AI Tools' }))}
+                      className="h-7 px-2 text-xs"
+                    >
+                      AI Tools
+                    </PremiumButton>
+                    <PremiumButton
+                      variant={filters.category === 'Tools' ? "primary" : "secondary"}
+                      size="sm"
+                      onClick={() => setFilters(prev => ({ ...prev, category: 'Tools' }))}
+                      className="h-7 px-2 text-xs"
+                    >
+                      Tools
+                    </PremiumButton>
+                  </div>
+                </div>
+
+                {/* Sub Category Section */}
+                <div className="form-section">
+                  <h4 className="form-section-title">Sub Category</h4>
+                  <div className="flex flex-wrap gap-1.5 max-h-64 overflow-y-auto">
+                    <PremiumButton
+                      variant={filters.subcategory === 'all' ? "orange-gradient" : "secondary"}
+                      size="sm"
+                      onClick={() => setFilters(prev => ({ ...prev, subcategory: 'all' }))}
+                      className={`${filters.subcategory === 'all' ? "gradient-bg" : ""} h-7 px-2 text-xs`}
+                    >
+                      <Sparkles className="w-3 h-3 mr-1" />
+                      All
+                    </PremiumButton>
+                    {subcategoryOptions.map((subcategory) => {
+                      const count = subscriptions.filter(sub => sub.subcategory === subcategory).length;
+                      return (
+                        <PremiumButton
+                          key={subcategory}
+                          variant={filters.subcategory === subcategory ? "orange-gradient" : "secondary"}
+                          size="sm"
+                          onClick={() => setFilters(prev => ({ ...prev, subcategory }))}
+                          className={`${filters.subcategory === subcategory ? "gradient-bg" : ""} h-7 px-2 text-xs`}
+                          title={`${subcategory} (${count} tools)`}
+                        >
+                          {subcategory} ({count})
+                        </PremiumButton>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
             </div>
           </div>

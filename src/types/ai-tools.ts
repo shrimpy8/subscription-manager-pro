@@ -30,6 +30,7 @@ export interface AITool {
 
 export interface AIToolFilters {
   subcategory: string | 'all';
+  category: string | 'all';
   searchTerm: string;
   showSubscribedOnly: boolean;
   showUsingOnly: boolean;
