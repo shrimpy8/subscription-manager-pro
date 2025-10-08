@@ -80,6 +80,7 @@ export async function GET(request: NextRequest) {
       exportedAt: new Date().toISOString()
     });
   } catch (error) {
+    console.error('Error exporting subscriptions:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to export subscriptions' },
       { status: 500 }

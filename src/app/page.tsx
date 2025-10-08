@@ -6,7 +6,7 @@ import { Plus, Download } from 'lucide-react';
 import PageHeader from '@/components/ui/page-header';
 // import { Badge } from '@/components/ui/badge';
 import { Subscription, SubscriptionFilters, ViewMode } from '@/types/subscription';
-import { loadSubscriptions, saveSubscriptions, exportSubscriptionsToCSV, downloadCSV } from '@/lib/subscription-persistence';
+import { saveSubscriptions, exportSubscriptionsToCSV, downloadCSV } from '@/lib/subscription-persistence';
 import { useSupabaseSubscriptions } from '@/hooks/use-supabase-subscriptions';
 import { handleSubscriptionError } from '@/utils/error-handler';
 import { generateId, toDate, getDefaultRenewalDate, getCurrentDate, formatDate, getDaysUntilRenewal } from '@/lib/utils';
@@ -491,7 +491,7 @@ export default function HomePage() {
                 
                 // Silent action - no alert needed
               }}
-              onMarkAsUsing={(tool) => {
+              onMarkAsUsing={() => {
                 // Silent action - no alert needed
               }}
             />

@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 // import { Checkbox } from '@/components/ui/checkbox';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+// import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { EnhancedCard } from '@/components/ui/enhanced-card';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, FileText, Globe, Shield, Globe2 } from 'lucide-react';
@@ -157,13 +157,13 @@ export default function AddAIToolPage() {
             {/* Left Column - Basic Information */}
             <div className="space-y-6">
               <EnhancedCard variant="elevated" className="border border-neutral-200">
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center text-lg font-semibold text-neutral-900">
+                <div className="pb-4">
+                  <div className="flex items-center text-lg font-semibold text-neutral-900">
                     <FileText className="w-5 h-5 mr-2 text-primary-600" />
                     Basic Information
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
+                  </div>
+                </div>
+                <div className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="name" className="text-sm font-medium text-neutral-900">
                       Tool Name *
@@ -231,20 +231,20 @@ export default function AddAIToolPage() {
                       Emoji to display if favicon fails to load
                     </p>
                   </div>
-                </CardContent>
+                </div>
               </EnhancedCard>
             </div>
 
             {/* Right Column - Additional Information */}
             <div className="space-y-6">
               <EnhancedCard variant="elevated" className="border border-neutral-200">
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center text-lg font-semibold text-neutral-900">
+                <div className="pb-4">
+                  <div className="flex items-center text-lg font-semibold text-neutral-900">
                     <FileText className="w-5 h-5 mr-2 text-primary-600" />
                     Additional Information
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
+                  </div>
+                </div>
+                <div className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="description" className="text-sm font-medium text-neutral-900">
                       Description (optional)
@@ -303,7 +303,7 @@ export default function AddAIToolPage() {
                       <li>• Subscribing will automatically link it to your subscriptions</li>
                     </ul>
                   </div>
-                </CardContent>
+                </div>
               </EnhancedCard>
             </div>
           </div>

@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { Download, Upload, Trash2, ArrowLeft, Info, BarChart3 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+// import { Button } from '@/components/ui/button';
+// import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { EnhancedCard } from '@/components/ui/enhanced-card';
 import { PremiumButton } from '@/components/ui/premium-button';
 import { Subscription } from '@/types/subscription';
@@ -138,13 +138,13 @@ export default function SettingsPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Data Management */}
             <EnhancedCard variant="elevated" className="border border-neutral-200">
-              <CardHeader className="pb-4">
-                <CardTitle className="flex items-center text-h3 text-neutral-900">
+              <div className="pb-4">
+                <div className="flex items-center text-h3 text-neutral-900">
                   <Download className="w-5 h-5 mr-2 text-primary-600" />
                   Data Management
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
+                </div>
+              </div>
+              <div className="space-y-4">
                 <div className="space-y-3">
                   <PremiumButton
                     variant="secondary"
@@ -186,18 +186,18 @@ export default function SettingsPage() {
                     Export your data as JSON for backup or migration purposes.
                   </p>
                 </div>
-              </CardContent>
+              </div>
             </EnhancedCard>
 
             {/* Application Info */}
             <EnhancedCard variant="elevated" className="border border-neutral-200">
-              <CardHeader className="pb-4">
-                <CardTitle className="flex items-center text-h3 text-neutral-900">
+              <div className="pb-4">
+                <div className="flex items-center text-h3 text-neutral-900">
                   <Info className="w-5 h-5 mr-2 text-primary-600" />
                   Application Information
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+                </div>
+              </div>
+              <div>
                 <div className="space-y-4">
                   <div>
                     <h3 className="font-semibold text-gray-900">Subscription Manager Pro</h3>
@@ -226,18 +226,18 @@ export default function SettingsPage() {
                     </ul>
                   </div>
                 </div>
-              </CardContent>
+              </div>
             </EnhancedCard>
 
             {/* Usage Statistics */}
             <EnhancedCard variant="elevated" className="border border-neutral-200 lg:col-span-2">
-              <CardHeader className="pb-4">
-                <CardTitle className="flex items-center text-h3 text-neutral-900">
+              <div className="pb-4">
+                <div className="flex items-center text-h3 text-neutral-900">
                   <BarChart3 className="w-5 h-5 mr-2 text-primary-600" />
                   Usage Statistics
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+                </div>
+              </div>
+              <div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="text-center p-4 bg-primary-50 rounded-lg">
                     <div className="text-2xl font-bold text-primary-600">{subscriptions.length}</div>
@@ -256,7 +256,7 @@ export default function SettingsPage() {
                     <div className="text-sm text-neutral-600">Paused Subscriptions</div>
                   </div>
                 </div>
-              </CardContent>
+              </div>
             </EnhancedCard>
           </div>
         </div>

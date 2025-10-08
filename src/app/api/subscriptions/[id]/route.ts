@@ -30,6 +30,7 @@ export async function GET(
       data: subscription
     });
   } catch (error) {
+    console.error('Error fetching subscription:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to fetch subscription' },
       { status: 500 }
@@ -82,7 +83,7 @@ export async function PUT(
       try {
         const domain = new URL(validatedData.url).hostname;
         logo = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
-      } catch (error) {
+      } catch {
         // If URL parsing fails, keep original logo or use fallback
         logo = validatedData.logo || '';
       }
@@ -146,6 +147,7 @@ export async function DELETE(
       message: 'Subscription deleted successfully'
     });
   } catch (error) {
+    console.error('Error deleting subscription:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to delete subscription' },
       { status: 500 }

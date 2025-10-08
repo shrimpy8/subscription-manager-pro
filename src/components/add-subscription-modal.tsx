@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { X, Save } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { PremiumButton } from '@/components/ui/premium-button';
@@ -15,7 +15,7 @@ import { sanitizeInput } from '@/lib/xss';
 import { validateSubscription } from '@/utils/validation';
 import { useLoadingState } from '@/hooks/use-loading-state';
 import { useSupabaseSubscriptions } from '@/hooks/use-supabase-subscriptions';
-import { LoadingButton } from '@/components/ui/loading-spinner';
+// import { LoadingButton } from '@/components/ui/loading-spinner';
 import { useToast } from '@/components/ui/toast';
 import { getUserFriendlyMessage } from '@/utils/error-messages';
 
@@ -137,7 +137,7 @@ export default function AddSubscriptionModal({ isOpen, onClose, onAdd }: AddSubs
         logo: '',
         autoRenew: true
       });
-    } catch (error) {
+    } catch {
       const errorMessage = getUserFriendlyMessage('SAVE_ERROR');
       toast.error(errorMessage);
     } finally {

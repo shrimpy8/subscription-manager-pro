@@ -42,7 +42,7 @@ const AI_TOOL_SUBCATEGORIES_WITH_EXAMPLES = [
   { value: 'Write', label: 'Write (NotebookLM)', example: 'NotebookLM' }
 ];
 
-const BILLING_CYCLES = ['Monthly', 'Yearly', 'Weekly', 'Quarterly', 'Free'];
+// const BILLING_CYCLES = ['Monthly', 'Yearly', 'Weekly', 'Quarterly', 'Free'];
 const PRIORITIES = ['high', 'medium', 'low'];
 const USAGE_FREQUENCIES = ['daily', 'weekly', 'monthly', 'rarely'];
 

@@ -5,11 +5,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+// import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { EnhancedCard } from '@/components/ui/enhanced-card';
 import { PremiumButton } from '@/components/ui/premium-button';
 import { EnhancedInput } from '@/components/ui/enhanced-input';
-import { FormField, FormValidation } from '@/components/ui/form-field';
+// import { FormField, FormValidation } from '@/components/ui/form-field';
 import { validateSubscription } from '@/utils/validation';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/components/ui/toast';
@@ -261,13 +261,13 @@ export default function AIToolSubscriptionForm() {
             <div className="space-y-6">
               {/* Basic Information */}
               <EnhancedCard variant="elevated" className="border border-neutral-200">
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center text-lg font-semibold text-neutral-900">
+                <div className="pb-4">
+                  <div className="flex items-center text-lg font-semibold text-neutral-900">
                     <FileText className="w-5 h-5 mr-2 text-primary-600" />
                     Basic Information
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
+                  </div>
+                </div>
+                <div className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="name" className="text-sm font-medium text-neutral-900">Tool Name *</Label>
                     <EnhancedInput
@@ -380,18 +380,18 @@ export default function AIToolSubscriptionForm() {
                       />
                     </div>
                   </div>
-                </CardContent>
+                </div>
               </EnhancedCard>
 
               {/* Key Management */}
               <EnhancedCard variant="elevated" className="border border-neutral-200">
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center text-lg font-semibold text-neutral-900">
+                <div className="pb-4">
+                  <div className="flex items-center text-lg font-semibold text-neutral-900">
                     <Key className="w-5 h-5 mr-2 text-primary-600" />
                     Key Management
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
+                  </div>
+                </div>
+                <div className="space-y-4">
                   <div>
                     <Label htmlFor="secretKey" className="text-sm font-medium text-gray-700">Secret Key (optional)</Label>
                     <div className="relative">
@@ -467,18 +467,18 @@ export default function AIToolSubscriptionForm() {
                       </div>
                     </div>
                   </div>
-                </CardContent>
+                </div>
               </EnhancedCard>
 
               {/* Usage */}
               <EnhancedCard variant="elevated" className="border border-neutral-200">
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center text-lg font-semibold text-neutral-900">
+                <div className="pb-4">
+                  <div className="flex items-center text-lg font-semibold text-neutral-900">
                     <Shield className="w-5 h-5 mr-2 text-primary-600" />
                     Usage
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
+                  </div>
+                </div>
+                <div className="space-y-4">
                   <OptionGridControl
                     label="Usage Importance"
                     value={formData.usageImportance}
@@ -511,7 +511,7 @@ export default function AIToolSubscriptionForm() {
                       </div>
                     </label>
                   </div>
-                </CardContent>
+                </div>
               </EnhancedCard>
             </div>
 
@@ -519,13 +519,13 @@ export default function AIToolSubscriptionForm() {
             <div className="space-y-6">
               {/* Billing Information */}
               <EnhancedCard variant="elevated" className="border border-neutral-200">
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center text-lg font-semibold text-neutral-900">
+                <div className="pb-4">
+                  <div className="flex items-center text-lg font-semibold text-neutral-900">
                     <DollarSign className="w-5 h-5 mr-2 text-primary-600" />
                     Billing Information
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
+                  </div>
+                </div>
+                <div className="space-y-4">
                   <div>
                     <Label htmlFor="plan" className="text-sm font-medium text-gray-700">Plan Name *</Label>
                     <Select value={formData.plan} onValueChange={(value) => handleInputChange('plan', value)}>
@@ -631,18 +631,18 @@ export default function AIToolSubscriptionForm() {
                       />
                     </div>
                   </div>
-                </CardContent>
+                </div>
               </EnhancedCard>
 
               {/* Promo Details */}
               <EnhancedCard variant="elevated" className="border border-neutral-200">
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center text-lg font-semibold text-neutral-900">
+                <div className="pb-4">
+                  <div className="flex items-center text-lg font-semibold text-neutral-900">
                     <Gift className="w-5 h-5 mr-2 text-primary-600" />
                     Promo Details (optional)
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
+                  </div>
+                </div>
+                <div className="space-y-4">
                   <div>
                     <Label htmlFor="latestPromotionCode" className="text-sm font-medium text-gray-700">Latest Promo Code</Label>
                     <div className="relative">
@@ -700,18 +700,18 @@ export default function AIToolSubscriptionForm() {
                       </div>
                     </div>
                   </div>
-                </CardContent>
+                </div>
               </EnhancedCard>
 
               {/* Miscellaneous */}
               <EnhancedCard variant="elevated" className="border border-neutral-200">
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center text-lg font-semibold text-neutral-900">
+                <div className="pb-4">
+                  <div className="flex items-center text-lg font-semibold text-neutral-900">
                     <Shield className="w-5 h-5 mr-2 text-primary-600" />
                     Miscellaneous
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
+                  </div>
+                </div>
+                <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <Label htmlFor="chinaRegionOnly" className="text-sm font-medium text-gray-700">China Region Only</Label>
                     <label className="relative inline-flex items-center cursor-pointer">
@@ -751,25 +751,25 @@ export default function AIToolSubscriptionForm() {
                       onChange={(e) => handleInputChange('fallbackIcon', e.target.value)}
                     />
                   </div>
-                </CardContent>
+                </div>
               </EnhancedCard>
 
               {/* Personal Notes */}
               <EnhancedCard variant="elevated" className="border border-neutral-200">
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center text-lg font-semibold text-neutral-900">
+                <div className="pb-4">
+                  <div className="flex items-center text-lg font-semibold text-neutral-900">
                     <FileText className="w-5 h-5 mr-2 text-primary-600" />
                     Personal Notes (optional)
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
+                  </div>
+                </div>
+                <div>
                   <Textarea
                     placeholder="Any personal notes about this AI tool subscription..."
                     value={formData.notes}
                     onChange={(e) => handleInputChange('notes', e.target.value)}
                     rows={4}
                   />
-                </CardContent>
+                </div>
               </EnhancedCard>
             </div>
           </div>

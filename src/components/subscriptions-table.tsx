@@ -26,8 +26,8 @@ import {
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
 import { Subscription } from '@/types/subscription';
-import { AI_TOOL_CATEGORY_LABEL } from '@/types/ai-tools';
-import { formatCurrency, getDaysUntilRenewal, getStatusColor, getPriorityColor, toDate, formatDate } from '@/lib/utils';
+// import { AI_TOOL_CATEGORY_LABEL } from '@/types/ai-tools';
+import { formatCurrency, getDaysUntilRenewal, getStatusColor, toDate, formatDate } from '@/lib/utils';
 import { sanitizeInput } from '@/lib/xss';
 import { ErrorBoundary } from '@/components/error-boundary';
 
@@ -50,8 +50,8 @@ const SubscriptionsTable = memo(function SubscriptionsTable({
   onDuplicate,
   onDelete,
   onPause,
-  onViewDetails,
-  onAddSubscription
+  onViewDetails
+  // onAddSubscription
 }: SubscriptionsTableProps) {
   const [sortField, setSortField] = useState<SortField>('name');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
@@ -126,7 +126,7 @@ const SubscriptionsTable = memo(function SubscriptionsTable({
             </span>
           </div>
         );
-      } catch (error) {
+      } catch {
         // If URL parsing fails, fall back to emoji
         return (
           <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center text-lg">

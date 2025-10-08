@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import AIToolsBrowser from '@/components/ai-tools-browser';
 import PageHeader from '@/components/ui/page-header';
 // import { PremiumButton } from '@/components/ui/premium-button';
 import { Plus } from 'lucide-react';
 import { AITool } from '@/types/ai-tools';
-import { Subscription } from '@/types/subscription';
+// import { Subscription } from '@/types/subscription';
 import { generateId } from '@/lib/utils';
 import { useSupabaseSubscriptions } from '@/hooks/use-supabase-subscriptions';
 import { useAITools } from '@/hooks/use-ai-tools';
@@ -19,7 +19,7 @@ export default function AIToolsPage() {
   const [selectedTools, setSelectedTools] = useState<Set<number>>(new Set());
   
   // Use Supabase hooks for both subscriptions and AI tools
-  const { subscriptions, loading: subscriptionsLoading, error: subscriptionsError, refreshSubscriptions } = useSupabaseSubscriptions();
+  const { subscriptions } = useSupabaseSubscriptions();
   const { aiTools, loading: aiToolsLoading, error: aiToolsError } = useAITools();
   
   console.log('🔍 AI Tools Page - aiTools:', aiTools.length, 'loading:', aiToolsLoading, 'error:', aiToolsError);
@@ -37,7 +37,7 @@ export default function AIToolsPage() {
     }
 
     // Create new subscription from AI tool
-    const newSubscription: Subscription = {
+    const newSubscription = {
       id: generateId(),
       name: tool.name,
       category: 'AI Tools', // Map to subscription category

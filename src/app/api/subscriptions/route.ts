@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
       try {
         const domain = new URL(body.url).hostname;
         logo = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
-      } catch (error) {
+      } catch {
         // If URL parsing fails, keep original logo or use fallback
         logo = body.logo || '';
       }
