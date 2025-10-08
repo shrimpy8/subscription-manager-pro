@@ -146,21 +146,21 @@ export function getLocalSubscriptions(): Subscription[] {
     const parsed = JSON.parse(data)
     
     // Handle the actual data structure: { subscriptions: [...] }
-  let subscriptions: unknown[] = []
+  let subscriptions: LegacyCSVSubscription[] = []
     if (Array.isArray(parsed)) {
-      subscriptions = parsed
-    } else if (parsed && Array.isArray((parsed as { subscriptions?: unknown[] }).subscriptions)) {
-      subscriptions = (parsed as { subscriptions: unknown[] }).subscriptions
+      subscriptions = parsed as LegacyCSVSubscription[]
+    } else if (parsed && Array.isArray((parsed as { subscriptions?: LegacyCSVSubscription[] }).subscriptions)) {
+      subscriptions = (parsed as { subscriptions: LegacyCSVSubscription[] }).subscriptions
     } else if (
       parsed &&
-      (parsed as { data?: { subscriptions?: unknown[] } }).data &&
-      Array.isArray((parsed as { data: { subscriptions: unknown[] } }).data.subscriptions)
+      (parsed as { data?: { subscriptions?: LegacyCSVSubscription[] } }).data &&
+      Array.isArray((parsed as { data: { subscriptions: LegacyCSVSubscription[] } }).data.subscriptions)
     ) {
-      subscriptions = (parsed as { data: { subscriptions: unknown[] } }).data.subscriptions
+      subscriptions = (parsed as { data: { subscriptions: LegacyCSVSubscription[] } }).data.subscriptions
     }
     
         // Transform CSV-style data to proper Subscription format
-        return (subscriptions as LegacyCSVSubscription[]).map((sub) => ({
+        return subscriptions.map((sub) => ({
       id: isValidUUID(sub.id || '') ? (sub.id as string) : generateUUID(),
       name: sub.Name || sub.name || 'Unknown',
       category: (sub.Category || sub.category || 'Other') as Subscription['category'],

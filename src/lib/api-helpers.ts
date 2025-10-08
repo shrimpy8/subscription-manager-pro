@@ -55,8 +55,8 @@ export function createErrorResponse(
 /**
  * Create a success response with request ID
  */
-export function createSuccessResponse(
-  data: unknown,
+export function createSuccessResponse<T>(
+  data: T,
   requestId?: string,
   status: number = 200,
   additionalHeaders?: Record<string, string>

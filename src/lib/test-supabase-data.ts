@@ -8,12 +8,12 @@ import { SupabaseDataAccess } from './supabase-data'
 import { Subscription } from '@/types/subscription'
 
 // Test result interface
-export interface TestResult {
+export interface TestResult<T = unknown> {
   test: string
   success: boolean
   duration: number
   error?: string
-  data?: unknown
+  data?: T
 }
 
 export interface TestSuite {

@@ -26,13 +26,13 @@ import {
 import { Subscription } from '@/types/subscription'
 
 // Test result interface
-export interface IntegrationTestResult {
+export interface IntegrationTestResult<T = unknown> {
   test: string
   category: string
   success: boolean
   duration: number
   error?: string
-  data?: unknown
+  data?: T
   warnings?: string[]
 }
 

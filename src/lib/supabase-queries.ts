@@ -21,11 +21,11 @@ import {
 import { Subscription } from '@/types/subscription'
 
 // Test result interface
-export interface TestResult {
+export interface TestResult<T = unknown> {
   success: boolean
   operation: string
   duration: number
-  data?: unknown
+  data?: T
   error?: string
 }
 

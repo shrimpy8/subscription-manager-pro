@@ -7,7 +7,8 @@ import {
   supabaseFullToSubscription,
   createSubscriptionRelationships,
   isValidSupabaseSubscription,
-  isValidSubscription
+  isValidSubscription,
+  SupabaseSubscription
 } from './supabase-types'
 import { Subscription } from '@/types/subscription'
 
@@ -60,7 +61,7 @@ export function runTypeMappingTest() {
     
     // Test Supabase → localStorage transformation
     console.log('📥 Testing Supabase → localStorage transformation...')
-    const backToSubscription = supabaseToSubscription(supabaseData as unknown as Parameters<typeof supabaseToSubscription>[0])
+    const backToSubscription = supabaseToSubscription(supabaseData as SupabaseSubscription)
     console.log('✅ Back to subscription:', backToSubscription)
     
     // Test relationship creation

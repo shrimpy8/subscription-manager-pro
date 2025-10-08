@@ -98,11 +98,12 @@ async function withRetry<T>(
  */
 function handleSupabaseError(error: unknown): SupabaseError {
   if (error && typeof error === 'object' && 'code' in error && 'message' in error) {
+    const errorObj = error as { code: string; message: string; details?: string; hint?: string }
     return {
-      code: (error as { code: string }).code,
-      message: (error as { message: string }).message,
-      details: (error as { details?: string }).details,
-      hint: (error as { hint?: string }).hint
+      code: errorObj.code,
+      message: errorObj.message,
+      details: errorObj.details,
+      hint: errorObj.hint
     }
   }
   
