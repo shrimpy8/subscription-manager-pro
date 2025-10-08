@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { PremiumButton } from '@/components/ui/premium-button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Upload, Database, CheckCircle } from 'lucide-react';
 
@@ -108,13 +108,14 @@ export default function ImportCSVPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <Button 
+            <PremiumButton 
               onClick={handleImport} 
               disabled={importing}
+              variant="gradient"
               className="w-full"
             >
               {importing ? 'Importing...' : 'Import to Supabase Database'}
-            </Button>
+            </PremiumButton>
           </CardContent>
         </Card>
       )}
