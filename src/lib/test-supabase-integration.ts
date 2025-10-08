@@ -645,5 +645,5 @@ export async function runSupabaseIntegrationTestSuite(): Promise<IntegrationTest
 
 // Make it available globally for testing
 if (typeof window !== 'undefined') {
-  (window as unknown as Record<string, unknown>).runSupabaseIntegrationTestSuite = runSupabaseIntegrationTestSuite
+  window.runSupabaseIntegrationTestSuite = runSupabaseIntegrationTestSuite
 }

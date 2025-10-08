@@ -10,7 +10,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       return NextResponse.json({ success: false, error: 'Missing id' }, { status: 400 })
     }
 
-    const json = await request.json().catch(() => ({} as Record<string, unknown>))
+    const json = await request.json().catch(() => ({} as { value?: boolean }))
     const value = typeof json.value === 'boolean' ? json.value : undefined
     if (typeof value === 'undefined') {
       return NextResponse.json({ success: false, error: 'Body must include { value: boolean }' }, { status: 400 })

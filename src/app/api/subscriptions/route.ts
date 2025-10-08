@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
     const filters = parseFilterParams(searchParams);
     
     // Apply filters
-    let filteredData = applyFilters(subscriptions as unknown as Record<string, unknown>[], filters);
+    let filteredData = applyFilters(subscriptions, filters);
     
     // Apply sorting
     filteredData = applySorting(filteredData, filters.sort, filters.order);
@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
     
     const response: PaginatedResponse<Subscription> = {
       success: true,
-      data: data as unknown as Subscription[],
+      data: data as Subscription[],
       has_more,
       total_count: filteredData.length,
       next_cursor,
@@ -122,7 +122,65 @@ export async function POST(request: NextRequest) {
       alternative_services: [],
     };
 
-    subscriptions.push(subscription);
+    // Save to Supabase database using the proxy
+    try {
+      const supabaseData = {
+        id: subscription.id,
+        name: subscription.name,
+        plan: subscription.plan,
+        cost: subscription.cost,
+        currency: subscription.currency,
+        billing_cycle: subscription.billing_cycle,
+        category: subscription.category,
+        subcategory: subscription.subcategory,
+        description: subscription.description,
+        url: subscription.url,
+        status: subscription.status,
+        account_email: subscription.account_email,
+        notes: subscription.notes,
+        renewal_date: subscription.renewal_date.toISOString(),
+        start_date: subscription.start_date.toISOString(),
+        usage_importance: subscription.usage_importance,
+        usage_frequency: subscription.usage_frequency,
+        auto_renew: subscription.auto_renew,
+        logo_url: subscription.logo
+      };
+      
+      console.log('Sending to Supabase:', JSON.stringify(supabaseData, null, 2));
+      
+      const response = await fetch('/api/supabase-proxy?endpoint=/rest/v1/subscriptions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(supabaseData)
+      });
+
+      console.log('Supabase response status:', response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Supabase error response:', errorText);
+        throw new Error(`Database save failed: ${response.status} - ${errorText}`);
+      }
+
+      const dbResult = await response.json();
+      console.log('Supabase result:', JSON.stringify(dbResult, null, 2));
+      
+      if (!dbResult.success) {
+        throw new Error(dbResult.error || 'Database save failed');
+      }
+    } catch (dbError) {
+      console.error('Database save error:', JSON.stringify(dbError, null, 2));
+      return createErrorResponse(
+        'api_error',
+        'database_save_failed',
+        `Failed to save subscription to database: ${dbError instanceof Error ? dbError.message : 'Unknown error'}`,
+        undefined,
+        requestId,
+        500
+      );
+    }
 
     return createSuccessResponse({
       success: true,

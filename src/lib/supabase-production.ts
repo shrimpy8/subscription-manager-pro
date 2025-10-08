@@ -169,7 +169,7 @@ export const PRODUCTION_DEPLOYMENT_CHECKLIST = [
 export async function productionHealthCheck() {
   try {
     // Use local Supabase instance for development
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://127.0.0.1:54321'
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://127.0.0.1:55421'
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH'
     
     const client = createClient(supabaseUrl, supabaseAnonKey)
@@ -204,7 +204,7 @@ export function validateProductionConfig(): { valid: boolean; errors: string[] }
   const errors: string[] = []
   
   // For local development, use default values if env vars are missing
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://127.0.0.1:54321'
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://127.0.0.1:55421'
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH'
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'sb_secret_N7UND0UgjKTVK-Uodkm0Hg_xSvEMPvz'
   

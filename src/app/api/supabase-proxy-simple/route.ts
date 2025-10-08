@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const SUPABASE_URL = 'http://127.0.0.1:54321'
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://127.0.0.1:55421'
 const SUPABASE_ANON_KEY = 'sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH'
 
 export async function POST(request: NextRequest) {

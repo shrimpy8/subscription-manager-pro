@@ -39,5 +39,5 @@ export async function runSupabaseQueryTest() {
 
 // Make it available globally for testing
 if (typeof window !== 'undefined') {
-  (window as unknown as Record<string, unknown>).runSupabaseQueryTest = runSupabaseQueryTest
+  window.runSupabaseQueryTest = runSupabaseQueryTest
 }

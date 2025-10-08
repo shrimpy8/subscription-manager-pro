@@ -48,9 +48,9 @@ let helpers = {};
 })();
 
 function readJson() {
-  const p = path.resolve(process.cwd(), 'public', 'toolsSubscription2.json');
+  const p = path.resolve(process.cwd(), 'public', 'toolsSubscription6.json');
   const raw = JSON.parse(fs.readFileSync(p, 'utf-8'));
-  if (!Array.isArray(raw)) throw new Error('Expected array in toolsSubscription2.json');
+  if (!Array.isArray(raw)) throw new Error('Expected array in toolsSubscription6.json');
   return raw;
 }
 

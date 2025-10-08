@@ -1,0 +1,161 @@
+================================================================================
+AI TOOLS LIST WITH SUGGESTED SUBCATEGORIES
+================================================================================
+
+Total AI Tools: 67
+Total Non-AI Tools: 6
+
+--------------------------------------------------------------------------------
+AI TOOLS (Category: 'AI Tools')
+--------------------------------------------------------------------------------
+
+
+AI API (1 tools):
+  - DeepAI                         (currently: Development)
+
+AI App Builder (1 tools):
+  - Lovable                        (currently: Build)
+
+AI Art Community (1 tools):
+  - CIVITAI                        (currently: Image)
+
+AI Assistant (1 tools):
+  - Monica                         (currently: Chat)
+
+AI Chat Platform (1 tools):
+  - Poe                            (currently: Chat)
+
+AI Code Assistant (1 tools):
+  - Claude Code                    (currently: Development)
+
+AI Code Editor (1 tools):
+  - CURSOR                         (currently: Build)
+
+AI Code Generator (1 tools):
+  - Bolt.new                       (currently: Build)
+
+AI Coding Platform (1 tools):
+  - replit                         (currently: Build)
+
+AI Development (1 tools):
+  - Google AI Studio               (currently: Development)
+
+AI Note-taking (1 tools):
+  - Granola                        (currently: Productivity)
+  - Superhuman                     (Productivity)
+
+AI Photo Editing (3 tools):
+  - Photoroom                      (currently: Image)
+  - Pixelcut                       (currently: Image)
+  - cutout.pro                     (currently: Image)
+
+AI Platform (2 tools):
+  - Hailuo AI                      (currently: Other) => Platform
+  - PolyBuzz                       (currently: Other) => Platform
+
+AI Research (1 tools):
+  - Google Labs                    (currently: Search) => Research
+
+AI Search (2 tools):
+  - Adot                           (currently: Other)
+  - perplexity                     (currently: Search)
+
+AI Video Editing (1 tools):
+  - Remaker                        (currently: Video)
+
+AI Writing (1 tools):
+  - manus                          (currently: Write)
+
+Background Removal (1 tools):
+  - remove.bg                      (currently: Image)
+
+Character AI (7 tools):
+  - Crushon AI                     (currently: Roleplay)
+  - JanitorAI                      (currently: Roleplay)
+  - Joi                            (currently: Roleplay)
+  - JuicyChat                      (currently: Roleplay)
+  - SPICYCHAT.AI                   (currently: Roleplay)
+  - candy.ai                       (currently: Roleplay)
+  - character.ai                   (currently: Roleplay)
+
+Conversational AI (9 tools):
+  - ChatGPT                        (currently: Chat)
+  - Claude                         (currently: Chat)
+  - Doubao                         (currently: Chat)
+  - Gemini                         (currently: Chat)
+  - Grok                           (currently: Chat)
+  - Kimi                           (currently: Chat)
+  - Meta AI                        (currently: Chat)
+  - Qwen3                          (currently: Chat)
+  - deepseek                       (currently: Chat)
+
+Image Generation (4 tools):
+  - Leonardo.Ai                    (currently: Image)
+  - Midjourney                     (currently: Image)
+  - SEARRT.AI                      (currently: Image)
+  - ourdream.ai                    (currently: Image)
+
+ML Models Platform (1 tools):
+  - Hugging Face                   (currently: Development)
+
+Music Generation (1 tools):
+  - SUNO                           (currently: Audio)
+
+Presentation AI (1 tools):
+  - GAMMA                          (currently: Write)
+
+Product Requirements (1 tools):
+  - ChatPRD                        (currently: Build)
+
+Research Assistant (1 tools):
+  - NotebookLM                     (currently: Write) => Research 
+
+Speech Recognition (1 tools):
+  - WisprFlow                      (currently: Speech-to-text)
+
+Text-to-Speech (1 tools):
+  - ElevenLabs                     (currently: Audio) 
+
+Transcription (1 tools):
+  - TurboScribe                    (currently: Transcribe)
+
+UI Generation (2 tools):
+  - Magic Patterns                 (currently: Design/Prototype)
+  - Figma                          (currently: Design/Prototype)
+  - Mobbin                         (currently: Design/Prototype)
+  - v0                             (currently: Build)
+
+Video Editing (2 tools):
+  - Descript                       (currently: Video) 
+  - VEED                           (currently: Video) 
+
+Video Generation (1 tools):
+  - KlingAI                        (currently: Video) 
+
+Writing Assistant (1 tools):
+  - QuillBot                       (currently: Write) 
+
+
+
+  - Weaviate                       (currently: Vector DB)
+  - Pinecone                       (currently: Vector DB)
+
+   - Warp                          (Utils) => Development
+   - Linear                        => Productivity
+   - Notion                        => Productivity
+  - ZeroGPT                        => Utils
+  - Raycast                        => Productivity
+  - Quark                          => Platform
+--------------------------------------------------------------------------------
+NON-AI TOOLS (Keep current categories)
+--------------------------------------------------------------------------------
+
+  - Amadeus                        (currently: APIs)
+  - Supabase                       (currently: DB)
+  - Unsplash                       (currently: Image)
+  - Vercel                         (currently: Deploy)
+  - Zapier                         (currently: Automation)
+  - n8n                            (currently: Automation)
+
+ 
+ 

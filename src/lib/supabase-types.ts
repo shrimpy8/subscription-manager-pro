@@ -5,7 +5,7 @@
  */
 
 import { Database } from '@/types/supabase'
-import { Subscription } from '@/types/subscription'
+import { Subscription, SubscriptionCategory } from '@/types/subscription'
 
 // Extract Supabase types
 export type SupabaseSubscription = Database['public']['Tables']['subscriptions']['Row']
@@ -103,17 +103,42 @@ export function supabaseToSubscription(supabaseSub: SupabaseSubscription): Subsc
  * Transform Supabase full subscription (with relationships) to localStorage format
  */
 export function supabaseFullToSubscription(supabaseFull: SupabaseSubscriptionFull): Subscription {
-  // Cast through unknown to align view row type with table row type expectations
-  const baseSubscription = supabaseToSubscription(supabaseFull as unknown as SupabaseSubscription)
+  // Create a base subscription object with the core fields
+  const baseSubscription: Subscription = {
+    id: supabaseFull.id || '',
+    name: supabaseFull.name || '',
+    category: (supabaseFull.category as SubscriptionCategory) || 'AI Tools',
+    subcategory: supabaseFull.subcategory || '',
+    plan: supabaseFull.plan || '',
+    cost: supabaseFull.cost || 0,
+    currency: supabaseFull.currency || 'USD',
+    billing_cycle: (supabaseFull.billing_cycle as 'Monthly' | 'Yearly' | 'Weekly' | 'Quarterly' | 'Free') || 'Monthly',
+    status: (supabaseFull.status as 'active' | 'paused' | 'canceled') || 'active',
+    start_date: new Date(supabaseFull.start_date || Date.now()),
+    renewal_date: new Date(supabaseFull.renewal_date || Date.now()),
+    url: supabaseFull.url || '',
+    description: supabaseFull.description || '',
+    notes: supabaseFull.notes || '',
+    account_email: supabaseFull.account_email || '',
+    usage_importance: (supabaseFull.usage_importance as 'high' | 'medium' | 'low') || 'medium',
+    usage_frequency: (supabaseFull.usage_frequency as 'daily' | 'weekly' | 'monthly' | 'rarely') || 'monthly',
+    logo: supabaseFull.logo_url || '',
+    auto_renew: supabaseFull.auto_renew ?? true,
+    alternative_services: [],
+    tags: [],
+    api_access_keys: [],
+    previously_used_promotion_code: [],
+    account_emails_used_previously: []
+  };
   
-  // Add relationship data
+  // Add relationship data with proper type checking
   return {
     ...baseSubscription,
-    tags: (supabaseFull.tags as string[]) || [],
-    alternative_services: (supabaseFull.alternatives as string[]) || [],
-    api_access_keys: (supabaseFull.api_keys as string[]) || [],
-    previously_used_promotion_code: (supabaseFull.promotions as string[]) || [],
-    account_emails_used_previously: (supabaseFull.emails as string[]) || [],
+    tags: Array.isArray(supabaseFull.tags) ? supabaseFull.tags.filter((tag): tag is string => typeof tag === 'string') : [],
+    alternative_services: Array.isArray(supabaseFull.alternatives) ? supabaseFull.alternatives.filter((alt): alt is string => typeof alt === 'string') : [],
+    api_access_keys: Array.isArray(supabaseFull.api_keys) ? supabaseFull.api_keys.filter((key): key is string => typeof key === 'string') : [],
+    previously_used_promotion_code: Array.isArray(supabaseFull.promotions) ? supabaseFull.promotions.filter((promo): promo is string => typeof promo === 'string') : [],
+    account_emails_used_previously: Array.isArray(supabaseFull.emails) ? supabaseFull.emails.filter((email): email is string => typeof email === 'string') : [],
   }
 }
 

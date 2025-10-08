@@ -1,0 +1,41 @@
+name: deepseek, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: Meta AI, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: Grok, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: Poe, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: Monica, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: Kimi, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: Qwen3, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: Doubao, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: character.ai, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: JanitorAI, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: Crushon AI, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: candy.ai, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: JuicyChat, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: Joi, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: SPICYCHAT.AI, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: Midjourney, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: Leonardo.Ai, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: CIVITAI, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: SEARRT.AI, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: Photoroom, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: Pixelcut, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: remove.bg, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: cutout.pro, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: ourdream.ai, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: VEED, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: KlingAI, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: Remaker, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: ElevenLabs, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: SUNO, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: TurboScribe, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: QuillBot, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: manus, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: DeepAI, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: ZeroGPT, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: Quark, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: Pinecone, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: Weaviate, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: v0, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: Hailuo AI, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: PolyBuzz, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null
+name: Adot, "iam_using_it": false, "no_subscription": true, "start_date": null, "renewal_date": null

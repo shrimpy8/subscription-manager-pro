@@ -1,0 +1,3 @@
+-- Subscription Manager Pro - Empty Seed File
+-- This file is intentionally empty to avoid constraint violations
+-- Data will be imported via the toolsSubscription5.json import script

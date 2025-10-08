@@ -20,7 +20,7 @@ import { sanitizeInput } from '@/lib/xss';
 import { ArrowLeft, FileText, DollarSign, Gift, Globe, Mail, Tag, Calendar, Key, Shield, Plus, Trash2 } from 'lucide-react';
 import { SubscriptionCategory } from '@/types/subscription';
 
-interface AIToolSubscriptionFormData {
+interface AIToolSubscriptionFormData extends Record<string, unknown> {
   id: string;
   name: string;
   category: SubscriptionCategory;

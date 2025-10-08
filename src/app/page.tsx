@@ -7,6 +7,7 @@ import PageHeader from '@/components/ui/page-header';
 // import { Badge } from '@/components/ui/badge';
 import { Subscription, SubscriptionFilters, ViewMode } from '@/types/subscription';
 import { loadSubscriptions, saveSubscriptions, exportSubscriptionsToCSV, downloadCSV } from '@/lib/subscription-persistence';
+import { useSupabaseSubscriptions } from '@/hooks/use-supabase-subscriptions';
 import { handleSubscriptionError } from '@/utils/error-handler';
 import { generateId, toDate, getDefaultRenewalDate, getCurrentDate, formatDate, getDaysUntilRenewal } from '@/lib/utils';
 import AIToolsBrowser from '@/components/ai-tools-browser';
@@ -19,11 +20,13 @@ import { LoadingPage } from '@/components/ui/loading-spinner';
 import { ToastContainer, useToast } from '@/components/ui/toast';
 import { getUserFriendlyMessage } from '@/utils/error-messages';
 import { PremiumDashboard } from '@/components/dashboard/premium-dashboard';
+import { useAITools } from '@/hooks/use-ai-tools';
 
 export default function HomePage() {
   const toast = useToast();
 
-  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
+  // Use Supabase hook for subscriptions
+  const { subscriptions, loading, error, refreshSubscriptions } = useSupabaseSubscriptions();
   const [filters, setFilters] = useState<SubscriptionFilters>({
     search: '',
     category: 'all',
@@ -51,6 +54,7 @@ export default function HomePage() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedSubscription, setSelectedSubscription] = useState<Subscription | null>(null);
   const [subscriptionToDelete, setSubscriptionToDelete] = useState<Subscription | null>(null);
+  const { aiTools, loading: aiToolsLoading, error: aiToolsError } = useAITools();
   
   // Handle URL parameters to set the current tab and view mode (validated/coerced)
   useEffect(() => {
@@ -81,33 +85,8 @@ export default function HomePage() {
     // Client-side JavaScript is executing
   }
 
-  useEffect(() => {
-    // Only run on client side
-    if (typeof window === 'undefined') return;
-    
-    const loadData = async () => {
-      try {
-        initial.setLoading(true, 'Loading subscriptions...');
-        const loadedSubscriptions = await loadSubscriptions();
-        setSubscriptions(loadedSubscriptions);
-        // Removed success message to prevent multiple toasts on navigation
-      } catch (error) {
-        handleSubscriptionError(
-          error as Error,
-          'loading initial data',
-          { component: 'main-page' }
-        );
-        const errorMessage = getUserFriendlyMessage('LOAD_ERROR');
-        initial.setError(errorMessage);
-        toast.error(errorMessage);
-        setSubscriptions([]);
-      } finally {
-        initial.setLoading(false);
-      }
-    };
-
-    loadData();
-  }, []); // Remove initial from dependencies to prevent infinite loop
+  // Remove localStorage loading - now using Supabase hook
+  // useEffect for localStorage loading removed
 
   // Filter and sort subscriptions
   const filteredSubscriptions = useMemo(() => {
@@ -161,13 +140,13 @@ export default function HomePage() {
     return subscriptions.filter(sub => sub.status === 'active').length;
   }, [subscriptions]);
 
-  if (initial.isLoading) {
-    return <LoadingPage message={initial.loadingMessage || 'Loading subscriptions...'} />;
+  if (loading || initial.isLoading) {
+    return <LoadingPage message="Loading subscriptions..." />;
   }
 
   // Error banner component
   const ErrorBanner = () => {
-    const hasError = initial.error || exportLoading.error || save.error || deleteLoading.error || add.error;
+    const hasError = error || initial.error || exportLoading.error || save.error || deleteLoading.error || add.error;
     if (!hasError) return null;
     
     return (
@@ -179,7 +158,7 @@ export default function HomePage() {
             </svg>
           </div>
           <div className="ml-3">
-            <p className="text-sm text-red-800">{initial.error || exportLoading.error || save.error || deleteLoading.error || add.error}</p>
+            <p className="text-sm text-red-800">{error || initial.error || exportLoading.error || save.error || deleteLoading.error || add.error}</p>
           </div>
           <div className="ml-auto pl-3">
             <div className="-mx-1.5 -my-1.5">
@@ -218,7 +197,7 @@ export default function HomePage() {
       <div className="md:ml-64 min-h-screen">
         <PageHeader
           title={currentTab === 'subscriptions' ? 'Subscriptions' : 'Trending AI Tools'}
-          badgeText={currentTab === 'subscriptions' ? `${activeSubscriptions} Active` : '50 Tools'}
+          badgeText={currentTab === 'subscriptions' ? `${activeSubscriptions} Active` : `${aiTools.length} Tools`}
           actions={currentTab === 'subscriptions' ? [
             {
               key: 'export',
@@ -281,35 +260,120 @@ export default function HomePage() {
                 window.location.href = `/update-subscription/${subscription.id}`;
               }}
               onDuplicate={async (subscription) => {
+                console.log('Original subscription for duplicate:', JSON.stringify(subscription, null, 2));
+                
+                // Validate subscription object
+                if (!subscription || !subscription.name) {
+                  console.error('Invalid subscription object:', JSON.stringify(subscription, null, 2));
+                  toast.error('Invalid subscription data for duplication');
+                  return;
+                }
+                
+                // Create a clean duplicate that matches the API schema exactly
+                // Map invalid categories to valid ones
+                const mapCategory = (category: string): string => {
+                  const validCategories = [
+                    'AI Tools', 'SaaS', 'Entertainment', 'Productivity', 'Utilities',
+                    'Newsletter', 'Streaming Service', 'Online Learning', 'Magazine',
+                    'Cloud Provider', 'Development Tools', 'Design Tools', 'Communication',
+                    'Security', 'Other'
+                  ];
+                  
+                  if (validCategories.includes(category)) {
+                    return category;
+                  }
+                  
+                  // Map common invalid categories to valid ones
+                  const categoryMap: Record<string, string> = {
+                    'APIs': 'Development Tools',
+                    'API': 'Development Tools',
+                    'Web Services': 'Development Tools',
+                    'Cloud': 'Cloud Provider',
+                    'Cloud Services': 'Cloud Provider',
+                    'Database': 'Development Tools',
+                    'Analytics': 'Productivity',
+                    'Marketing': 'Productivity',
+                    'Business': 'Productivity'
+                  };
+                  
+                  return categoryMap[category] || 'Other';
+                };
+                
                 const duplicated = {
-                  ...subscription,
-                  id: generateId(),
                   name: `${subscription.name}_Copy`,
+                  category: mapCategory(subscription.category || 'Other'),
+                  subcategory: subscription.subcategory || '', // Keep original subcategory as-is
+                  plan: subscription.plan || '',
+                  cost: Number(subscription.cost) || 0,
+                  currency: subscription.currency || 'USD',
+                  billing_cycle: subscription.billing_cycle || 'Monthly',
                   status: 'active' as const,
                   start_date: getCurrentDate(),
-                  renewal_date: getDefaultRenewalDate()
+                  renewal_date: getDefaultRenewalDate(),
+                  url: subscription.url || undefined, // Don't send empty string for optional URL
+                  description: subscription.description || '',
+                  notes: subscription.notes || '',
+                  account_email: subscription.account_email || undefined, // Don't send empty string for optional email
+                  auto_renew: subscription.auto_renew ?? true,
+                  usage_frequency: subscription.usage_frequency || 'monthly',
+                  usage_importance: subscription.usage_importance || 'medium',
+                  logo: subscription.logo || ''
                 };
-                const updatedSubscriptions = [...subscriptions, duplicated];
                 
-                // Update state and force re-render
-                setSubscriptions(updatedSubscriptions);
+                console.log('Duplicated data created:', JSON.stringify(duplicated, null, 2));
+                
                 setViewMode(prev => ({ ...prev, type: 'list' }));
                 
-                save.setLoading(true, 'Saving subscription...');
+                save.setLoading(true, 'Duplicating subscription...');
                 try {
-                  await saveSubscriptions(updatedSubscriptions);
-                  toast.success(`Successfully duplicated "${subscription.name}"!`);
+                  // Use Supabase API to create the duplicate
+                  const response = await fetch('/api/subscriptions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(duplicated)
+                  });
                   
-                  // Force a state refresh to ensure UI updates
-                  setTimeout(() => {
-                    setSubscriptions(prev => [...prev]);
-                  }, 100);
+                  const result = await response.json();
+                  
+                  if (result.success) {
+                    toast.success(`Successfully duplicated "${subscription.name}"!`);
+                    // Refresh from database to show the new subscription
+                    refreshSubscriptions();
+                  } else {
+                    console.error('Duplicate API Error:', JSON.stringify(result, null, 2));
+                    throw new Error(result.error || 'Failed to duplicate subscription');
+                  }
                 } catch (error) {
-                  const errorMessage = getUserFriendlyMessage('SAVE_ERROR');
-                  save.setError(errorMessage);
-                  toast.error(errorMessage);
+                  console.error('Duplicate Error Details:', JSON.stringify(error, null, 2));
+                  console.error('Duplicated Data:', JSON.stringify(duplicated, null, 2));
+                  
+                  // Ensure we have a proper Error object with better error message extraction
+                  let errorMessage = 'Unknown error occurred during duplication';
+                  
+                  if (error instanceof Error) {
+                    errorMessage = error.message;
+                  } else if (typeof error === 'string') {
+                    errorMessage = error;
+                  } else if (error && typeof error === 'object') {
+                    // Try to extract message from various error object structures
+                    if ('message' in error) {
+                      errorMessage = (error as { message: string }).message;
+                    } else if ('error' in error) {
+                      errorMessage = (error as { error: string }).error;
+                    } else if ('details' in error) {
+                      errorMessage = (error as { details: string }).details;
+                    } else {
+                      errorMessage = JSON.stringify(error);
+                    }
+                  }
+                  
+                  const errorObj = new Error(errorMessage);
+                  
+                  const userErrorMessage = getUserFriendlyMessage('SAVE_ERROR');
+                  save.setError(userErrorMessage);
+                  toast.error(userErrorMessage);
                   handleSubscriptionError(
-                    error as Error,
+                    errorObj,
                     'duplicating subscription',
                     { component: 'main-page' }
                   );
@@ -327,17 +391,14 @@ export default function HomePage() {
                     ? { ...s, status: s.status === 'paused' ? 'active' as const : 'paused' as const }
                     : s
                 );
-                setSubscriptions(updatedSubscriptions);
                 setViewMode(prev => ({ ...prev, type: 'list' }));
                 save.setLoading(true, 'Saving subscription...');
                 try {
                   await saveSubscriptions(updatedSubscriptions);
                   toast.success(`Successfully updated "${subscription.name}" status!`);
                   
-                  // Force a state refresh to ensure UI updates
-                  setTimeout(() => {
-                    setSubscriptions(prev => [...prev]);
-                  }, 100);
+                  // Refresh from database
+                  refreshSubscriptions();
                 } catch (error) {
                   const errorMessage = getUserFriendlyMessage('SAVE_ERROR');
                   save.setError(errorMessage);
@@ -382,6 +443,9 @@ export default function HomePage() {
             <div className="px-4 sm:px-6 lg:px-8 py-8">
               <ErrorBanner />
               <AIToolsBrowser
+              aiTools={aiTools}
+              loading={aiToolsLoading}
+              error={aiToolsError}
               onAddToSubscriptions={async (tool) => {
                 // Create new subscription from AI tool
                 const newSubscription: Subscription = {
@@ -407,12 +471,11 @@ export default function HomePage() {
                   currency: 'USD'
                 };
                 
-                const updatedSubscriptions = [...subscriptions, newSubscription];
-                setSubscriptions(updatedSubscriptions);
                 save.setLoading(true, 'Saving subscription...');
                 try {
-                  await saveSubscriptions(updatedSubscriptions);
+                  await saveSubscriptions([...subscriptions, newSubscription]);
                   toast.success(`Successfully added "${tool.name}" to your subscriptions!`);
+                  refreshSubscriptions();
                 } catch (error) {
                   const errorMessage = getUserFriendlyMessage('SAVE_ERROR');
                   add.setError(errorMessage);
@@ -459,21 +522,18 @@ export default function HomePage() {
         onConfirm={async () => {
           if (!subscriptionToDelete) return;
           
-          const updatedSubscriptions = subscriptions.filter(s => s.id !== subscriptionToDelete.id);
-          setSubscriptions(updatedSubscriptions);
           setViewMode(prev => ({ ...prev, type: 'list' }));
           deleteLoading.setLoading(true, 'Deleting subscription...');
           
           try {
+            const updatedSubscriptions = subscriptions.filter(s => s.id !== subscriptionToDelete.id);
             await saveSubscriptions(updatedSubscriptions);
             setIsDeleteDialogOpen(false);
             setSubscriptionToDelete(null);
             toast.success(`Successfully deleted "${subscriptionToDelete.name}"!`);
             
-            // Force a state refresh to ensure UI updates
-            setTimeout(() => {
-              setSubscriptions(prev => [...prev]);
-            }, 100);
+            // Refresh from database
+            refreshSubscriptions();
           } catch (error) {
             const errorMessage = getUserFriendlyMessage('DELETE_ERROR');
             deleteLoading.setError(errorMessage);

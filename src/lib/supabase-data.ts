@@ -697,5 +697,5 @@ export const SupabaseDataAccess = {
 
 // Make it available globally for testing
 if (typeof window !== 'undefined') {
-  (window as unknown as Record<string, unknown>).SupabaseDataAccess = SupabaseDataAccess
+  window.SupabaseDataAccess = SupabaseDataAccess
 }

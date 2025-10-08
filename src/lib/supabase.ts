@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 
 // Environment variables for local Supabase instance
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://127.0.0.1:54321'
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://127.0.0.1:55421'
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH'
 
 // Create Supabase client for browser usage with no configuration

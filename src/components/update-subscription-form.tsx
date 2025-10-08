@@ -338,12 +338,14 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
   };
 
   const handleArrayRemove = (field: 'previouslyUsedPromotionCode' | 'accountEmailsUsedPreviously' | 'apiAccessKeys', index: number) => {
+    const newArray = formData[field].filter((_, i) => i !== index);
     setFormData(prev => ({
       ...prev,
-      [field]: prev[field].filter((_, i) => i !== index)
+      [field]: newArray
     }));
     setHasChanges(true);
-    updateSectionStates(field, formData[field].filter((_, i) => i !== index) as unknown as string | number | boolean);
+    // For array fields, we pass the array length as the value for section state tracking
+    updateSectionStates(field, newArray.length);
   };
 
   // Utility function to create section header with change tracking
@@ -388,7 +390,12 @@ export default function UpdateSubscriptionForm({ subscriptionId }: UpdateSubscri
     // Revert all fields in section to original values
     fields.forEach(field => {
       if (field in originalData) {
-        (newFormData as unknown as Record<string, unknown>)[field] = (originalData as unknown as Record<string, unknown>)[field];
+        const fieldKey = field as keyof UpdateSubscriptionFormData;
+        // Type-safe assignment for form data fields
+        if (fieldKey in newFormData && fieldKey in originalData) {
+          // Use Object.assign for type-safe field assignment
+          Object.assign(newFormData, { [fieldKey]: originalData[fieldKey] });
+        }
       }
     });
     

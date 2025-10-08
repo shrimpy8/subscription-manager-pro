@@ -53,7 +53,7 @@ export function SupabaseIntegration() {
                   <div>
                     <label className="text-sm font-medium">Supabase URL</label>
                     <p className="text-xs text-muted-foreground">
-                      {process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://127.0.0.1:54321'}
+                      {process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://127.0.0.1:55421'}
                     </p>
                   </div>
                   <div>

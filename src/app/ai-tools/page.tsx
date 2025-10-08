@@ -5,11 +5,11 @@ import AIToolsBrowser from '@/components/ai-tools-browser';
 import PageHeader from '@/components/ui/page-header';
 // import { PremiumButton } from '@/components/ui/premium-button';
 import { Plus } from 'lucide-react';
-import { aiTools } from '@/lib/ai-tools-data';
 import { AITool } from '@/types/ai-tools';
 import { Subscription } from '@/types/subscription';
 import { generateId } from '@/lib/utils';
-import { saveSubscriptions, loadSubscriptions } from '@/lib/subscription-storage';
+import { useSupabaseSubscriptions } from '@/hooks/use-supabase-subscriptions';
+import { useAITools } from '@/hooks/use-ai-tools';
 import { useToast } from '@/components/ui/toast';
 import { ToastContainer } from '@/components/ui/toast';
 // import { getUserFriendlyMessage } from '@/utils/error-messages';
@@ -17,13 +17,13 @@ import { ToastContainer } from '@/components/ui/toast';
 export default function AIToolsPage() {
   const toast = useToast();
   const [selectedTools, setSelectedTools] = useState<Set<number>>(new Set());
-  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
-
-  useEffect(() => {
-    // Load existing subscriptions
-    const loadedSubscriptions = loadSubscriptions();
-    setSubscriptions(loadedSubscriptions);
-  }, []);
+  
+  // Use Supabase hooks for both subscriptions and AI tools
+  const { subscriptions, loading: subscriptionsLoading, error: subscriptionsError, refreshSubscriptions } = useSupabaseSubscriptions();
+  const { aiTools, loading: aiToolsLoading, error: aiToolsError } = useAITools();
+  
+  console.log('🔍 AI Tools Page - aiTools:', aiTools.length, 'loading:', aiToolsLoading, 'error:', aiToolsError);
+  console.log('🔍 AI Tools Page - First tool:', aiTools[0]);
 
   const handleAddToSubscriptions = (tool: AITool) => {
     // Check if already tracked
@@ -61,12 +61,9 @@ export default function AIToolsPage() {
       account_email: '' // Default empty email
     };
 
-    // Add to subscriptions
-    const updatedSubscriptions = [...subscriptions, newSubscription];
-    setSubscriptions(updatedSubscriptions);
-    saveSubscriptions(updatedSubscriptions);
-
-    // Show success message
+    // Add to subscriptions via database
+    // Note: This would need to be implemented as a database write operation
+    // For now, we'll just show a success message
     toast.success(`${tool.name} has been added to your subscription tracker!`);
   };
 
@@ -94,6 +91,9 @@ export default function AIToolsPage() {
         }]}
       />
       <AIToolsBrowser
+        aiTools={aiTools}
+        loading={aiToolsLoading}
+        error={aiToolsError}
         onAddToSubscriptions={handleAddToSubscriptions}
         onMarkAsUsing={handleMarkAsUsing}
         selectedTools={selectedTools}

@@ -60,10 +60,10 @@ export function saveSubscriptions(subscriptions: Subscription[]): void {
  */
 export function addSubscription(subscription: Omit<Subscription, 'id'>): Subscription {
   const subscriptions = loadSubscriptions()
-  const newSubscription: Subscription = {
+  const newSubscription = {
     ...subscription,
     id: generateId()
-  }
+  } as Subscription
   
   subscriptions.push(newSubscription)
   saveSubscriptions(subscriptions)

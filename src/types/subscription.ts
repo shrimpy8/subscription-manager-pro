@@ -8,7 +8,7 @@
  * - Enhanced analytics and insights
  */
 
-export interface Subscription {
+export interface Subscription extends Record<string, unknown> {
   id: string;
   name: string;
   plan: string;

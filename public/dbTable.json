@@ -1,0 +1,182 @@
+[
+  {
+    "column_name": "id",
+    "data_type": "uuid",
+    "is_nullable": "NO",
+    "column_default": "uuid_generate_v4()"
+  },
+  {
+    "column_name": "name",
+    "data_type": "character varying",
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "column_name": "plan",
+    "data_type": "character varying",
+    "is_nullable": "YES",
+    "column_default": "'Free'::character varying"
+  },
+  {
+    "column_name": "logo_url",
+    "data_type": "text",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "fallback_icon",
+    "data_type": "character varying",
+    "is_nullable": "YES",
+    "column_default": "'🔧'::character varying"
+  },
+  {
+    "column_name": "cost",
+    "data_type": "numeric",
+    "is_nullable": "NO",
+    "column_default": "0.00"
+  },
+  {
+    "column_name": "currency",
+    "data_type": "character varying",
+    "is_nullable": "YES",
+    "column_default": "'USD'::character varying"
+  },
+  {
+    "column_name": "billing_cycle",
+    "data_type": "character varying",
+    "is_nullable": "NO",
+    "column_default": "'Monthly'::character varying"
+  },
+  {
+    "column_name": "category",
+    "data_type": "character varying",
+    "is_nullable": "NO",
+    "column_default": "'Other'::character varying"
+  },
+  {
+    "column_name": "subcategory",
+    "data_type": "character varying",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "description",
+    "data_type": "text",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "url",
+    "data_type": "text",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "notes",
+    "data_type": "text",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "status",
+    "data_type": "character varying",
+    "is_nullable": "NO",
+    "column_default": "'active'::character varying"
+  },
+  {
+    "column_name": "auto_renew",
+    "data_type": "boolean",
+    "is_nullable": "YES",
+    "column_default": "true"
+  },
+  {
+    "column_name": "start_date",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "NO",
+    "column_default": "now()"
+  },
+  {
+    "column_name": "renewal_date",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "NO",
+    "column_default": "(now() + '1 mon'::interval)"
+  },
+  {
+    "column_name": "last_used",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "account_email",
+    "data_type": "character varying",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "secret_key",
+    "data_type": "text",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "promo_code",
+    "data_type": "character varying",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "promo_discount",
+    "data_type": "numeric",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "latest_promocode",
+    "data_type": "character varying",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "usage_importance",
+    "data_type": "character varying",
+    "is_nullable": "NO",
+    "column_default": "'medium'::character varying"
+  },
+  {
+    "column_name": "usage_frequency",
+    "data_type": "character varying",
+    "is_nullable": "YES",
+    "column_default": "'monthly'::character varying"
+  },
+  {
+    "column_name": "safe_for_work",
+    "data_type": "boolean",
+    "is_nullable": "YES",
+    "column_default": "true"
+  },
+  {
+    "column_name": "china_region_only",
+    "data_type": "boolean",
+    "is_nullable": "YES",
+    "column_default": "false"
+  },
+  {
+    "column_name": "a16z_rank",
+    "data_type": "integer",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "YES",
+    "column_default": "now()"
+  },
+  {
+    "column_name": "updated_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "YES",
+    "column_default": "now()"
+  }
+]

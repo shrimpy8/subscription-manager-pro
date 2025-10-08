@@ -1,0 +1,62 @@
+================================================================================
+DATABASE SCHEMA vs JSON DATA COMPARISON REPORT
+================================================================================
+
+Total Database Columns: 30
+Total JSON Keys: 28
+
+--------------------------------------------------------------------------------
+EXACT MATCHES (25 fields)
+--------------------------------------------------------------------------------
+  ✓ a16z_rank
+  ✓ account_email
+  ✓ auto_renew
+  ✓ billing_cycle
+  ✓ category
+  ✓ china_region_only
+  ✓ cost
+  ✓ currency
+  ✓ description
+  ✓ fallback_icon
+  ✓ id
+  ✓ latest_promocode
+  ✓ logo_url
+  ✓ name
+  ✓ notes
+  ✓ plan
+  ✓ renewal_date
+  ✓ safe_for_work
+  ✓ secret_key
+  ✓ start_date
+  ✓ status
+  ✓ subcategory
+  ✓ url
+  ✓ usage_frequency
+  ✓ usage_importance
+
+--------------------------------------------------------------------------------
+MISSING IN JSON (5 fields)
+(These columns exist in database but not in JSON data)
+--------------------------------------------------------------------------------
+  ✗ created_at                (timestamp with time zone, NULL, default: now())
+  ✗ last_used                 (timestamp with time zone, NULL, no default)
+  ✗ promo_code                (character varying, NULL, no default)
+  ✗ promo_discount            (numeric, NULL, no default)
+  ✗ updated_at                (timestamp with time zone, NULL, default: now())
+
+--------------------------------------------------------------------------------
+NOT IN DATABASE (3 fields)
+(These fields exist in JSON but not in database schema)
+--------------------------------------------------------------------------------
+  ! subscription_api_keys     (sample type: list)
+  ! subscription_previous_accountemails (sample type: list)
+  ! subscription_previous_promocodes (sample type: list)
+
+================================================================================
+SUMMARY
+================================================================================
+Match Rate: 83.3%
+Exact Matches: 25
+Missing in JSON: 5
+Not in Database: 3
+================================================================================

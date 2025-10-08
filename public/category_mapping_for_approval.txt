@@ -1,0 +1,176 @@
+================================================================================
+CATEGORY & SUBCATEGORY MAPPING FOR APPROVAL
+================================================================================
+
+Total tools: 73
+AI Tools: 67
+Non-AI Tools: 6
+
+--------------------------------------------------------------------------------
+CATEGORY: 'AI Tools' (67 tools)
+--------------------------------------------------------------------------------
+
+AI API (1 tools):
+  - DeepAI
+
+AI App Builder (1 tools):
+  - Lovable
+
+AI Art Community (1 tools):
+  - CIVITAI
+
+AI Assistant (1 tools):
+  - Monica
+
+AI Chat Platform (1 tools):
+  - Poe
+
+AI Code Assistant (1 tools):
+  - Claude Code
+
+AI Code Editor (1 tools):
+  - CURSOR
+
+AI Code Generator (1 tools):
+  - Bolt.new
+
+AI Coding Platform (1 tools):
+  - replit
+
+AI Development (1 tools):
+  - Google AI Studio
+
+AI Note-taking (2 tools):
+  - Granola
+  - Superhuman
+
+AI Photo Editing (3 tools):
+  - Photoroom
+  - Pixelcut
+  - cutout.pro
+
+AI Search (2 tools):
+  - Adot
+  - perplexity
+
+AI Video Editing (1 tools):
+  - Remaker
+
+AI Writing (1 tools):
+  - manus
+
+Background Removal (1 tools):
+  - remove.bg
+
+Character AI (7 tools):
+  - Crushon AI
+  - JanitorAI
+  - Joi
+  - JuicyChat
+  - SPICYCHAT.AI
+  - candy.ai
+  - character.ai
+
+Conversational AI (9 tools):
+  - ChatGPT
+  - Claude
+  - Doubao
+  - Gemini
+  - Grok
+  - Kimi
+  - Meta AI
+  - Qwen3
+  - deepseek
+
+Development (1 tools):
+  - Warp
+
+Image Generation (4 tools):
+  - Leonardo.Ai
+  - Midjourney
+  - SEARRT.AI
+  - ourdream.ai
+
+ML Models Platform (1 tools):
+  - Hugging Face
+
+Music Generation (1 tools):
+  - SUNO
+
+Platform (3 tools):
+  - Hailuo AI
+  - PolyBuzz
+  - Quark
+
+Presentation AI (1 tools):
+  - GAMMA
+
+Product Requirements (1 tools):
+  - ChatPRD
+
+Productivity (3 tools):
+  - Linear
+  - Notion
+  - Raycast
+
+Research (2 tools):
+  - Google Labs
+  - NotebookLM
+
+Speech Recognition (1 tools):
+  - WisprFlow
+
+Text-to-Speech (1 tools):
+  - ElevenLabs
+
+Transcription (1 tools):
+  - TurboScribe
+
+UI Generation (4 tools):
+  - Figma
+  - Magic Patterns
+  - Mobbin
+  - v0
+
+Utils (1 tools):
+  - ZeroGPT
+
+Vector DB (2 tools):
+  - Pinecone
+  - Weaviate
+
+Video Editing (2 tools):
+  - Descript
+  - VEED
+
+Video Generation (1 tools):
+  - KlingAI
+
+Writing Assistant (1 tools):
+  - QuillBot
+
+--------------------------------------------------------------------------------
+CATEGORY: 'Tools' (6 tools)
+--------------------------------------------------------------------------------
+
+APIs (1 tools):
+  - Amadeus
+
+Automation (2 tools):
+  - Zapier
+  - n8n
+
+DB (1 tools):
+  - Supabase
+
+Deploy (1 tools):
+  - Vercel
+
+Image (1 tools):
+  - Unsplash
+
+================================================================================
+SUMMARY
+================================================================================
+AI Tools subcategories: 36
+Tools subcategories: 5

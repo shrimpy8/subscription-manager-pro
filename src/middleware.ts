@@ -18,7 +18,7 @@ export function middleware(_request: NextRequest) {
   // Content Security Policy (env-guarded; conservative but functional)
   const isDev = process.env.NODE_ENV !== 'production'
   const scriptSrc = isDev ? "'self' 'unsafe-inline' 'unsafe-eval'" : "'self' 'unsafe-inline'"
-  const connectSrc = isDev ? "'self' http://127.0.0.1:54321 http://localhost:54321 http://10.0.0.57:54321" : "'self'"
+  const connectSrc = isDev ? "'self' http://127.0.0.1:55421 http://localhost:55421 http://10.0.0.57:55421" : "'self'"
   const csp = [
     "default-src 'self'",
     "img-src 'self' data: https: https://www.google.com/s2",
