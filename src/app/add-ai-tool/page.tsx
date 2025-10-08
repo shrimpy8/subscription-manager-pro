@@ -7,10 +7,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+// import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { EnhancedCard } from '@/components/ui/enhanced-card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, FileText, Globe } from 'lucide-react';
-import { AIToolCategory, AI_TOOL_CATEGORY_LABEL, AI_TOOL_CATEGORY_COLORS } from '@/types/ai-tools';
+import { ArrowLeft, FileText, Globe, Shield, Globe2 } from 'lucide-react';
+import { AIToolCategory } from '@/types/ai-tools';
 import { useToast, ToastContainer } from '@/components/ui/toast';
 import { getUserFriendlyMessage } from '@/utils/error-messages';
 
@@ -18,8 +20,10 @@ interface AIToolFormData {
   name: string;
   url: string;
   category: AIToolCategory;
-  fallbackIcon: string;
+  fallback_icon: string;
   description: string;
+  safe_for_work: boolean;
+  china_region_only: boolean;
 }
 
 const AI_TOOL_CATEGORIES: AIToolCategory[] = [
@@ -34,8 +38,10 @@ export default function AddAIToolPage() {
     name: '',
     url: '',
     category: 'Chat',
-    fallbackIcon: '🤖',
-    description: ''
+    fallback_icon: '🤖',
+    description: '',
+    safe_for_work: true,
+    china_region_only: false
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -104,8 +110,10 @@ export default function AddAIToolPage() {
         name: '',
         url: '',
         category: 'Chat',
-        fallbackIcon: '🤖',
-        description: ''
+        fallback_icon: '🤖',
+        description: '',
+        safe_for_work: true,
+        china_region_only: false,
       });
       
     } catch {
@@ -117,26 +125,26 @@ export default function AddAIToolPage() {
   };
 
   return (
-  <div className="min-h-screen bg-gradient-to-br from-neutral-100 to-neutral-200">
+    <div className="min-h-screen bg-neutral-50">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <header className="glass-card border-b border-orange-200/50 sticky top-0 z-30">
-          <div className="px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
+        <header className="bg-white/80 backdrop-blur-sm border-b border-neutral-200 sticky top-0 z-30">
+          <div className="px-6 py-4">
+            <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                <div className="flex items-center">
-                  <ArrowLeft className="w-5 h-5 mr-2 text-gray-600" />
-                  <button 
-                    onClick={() => window.location.href = '/?tab=ai-tools'}
-                    className="text-gray-600 hover:text-gray-800 cursor-pointer"
-                  >
-                    Back to Trending AI Tools
-                  </button>
-                </div>
+                <PremiumButton
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => window.location.href = '/?tab=ai-tools'}
+                  className="flex items-center"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Back to Trending AI Tools
+                </PremiumButton>
               </div>
               <div className="flex items-center space-x-4">
-                <h2 className="section-title">Add AI Tool</h2>
-                <Badge variant="secondary" className="bg-orange-100 text-orange-800">
+                <h1 className="text-2xl font-semibold text-neutral-900">Add AI Tool</h1>
+                <Badge variant="secondary" className="bg-primary-100 text-primary-800 text-xs">
                   Discovery
                 </Badge>
               </div>
@@ -144,20 +152,20 @@ export default function AddAIToolPage() {
           </div>
         </header>
 
-        <form onSubmit={handleSubmit} className="px-4 sm:px-6 lg:px-8 mt-4 pb-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <form onSubmit={handleSubmit} className="px-6 mt-6 pb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Left Column - Basic Information */}
             <div className="space-y-6">
-              <Card className="border border-gray-200 shadow-sm">
+              <EnhancedCard variant="elevated" className="border border-neutral-200">
                 <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center text-lg font-semibold text-gray-900">
-                    <FileText className="w-5 h-5 mr-2 text-orange-600" />
+                  <CardTitle className="flex items-center text-lg font-semibold text-neutral-900">
+                    <FileText className="w-5 h-5 mr-2 text-primary-600" />
                     Basic Information
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="name" className="text-sm font-medium text-gray-700">
+                  <div className="space-y-2">
+                    <Label htmlFor="name" className="text-sm font-medium text-neutral-900">
                       Tool Name *
                     </Label>
                     <Input
@@ -166,80 +174,79 @@ export default function AddAIToolPage() {
                       value={formData.name}
                       onChange={(e) => handleInputChange('name', e.target.value)}
                       required
+                      className="h-10 border-neutral-300 focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
                     />
                   </div>
 
-                  <div>
-                    <Label htmlFor="url" className="text-sm font-medium text-gray-700">
+                  <div className="space-y-2">
+                    <Label htmlFor="url" className="text-sm font-medium text-neutral-900">
                       Website URL *
                     </Label>
                     <div className="relative">
-                      <Globe className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                      <Globe className="absolute left-3 top-3 w-4 h-4 text-neutral-400" />
                       <Input
                         id="url"
                         placeholder="https://example.com"
                         value={formData.url}
                         onChange={(e) => handleInputChange('url', e.target.value)}
-                        className="pl-10"
+                        className="pl-10 h-10 border-neutral-300 focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
                         required
                       />
                     </div>
                   </div>
 
-                  <div>
-                    <Label htmlFor="category" className="text-sm font-medium text-gray-700">
+                  <div className="space-y-2">
+                    <Label htmlFor="category" className="text-sm font-medium text-neutral-900">
                       Category *
                     </Label>
                     <Select 
                       value={formData.category} 
                       onValueChange={(value) => handleInputChange('category', value as AIToolCategory)}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="h-10 border-neutral-300 focus:border-primary-500 focus:ring-1 focus:ring-primary-500">
                         <SelectValue placeholder="Select category" />
                       </SelectTrigger>
                       <SelectContent className="max-h-96">
                         {AI_TOOL_CATEGORIES.map((category) => (
                           <SelectItem key={category} value={category}>
-                            <div className="flex items-center">
-                              <span className={`inline-block w-3 h-3 rounded-full mr-3 ${AI_TOOL_CATEGORY_COLORS[category].split(' ')[0]}`}></span>
-                              {AI_TOOL_CATEGORY_LABEL[category]}
-                            </div>
+                            {category}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
 
-                  <div>
-                    <Label htmlFor="fallbackIcon" className="text-sm font-medium text-gray-700">
+                  <div className="space-y-2">
+                    <Label htmlFor="fallback_icon" className="text-sm font-medium text-neutral-900">
                       Fallback Icon
                     </Label>
                     <Input
-                      id="fallbackIcon"
+                      id="fallback_icon"
                       placeholder="🤖"
-                      value={formData.fallbackIcon}
-                      onChange={(e) => handleInputChange('fallbackIcon', e.target.value)}
+                      value={formData.fallback_icon}
+                      onChange={(e) => handleInputChange('fallback_icon', e.target.value)}
+                      className="h-10 border-neutral-300 focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
                     />
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-neutral-500 mt-1">
                       Emoji to display if favicon fails to load
                     </p>
                   </div>
                 </CardContent>
-              </Card>
+              </EnhancedCard>
             </div>
 
             {/* Right Column - Additional Information */}
             <div className="space-y-6">
-              <Card className="border border-gray-200 shadow-sm">
+              <EnhancedCard variant="elevated" className="border border-neutral-200">
                 <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center text-lg font-semibold text-gray-900">
-                    <FileText className="w-5 h-5 mr-2 text-orange-600" />
+                  <CardTitle className="flex items-center text-lg font-semibold text-neutral-900">
+                    <FileText className="w-5 h-5 mr-2 text-primary-600" />
                     Additional Information
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="description" className="text-sm font-medium text-gray-700">
+                  <div className="space-y-2">
+                    <Label htmlFor="description" className="text-sm font-medium text-neutral-900">
                       Description (optional)
                     </Label>
                     <Textarea
@@ -248,14 +255,48 @@ export default function AddAIToolPage() {
                       value={formData.description}
                       onChange={(e) => handleInputChange('description', e.target.value)}
                       rows={4}
+                      className="border-neutral-300 focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
                     />
                   </div>
 
-                  <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-                    <h4 className="text-sm font-medium text-orange-900 mb-2">
+
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-medium text-neutral-900">Tool Flags</h4>
+                    <div className="space-y-3">
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          id="safe_for_work"
+                          checked={formData.safe_for_work}
+                          onChange={(e) => setFormData(prev => ({ ...prev, safe_for_work: e.target.checked }))}
+                          className="w-4 h-4 text-green-600 bg-neutral-100 border-neutral-300 rounded focus:ring-green-500 focus:ring-2"
+                        />
+                        <Label htmlFor="safe_for_work" className="text-sm text-neutral-900 flex items-center">
+                          <Shield className="w-4 h-4 mr-2 text-green-600" />
+                          Safe for work
+                        </Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          id="china_region_only"
+                          checked={formData.china_region_only}
+                          onChange={(e) => setFormData(prev => ({ ...prev, china_region_only: e.target.checked }))}
+                          className="w-4 h-4 text-red-600 bg-neutral-100 border-neutral-300 rounded focus:ring-red-500 focus:ring-2"
+                        />
+                        <Label htmlFor="china_region_only" className="text-sm text-neutral-900 flex items-center">
+                          <Globe2 className="w-4 h-4 mr-2 text-red-600" />
+                          China region only
+                        </Label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-blue-50/50 border border-blue-200/50 rounded-lg p-4">
+                    <h4 className="text-sm font-medium text-blue-900 mb-2">
                       What happens next?
                     </h4>
-                    <ul className="text-sm text-orange-800 space-y-1">
+                    <ul className="text-sm text-blue-800 space-y-1">
                       <li>• This tool will be added to the AI Tools browser</li>
                       <li>• You can browse and discover it alongside other tools</li>
                       <li>• When you&apos;re ready to subscribe, use &quot;Add Subscription&quot;</li>
@@ -263,12 +304,12 @@ export default function AddAIToolPage() {
                     </ul>
                   </div>
                 </CardContent>
-              </Card>
+              </EnhancedCard>
             </div>
           </div>
 
           {/* Footer Actions */}
-          <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+          <div className="flex justify-end space-x-4 pt-6 border-t border-neutral-200">
             <PremiumButton 
               type="button" 
               variant="secondary"
