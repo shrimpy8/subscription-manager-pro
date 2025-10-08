@@ -229,7 +229,7 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
 
   const clearFilters = () => {
     setFilters({
-      category: 'all',
+      subcategory: 'all',
       searchTerm: '',
       showSubscribedOnly: false,
       showUsingOnly: false,
@@ -239,7 +239,7 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
   };
 
   const activeFiltersCount = [
-    filters.category !== 'all',
+    filters.subcategory !== 'all',
     filters.searchTerm,
     filters.showSubscribedOnly,
     filters.showUsingOnly,
