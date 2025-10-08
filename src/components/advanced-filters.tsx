@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Filter, X, ChevronDown } from 'lucide-react';
 import { PremiumButton } from '@/components/ui/premium-button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { SubscriptionFilters, SubscriptionCategory } from '@/types/subscription';
+import { useSupabaseSubscriptions } from '@/hooks/use-supabase-subscriptions';
 
 interface AdvancedFiltersProps {
   filters: SubscriptionFilters;
@@ -14,23 +15,7 @@ interface AdvancedFiltersProps {
   onClearFilters: () => void;
 }
 
-const CATEGORIES: SubscriptionCategory[] = [
-  'AI Tools',
-  'Cloud Provider',
-  'Communication',
-  'Design Tools',
-  'Development Tools',
-  'Entertainment',
-  'Magazine',
-  'Newsletter',
-  'Online Learning',
-  'Other',
-  'Productivity',
-  'SaaS',
-  'Security',
-  'Streaming Service',
-  'Utilities'
-];
+// Categories will be derived dynamically from database
 
 // AI Tool subcategories with example tools (alphabetically sorted)
 const AI_TOOL_SUBCATEGORIES_WITH_EXAMPLES = [
@@ -62,6 +47,18 @@ const PRIORITIES = ['high', 'medium', 'low'];
 const USAGE_FREQUENCIES = ['daily', 'weekly', 'monthly', 'rarely'];
 
 export function AdvancedFilters({ filters, onFiltersChange, onClearFilters }: AdvancedFiltersProps) {
+  const { subscriptions } = useSupabaseSubscriptions();
+  
+  // Derive categories dynamically from database (no hardcoding)
+  const categoryOptions = useMemo((): SubscriptionCategory[] => {
+    const set = new Set<SubscriptionCategory>();
+    subscriptions.forEach(sub => {
+      if (sub.category) {
+        set.add(sub.category as SubscriptionCategory);
+      }
+    });
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }, [subscriptions]);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const activeFiltersCount = [
@@ -239,7 +236,7 @@ export function AdvancedFilters({ filters, onFiltersChange, onClearFilters }: Ad
                     </SelectTrigger>
                     <SelectContent className="max-h-96">
                       <SelectItem value="all">All Categories</SelectItem>
-                      {CATEGORIES.map((category) => {
+                      {categoryOptions.map((category) => {
                         if (category === 'AI Tools') {
                           return (
                             <div key={category}>

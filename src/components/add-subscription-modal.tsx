@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { X, Save } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -15,6 +15,7 @@ import { generateId, getCurrentDate, getDefaultRenewalDate } from '@/lib/utils';
 import { sanitizeInput } from '@/lib/xss';
 import { validateSubscription } from '@/utils/validation';
 import { useLoadingState } from '@/hooks/use-loading-state';
+import { useSupabaseSubscriptions } from '@/hooks/use-supabase-subscriptions';
 import { LoadingButton } from '@/components/ui/loading-spinner';
 import { useToast } from '@/components/ui/toast';
 import { getUserFriendlyMessage } from '@/utils/error-messages';
@@ -30,11 +31,23 @@ const PRIORITY_OPTIONS = ['low', 'medium', 'high'];
 const USAGE_FREQUENCY_OPTIONS = ['daily', 'weekly', 'monthly', 'rarely'];
 const BILLING_CYCLE_OPTIONS = ['Monthly', 'Yearly', 'Free'];
 const PLAN_OPTIONS = ['Free', 'Basic', 'Pro', 'Premium', 'Enterprise', 'Max', 'Ultra'];
-const CATEGORY_OPTIONS = ['AI Tools', 'Productivity', 'Entertainment', 'Development', 'Design', 'Marketing', 'Other'];
+// Categories will be derived dynamically from database
 
 export default function AddSubscriptionModal({ isOpen, onClose, onAdd }: AddSubscriptionModalProps) {
   const loadingState = useLoadingState();
   const toast = useToast();
+  const { subscriptions } = useSupabaseSubscriptions();
+
+  // Derive categories dynamically from database (no hardcoding)
+  const categoryOptions = useMemo((): string[] => {
+    const set = new Set<string>();
+    subscriptions.forEach(sub => {
+      if (sub.category) {
+        set.add(sub.category);
+      }
+    });
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }, [subscriptions]);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -188,7 +201,7 @@ export default function AddSubscriptionModal({ isOpen, onClose, onAdd }: AddSubs
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
                     <SelectContent>
-                      {CATEGORY_OPTIONS.map((category) => (
+                      {categoryOptions.map((category: string) => (
                         <SelectItem key={category} value={category}>{category}</SelectItem>
                       ))}
                     </SelectContent>

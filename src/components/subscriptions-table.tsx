@@ -42,7 +42,7 @@ interface SubscriptionsTableProps {
   onAddSubscription?: () => void;
 }
 
-type SortField = 'name' | 'category' | 'plan' | 'cost' | 'billing_cycle' | 'start_date' | 'status';
+type SortField = 'name' | 'category' | 'subcategory' | 'plan' | 'cost' | 'billing_cycle' | 'start_date' | 'status';
 type SortOrder = 'asc' | 'desc';
 
 const SubscriptionsTable = memo(function SubscriptionsTable({
@@ -187,16 +187,8 @@ const SubscriptionsTable = memo(function SubscriptionsTable({
   };
 
   const getCategoryDisplay = (sub: Subscription): string => {
-    // If category itself is one of the AI tool category keys (e.g., "Dev"), map to label
-    if ((AI_TOOL_CATEGORY_LABEL as Record<string, string>)[sub.category]) {
-      return (AI_TOOL_CATEGORY_LABEL as Record<string, string>)[sub.category];
-    }
-    // Otherwise if it's an AI Tools entry, map its subcategory label
-    if (sub.category === 'AI Tools' && sub.subcategory) {
-      const key = sub.subcategory as keyof typeof AI_TOOL_CATEGORY_LABEL;
-      return AI_TOOL_CATEGORY_LABEL[key] || sub.subcategory;
-    }
-    return sub.category;
+    // Simply return the category as-is from the database
+    return sub.category || '-';
   };
 
   return (
@@ -222,6 +214,15 @@ const SubscriptionsTable = memo(function SubscriptionsTable({
             >
               <span>Category</span>
               {getSortIcon('category')}
+            </button>
+          </th>
+          <th className="text-left p-4 font-medium text-gray-600">
+            <button
+              onClick={() => handleSort('subcategory')}
+              className="flex items-center space-x-1 hover:text-gray-900 transition-colors"
+            >
+              <span>Subcategory</span>
+              {getSortIcon('subcategory')}
             </button>
           </th>
               <th className="text-left p-4 font-medium text-gray-600">
@@ -303,6 +304,9 @@ const SubscriptionsTable = memo(function SubscriptionsTable({
                 </td>
                 <td className="p-4">
                   <span className="text-sm text-gray-700">{getCategoryDisplay(subscription)}</span>
+                </td>
+                <td className="p-4">
+                  <span className="text-sm text-gray-600">{subscription.subcategory || '-'}</span>
                 </td>
                 <td className="p-4">
                   <span className="text-sm font-medium text-gray-900">
