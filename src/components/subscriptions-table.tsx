@@ -15,7 +15,6 @@ import {
   DollarSign,
   Plus
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { PremiumButton } from '@/components/ui/premium-button';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
@@ -345,9 +344,9 @@ const SubscriptionsTable = memo(function SubscriptionsTable({
                 <td className="p-4">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                      <PremiumButton variant="ghost" size="sm" className="h-8 w-8 p-0">
                         <MoreHorizontal className="h-4 w-4" />
-                      </Button>
+                      </PremiumButton>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48">
                       <DropdownMenuItem onClick={() => onViewDetails?.(subscription)}>

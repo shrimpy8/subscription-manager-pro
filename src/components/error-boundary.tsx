@@ -1,7 +1,7 @@
 "use client";
 
 import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { Button } from '@/components/ui/button';
+import { PremiumButton } from '@/components/ui/premium-button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
 
@@ -86,21 +86,22 @@ export class ErrorBoundary extends Component<Props, State> {
               )}
 
               <div className="flex flex-col sm:flex-row gap-2 justify-center">
-                <Button
+                <PremiumButton
                   onClick={this.handleRetry}
-                  variant="outline"
+                  variant="secondary"
                   className="flex items-center gap-2"
                 >
                   <RefreshCw className="h-4 w-4" />
                   Try Again
-                </Button>
-                <Button
+                </PremiumButton>
+                <PremiumButton
                   onClick={() => window.location.reload()}
+                  variant="gradient"
                   className="flex items-center gap-2"
                 >
                   <RefreshCw className="h-4 w-4" />
                   Refresh Page
-                </Button>
+                </PremiumButton>
               </div>
             </CardContent>
           </Card>

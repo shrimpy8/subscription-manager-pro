@@ -18,7 +18,6 @@ import {
   Clock,
   AlertTriangle
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
     import { 
   DropdownMenu, 
@@ -318,10 +317,10 @@ const EnhancedSubscriptionsTable = memo(function EnhancedSubscriptionsTable({
                   <td className="py-4 pl-4">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                        <PremiumButton variant="ghost" size="sm" className="h-8 w-8 p-0">
                           <span className="sr-only">Open menu</span>
                           <MoreHorizontal className="h-4 w-4" />
-                        </Button>
+                        </PremiumButton>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-48">
                         {onViewDetails && (

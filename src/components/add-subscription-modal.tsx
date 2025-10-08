@@ -3,7 +3,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { X, Save } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
 import { PremiumButton } from '@/components/ui/premium-button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -395,23 +394,16 @@ export default function AddSubscriptionModal({ isOpen, onClose, onAdd }: AddSubs
 
           {/* Action Buttons */}
           <div className="flex space-x-3 pt-4">
-            <Button
+            <PremiumButton
               type="submit"
+              variant="gradient"
               disabled={loadingState.isLoading}
-              className="flex-1 gradient-bg hover:opacity-90"
+              loading={loadingState.isLoading}
+              className="flex-1"
             >
-              {loadingState.isLoading ? (
-                <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Adding...
-                </div>
-              ) : (
-                <>
-                  <Save className="w-4 h-4 mr-2" />
-                  Add Subscription
-                </>
-              )}
-            </Button>
+              <Save className="w-4 h-4 mr-2" />
+              Add Subscription
+            </PremiumButton>
             <PremiumButton type="button" variant="secondary" onClick={onClose} className="flex-1">
               Cancel
             </PremiumButton>
