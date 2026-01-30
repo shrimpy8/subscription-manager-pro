@@ -27,9 +27,11 @@ export const PremiumButton = ({
     <Button
       type={rest.type || 'button'}
       className={cn(
-        'relative overflow-hidden transition-all duration-300 ease-out btn-animate',
+        'relative overflow-hidden transition-all duration-300 ease-out',
+        'transform hover:scale-105 active:scale-95',
         'focus:ring-2 focus:ring-offset-2',
-        'disabled:opacity-50 disabled:cursor-not-allowed',
+        'disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none',
+        'hover:shadow-lg active:shadow-md',
         {
           // Variants
           'bg-primary-600 hover:bg-primary-700 text-white focus:ring-primary-500': variant === 'primary',

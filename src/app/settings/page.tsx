@@ -121,13 +121,13 @@ export default function SettingsPage() {
                 </div>
               </div>
               <div className="flex items-center space-x-4">
-                <h2 className="text-h2 text-neutral-900">Settings</h2>
+                <h1 className="text-h1 text-neutral-900">Settings</h1>
               </div>
             </div>
           </div>
           {/* Subtitle (consistent with PageHeader style) */}
           <div className="px-4 sm:px-6 lg:px-8 pb-4 -mt-2">
-            <p className="text-sm text-neutral-600">Manage your subscription data and application preferences.</p>
+            <p className="text-body-sm text-neutral-600">Manage your subscription data and application preferences.</p>
           </div>
         </header>
 

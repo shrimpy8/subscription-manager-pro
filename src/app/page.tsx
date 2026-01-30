@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Plus, Download } from 'lucide-react';
 // import { PremiumButton } from '@/components/ui/premium-button';
 import PageHeader from '@/components/ui/page-header';
@@ -22,8 +22,15 @@ import { getUserFriendlyMessage } from '@/utils/error-messages';
 import { PremiumDashboard } from '@/components/dashboard/premium-dashboard';
 import { useAITools } from '@/hooks/use-ai-tools';
 
-export default function HomePage() {
+interface HomePageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default function HomePage({ searchParams }: HomePageProps) {
   const toast = useToast();
+
+  // Use React.use() to unwrap the searchParams Promise
+  const resolvedSearchParams = React.use(searchParams);
 
   // Use Supabase hook for subscriptions
   const { subscriptions, loading, error, refreshSubscriptions } = useSupabaseSubscriptions();
@@ -40,12 +47,22 @@ export default function HomePage() {
     showExpiringSoon: false,
     showUnused: false
   });
+  
+  // Get initial view mode from URL parameters
+  const getInitialViewMode = () => {
+    const view = resolvedSearchParams.view;
+    if (view === 'list') return 'list';
+    if (view === 'analytics') return 'analytics';
+    return 'grid';
+  };
+
   const [viewMode, setViewMode] = useState<ViewMode>({
-    type: 'grid',
+    type: getInitialViewMode(),
     sortBy: 'name',
     sortOrder: 'asc',
     groupBy: undefined
   });
+  
   // Unified loading state management
   const loadingStates = useMultipleLoadingStates(['initial', 'export', 'save', 'delete', 'add']);
   const { initial, export: exportLoading, save, delete: deleteLoading, add } = loadingStates;
@@ -68,7 +85,7 @@ export default function HomePage() {
       } else {
         setCurrentTab('subscriptions');
       }
-      
+
       // Set view mode based on URL parameter
       if (view === 'list') {
         setViewMode(prev => ({ ...prev, type: 'list' }));
@@ -79,14 +96,6 @@ export default function HomePage() {
       }
     }
   }, []);
-
-  // Simple test to see if client-side JS is working
-  if (typeof window !== 'undefined') {
-    // Client-side JavaScript is executing
-  }
-
-  // Remove localStorage loading - now using Supabase hook
-  // useEffect for localStorage loading removed
 
   // Filter and sort subscriptions
   const filteredSubscriptions = useMemo(() => {
@@ -255,16 +264,21 @@ export default function HomePage() {
               viewMode={viewMode}
               loadingStates={loadingStates}
               onFiltersChange={setFilters}
-              onViewModeChange={(mode) => setViewMode(prev => ({ ...prev, type: mode }))}
+              onViewModeChange={(mode) => {
+                // Update URL immediately
+                const url = new URL(window.location.href);
+                url.searchParams.set('view', mode);
+                window.history.pushState({}, '', url.toString());
+
+                // Update state immediately
+                setViewMode(prev => ({ ...prev, type: mode }));
+              }}
               onEdit={(subscription) => {
                 window.location.href = `/update-subscription/${subscription.id}`;
               }}
               onDuplicate={async (subscription) => {
-                console.log('Original subscription for duplicate:', JSON.stringify(subscription, null, 2));
-                
                 // Validate subscription object
                 if (!subscription || !subscription.name) {
-                  console.error('Invalid subscription object:', JSON.stringify(subscription, null, 2));
                   toast.error('Invalid subscription data for duplication');
                   return;
                 }
@@ -319,9 +333,7 @@ export default function HomePage() {
                   usage_importance: subscription.usage_importance || 'medium',
                   logo: subscription.logo || ''
                 };
-                
-                console.log('Duplicated data created:', JSON.stringify(duplicated, null, 2));
-                
+
                 setViewMode(prev => ({ ...prev, type: 'list' }));
                 
                 save.setLoading(true, 'Duplicating subscription...');
@@ -340,13 +352,9 @@ export default function HomePage() {
                     // Refresh from database to show the new subscription
                     refreshSubscriptions();
                   } else {
-                    console.error('Duplicate API Error:', JSON.stringify(result, null, 2));
                     throw new Error(result.error || 'Failed to duplicate subscription');
                   }
                 } catch (error) {
-                  console.error('Duplicate Error Details:', JSON.stringify(error, null, 2));
-                  console.error('Duplicated Data:', JSON.stringify(duplicated, null, 2));
-                  
                   // Ensure we have a proper Error object with better error message extraction
                   let errorMessage = 'Unknown error occurred during duplication';
                   

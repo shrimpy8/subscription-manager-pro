@@ -44,6 +44,8 @@ export type UseSupabaseSubscriptionsReturn = UseSupabaseSubscriptionsState & Use
  * Main hook for Supabase subscription management
  */
 export function useSupabaseSubscriptions(): UseSupabaseSubscriptionsReturn {
+  console.log('🔍 useSupabaseSubscriptions hook initialized');
+  
   // State
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([])
   const [loading, setLoading] = useState(false)
@@ -84,6 +86,7 @@ export function useSupabaseSubscriptions(): UseSupabaseSubscriptionsReturn {
   
   // Refresh subscriptions
   const refreshSubscriptions = useCallback(async () => {
+    console.log('🔄 refreshSubscriptions called')
     if (!isOnline) {
       setError('No internet connection')
       return
@@ -95,15 +98,21 @@ export function useSupabaseSubscriptions(): UseSupabaseSubscriptionsReturn {
     try {
       abortControllerRef.current = new AbortController()
       
+      console.log('📡 Calling SupabaseDataAccess.readAllSubscriptions()')
       const result = await SupabaseDataAccess.readAllSubscriptions()
       
+      console.log('📡 SupabaseDataAccess result:', result)
+      
       if (result.success && result.data) {
+        console.log('✅ Subscriptions loaded:', result.data.length, 'records')
         setSubscriptions(result.data)
         setLastSync(new Date())
       } else {
+        console.error('❌ Failed to load subscriptions:', result.error?.message)
         setError(result.error?.message || 'Failed to load subscriptions')
       }
     } catch (err) {
+      console.error('❌ Error in refreshSubscriptions:', err)
       if (err instanceof Error && err.name !== 'AbortError') {
         setError(err.message)
       }
@@ -114,8 +123,9 @@ export function useSupabaseSubscriptions(): UseSupabaseSubscriptionsReturn {
   
   // Load subscriptions on mount
   useEffect(() => {
+    console.log('🔍 useEffect triggered - calling refreshSubscriptions');
     refreshSubscriptions()
-  }, [refreshSubscriptions])
+  }, []) // Remove refreshSubscriptions from dependencies to prevent infinite loops
   
   // Create subscription
   const createSubscription = useCallback(async (subscription: Subscription): Promise<boolean> => {

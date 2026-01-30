@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import { X, Save } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { PremiumButton } from '@/components/ui/premium-button';
+import { EnhancedInput, EnhancedTextarea } from '@/components/ui/enhanced-input';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -168,12 +169,12 @@ export default function AddSubscriptionModal({ isOpen, onClose, onAdd }: AddSubs
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="name" className="form-label">Name *</Label>
-                  <Input
-                    id="name"
+                  <EnhancedInput
+                    label="Name *"
                     value={formData.name}
                     onChange={(e) => handleInputChange('name', e.target.value)}
                     placeholder="e.g., ChatGPT Plus"
+                    helperText="Enter the name of the subscription service"
                     required
                   />
                 </div>
@@ -207,24 +208,24 @@ export default function AddSubscriptionModal({ isOpen, onClose, onAdd }: AddSubs
                   </Select>
                 </div>
                 <div>
-                  <Label htmlFor="subcategory" className="form-label">Subcategory</Label>
-                  <Input
-                    id="subcategory"
+                  <EnhancedInput
+                    label="Subcategory"
                     value={formData.subcategory}
                     onChange={(e) => handleInputChange('subcategory', e.target.value)}
                     placeholder="e.g., AI Writing"
+                    helperText="Optional subcategory for better organization"
                   />
                 </div>
               </div>
 
               <div>
-                <Label htmlFor="description" className="form-label">Description</Label>
-                <Textarea
-                  id="description"
+                <EnhancedTextarea
+                  label="Description"
                   value={formData.description}
                   onChange={(e) => handleInputChange('description', e.target.value)}
                   placeholder="Brief description of the subscription..."
                   rows={3}
+                  helperText="Optional description to help you remember what this subscription is for"
                 />
               </div>
             </CardContent>
@@ -238,14 +239,14 @@ export default function AddSubscriptionModal({ isOpen, onClose, onAdd }: AddSubs
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <Label htmlFor="cost" className="form-label">Cost</Label>
-                  <Input
-                    id="cost"
+                  <EnhancedInput
+                    label="Cost"
                     type="number"
                     step="0.01"
                     value={formData.cost}
                     onChange={(e) => handleInputChange('cost', e.target.value)}
                     placeholder="0.00"
+                    helperText="Enter the monthly or yearly cost"
                   />
                 </div>
                 <div>
@@ -279,21 +280,21 @@ export default function AddSubscriptionModal({ isOpen, onClose, onAdd }: AddSubs
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="startDate" className="form-label">Start Date</Label>
-                  <Input
-                    id="startDate"
+                  <EnhancedInput
+                    label="Start Date"
                     type="date"
                     value={formData.startDate}
                     onChange={(e) => handleInputChange('startDate', e.target.value)}
+                    helperText="When did you start this subscription?"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="renewalDate" className="form-label">Renewal Date</Label>
-                  <Input
-                    id="renewalDate"
+                  <EnhancedInput
+                    label="Renewal Date"
                     type="date"
                     value={formData.renewalDate}
                     onChange={(e) => handleInputChange('renewalDate', e.target.value)}
+                    helperText="When does this subscription renew?"
                   />
                 </div>
               </div>

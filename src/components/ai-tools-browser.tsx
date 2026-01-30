@@ -4,7 +4,7 @@ import React, { useState, useEffect, memo } from 'react';
 import { Search, ExternalLink, Plus, Check, Filter, X, Eye, EyeOff, Sparkles } from 'lucide-react';
 // import { Card, CardContent } from '@/components/ui/card';
 import { PremiumButton } from '@/components/ui/premium-button';
-import { Input } from '@/components/ui/input';
+import { SmartSearch } from '@/components/ui/smart-search';
 import { Badge } from '@/components/ui/badge';
 import { EnhancedCard } from '@/components/ui/enhanced-card';
 import Image from 'next/image';
@@ -366,13 +366,14 @@ const AIToolsBrowser = memo(function AIToolsBrowser({
             {/* Search Field - Full Width */}
             <div className="form-section">
               <h4 className="form-section-title">SEARCH</h4>
-              <div className="relative mt-2">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <Input
+              <div className="mt-2">
+                <SmartSearch
                   placeholder="Search tools..."
                   value={filters.searchTerm}
-                  onChange={(e) => setFilters(prev => ({ ...prev, searchTerm: e.target.value }))}
-                  className="pl-10 w-full"
+                  onChange={(value) => setFilters(prev => ({ ...prev, searchTerm: value }))}
+                  onSearch={(query) => setFilters(prev => ({ ...prev, searchTerm: query }))}
+                  suggestions={aiTools.map(tool => tool.name)}
+                  className="w-full"
                 />
               </div>
             </div>

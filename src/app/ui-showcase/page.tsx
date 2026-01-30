@@ -9,7 +9,7 @@ import { useState } from 'react';
 import { Plus, Search, Download, Settings, Bell, User, Star, Heart, Share2 } from 'lucide-react';
 import { EnhancedCard, MetricsCard } from '@/components/ui/enhanced-card';
 import { PremiumButton, ButtonGroup } from '@/components/ui/premium-button';
-import { EnhancedInput, SearchInput } from '@/components/ui/enhanced-input';
+import { EnhancedInput } from '@/components/ui/enhanced-input';
 import { LoadingState, Skeleton, ProgressBar, Spinner } from '@/components/ui/loading-states';
 import { MetricsOverview } from '@/components/dashboard/metrics-overview';
 import { EnhancedSubscriptionCard } from '@/components/subscription/enhanced-subscription-card';
@@ -211,9 +211,9 @@ export default function UIShowcasePage() {
                   placeholder="This field has an error"
                   error="This field is required"
                 />
-                <SearchInput
+                <EnhancedInput
                   placeholder="Search subscriptions..."
-                  suggestions={['Netflix', 'Spotify', 'Adobe', 'Microsoft']}
+                  helperText="Search through your subscriptions"
                 />
               </div>
             </EnhancedCard>
@@ -231,7 +231,7 @@ export default function UIShowcasePage() {
                 <LoadingState state="loading" message="Loading subscriptions..." />
                 <LoadingState state="success" message="Successfully saved!" />
                 <LoadingState state="error" message="Something went wrong" />
-                <LoadingState state="pending" message="Processing..." />
+                <LoadingState state="loading" message="Processing..." />
                 <div className="flex items-center space-x-4">
                   <Spinner size="sm" />
                   <Spinner size="md" />

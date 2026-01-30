@@ -30,7 +30,7 @@ export function PageHeader({ title, subtitle, badgeText, className, actions = []
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center space-x-4">
-            <h2 className="section-title">{title}</h2>
+            <h2 className="text-h2 text-neutral-900">{title}</h2>
             {badgeText && (
               <Badge variant="secondary" className="btn-secondary">
                 {badgeText}
@@ -56,7 +56,7 @@ export function PageHeader({ title, subtitle, badgeText, className, actions = []
         </div>
         {subtitle && (
           <div className="pb-4 -mt-2">
-            <p className="text-sm text-neutral-600">{subtitle}</p>
+            <p className="text-body-sm text-neutral-600">{subtitle}</p>
           </div>
         )}
       </div>

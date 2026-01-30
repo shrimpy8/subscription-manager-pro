@@ -193,8 +193,24 @@ const SubscriptionsTable = memo(function SubscriptionsTable({
   return (
     <ErrorBoundary>
       <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="w-full">
+      {sortedSubscriptions.length === 0 ? (
+        <div className="text-center py-12">
+          <div className="text-gray-400 mb-4">
+            <Calendar className="w-12 h-12 mx-auto" />
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">No subscriptions found</h3>
+          <p className="text-gray-600 mb-4">Get started by adding your first subscription.</p>
+          <PremiumButton 
+            variant="gradient"
+            onClick={() => window.location.href = '/add-subscription'}
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Subscription
+          </PremiumButton>
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
               <th className="text-left p-4 font-medium text-gray-600">
@@ -389,23 +405,7 @@ const SubscriptionsTable = memo(function SubscriptionsTable({
               </tr>
             ))}
           </tbody>
-        </table>
-      </div>
-      
-      {sortedSubscriptions.length === 0 && (
-        <div className="text-center py-12">
-          <div className="text-gray-400 mb-4">
-            <Calendar className="w-12 h-12 mx-auto" />
-          </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No subscriptions found</h3>
-          <p className="text-gray-600 mb-4">Get started by adding your first subscription.</p>
-          <PremiumButton 
-            variant="gradient"
-            onClick={() => window.location.href = '/add-subscription'}
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Subscription
-          </PremiumButton>
+          </table>
         </div>
       )}
     </div>

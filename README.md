@@ -2,6 +2,7 @@
 
 A comprehensive subscription management application built with Next.js, TypeScript, and Tailwind CSS. Track your AI tool subscriptions, discover trending tools, and manage your subscription portfolio with advanced filtering and analytics.
 
+![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)
 ![Subscription Manager Pro](https://img.shields.io/badge/Next.js-15.5.3-black?style=for-the-badge&logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.17-38B2AC?style=for-the-badge&logo=tailwind-css)
@@ -106,6 +107,8 @@ subscription-manager-pro/
 ### Prerequisites
 - Node.js 18.0 or later
 - npm or yarn package manager
+- **Docker Desktop** (required for local Supabase)
+- Supabase CLI (installed automatically via npx)
 
 ### Installation
 
@@ -122,15 +125,91 @@ subscription-manager-pro/
    yarn install
    ```
 
-3. **Run the development server**
+3. **Set up environment variables**
+
+   Create a `.env.local` file in the project root:
+   ```bash
+   cp .env.example .env.local
+   ```
+
+   Update the `.env.local` file with the following values:
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH
+   ```
+
+   > **Note**: The anon key above is for local development only. For production, use your actual Supabase project credentials.
+
+4. **Start Docker Desktop**
+
+   Make sure Docker Desktop is running before proceeding. You can verify by running:
+   ```bash
+   docker ps
+   ```
+
+5. **Start the local Supabase instance**
+   ```bash
+   npx supabase start
+   ```
+
+   Wait for all containers to start. You should see output like:
+   ```
+   Started supabase local development setup.
+
+   API URL: http://127.0.0.1:54321
+   Studio URL: http://127.0.0.1:54323
+   DB URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres
+   ```
+
+   > **Troubleshooting**: If you see a port conflict error, stop any existing Supabase containers:
+   > ```bash
+   > docker stop $(docker ps -q --filter "name=supabase")
+   > npx supabase start
+   > ```
+
+6. **Initialize the database (first time only)**
+
+   If this is your first time setting up, you need to seed the database with initial data:
+   ```bash
+   # Connect to the database and run the seed file
+   psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -f complete_data_insert.sql
+   ```
+
+   Or use Supabase Studio at http://127.0.0.1:54323 to run SQL queries manually.
+
+7. **Run the development server**
    ```bash
    npm run dev
    # or
    yarn dev
    ```
 
-4. **Open your browser**
+8. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000) to see the application.
+
+### Quick Start (After Initial Setup)
+
+Once you've completed the initial setup, you only need to run these commands:
+
+```bash
+# 1. Start Docker Desktop (if not running)
+
+# 2. Start Supabase
+npx supabase start
+
+# 3. Start the app
+npm run dev
+```
+
+### Stopping the Application
+
+```bash
+# Stop the Next.js dev server
+Ctrl+C
+
+# Stop Supabase containers (optional - to free resources)
+npx supabase stop
+```
 
 ### Available Scripts
 
@@ -236,6 +315,9 @@ subscription-manager-pro/
 - **No External APIs**: No data sent to external services
 - **Input Validation**: Comprehensive validation on all inputs
 - **Error Handling**: Graceful error handling and user feedback
+- **No Hardcoded Credentials**: All API credentials use environment variables
+- **Zero npm Vulnerabilities**: Regular dependency audits and updates
+- **Secure Supabase Integration**: Proper environment variable validation and error handling
 
 ## 📚 Project Documentation
 
@@ -308,7 +390,7 @@ If you encounter any issues or have questions:
 ## 🔮 Roadmap
 
 ### Upcoming Features
-- [ ] **Database Integration**: Supabase or PostgreSQL integration
+- [x] **Database Integration**: Supabase integration (completed)
 - [ ] **User Authentication**: Multi-user support with authentication
 - [ ] **Advanced Analytics**: Charts and graphs for subscription insights
 - [ ] **Mobile App**: React Native mobile application

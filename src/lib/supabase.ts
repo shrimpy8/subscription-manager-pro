@@ -1,15 +1,52 @@
 import { createClient } from '@supabase/supabase-js'
 
-// Environment variables for local Supabase instance
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://127.0.0.1:55421'
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH'
+// Environment variables are required - no fallback credentials
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error(
+    'Missing Supabase environment variables. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in your .env.local file.'
+  )
+}
 
 // Create Supabase client for browser usage with no configuration
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Use a singleton pattern to prevent multiple instances
+let supabaseInstance: ReturnType<typeof createClient> | null = null
+export const supabase = (() => {
+  if (!supabaseInstance) {
+    supabaseInstance = createClient(supabaseUrl, supabaseAnonKey)
+  }
+  return supabaseInstance
+})()
 
 // Create admin client for server-side operations (with service role key)
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'sb_secret_N7UND0UgjKTVK-Uodkm0Hg_xSvEMPvz'
-export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
+// This is lazy-loaded and only available on the server-side
+let supabaseAdminInstance: ReturnType<typeof createClient> | null = null
+
+export function getSupabaseAdmin() {
+  // Only allow on server-side
+  if (typeof window !== 'undefined') {
+    throw new Error('supabaseAdmin can only be used on the server-side')
+  }
+
+  if (!supabaseAdminInstance) {
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+    if (!supabaseServiceKey) {
+      throw new Error(
+        'Missing Supabase service role key. Please set SUPABASE_SERVICE_ROLE_KEY in your .env.local file.'
+      )
+    }
+
+    supabaseAdminInstance = createClient(supabaseUrl, supabaseServiceKey)
+  }
+
+  return supabaseAdminInstance
+}
+
+// For backward compatibility - but don't use this in client components
+export const supabaseAdmin = typeof window === 'undefined' ? getSupabaseAdmin() : null as any
 
 // Test connection function
 export async function testSupabaseConnection() {

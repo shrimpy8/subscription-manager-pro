@@ -26,9 +26,9 @@ export const EnhancedCard = ({
   onMouseLeave
 }: EnhancedCardProps) => {
   return (
-        <Card 
+        <Card
           className={cn(
-            'transition-all duration-300 ease-out animate-fade-in',
+            'transition-all duration-200 ease-out',
             {
               // Variants
               'shadow-sm border border-neutral-200 bg-white': variant === 'default',
@@ -36,9 +36,11 @@ export const EnhancedCard = ({
               'shadow-none border-2 border-neutral-300 bg-white': variant === 'outlined',
               'glass-card shadow-lg border-0': variant === 'glass',
               
-              // Hover effects
-              'hover:shadow-md hover:-translate-y-0.5 hover-lift': hover && variant !== 'glass',
-              'hover:shadow-xl hover:-translate-y-1 hover-glow': hover && variant === 'glass',
+              // Hover effects (subtle)
+              'hover:shadow-md hover:border-primary-200': hover && variant === 'default',
+              'hover:shadow-xl hover:border-primary-300': hover && variant === 'elevated',
+              'hover:shadow-lg hover:border-primary-400': hover && variant === 'outlined',
+              'hover:shadow-2xl hover:bg-white/90': hover && variant === 'glass',
               
               // Padding
               'p-3': padding === 'sm',
