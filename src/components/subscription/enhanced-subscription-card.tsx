@@ -50,12 +50,13 @@ export const EnhancedSubscriptionCard = ({
         const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`
         
         return (
-          <img
+          <Image
             src={faviconUrl}
-            alt={subscription.name}
+            alt={`${subscription.name} favicon`}
             width={48}
             height={48}
             className="w-12 h-12 rounded-xl object-cover shadow-sm"
+            unoptimized
             onError={() => setFaviconFailed(true)}
           />
         )
@@ -67,12 +68,13 @@ export const EnhancedSubscriptionCard = ({
     // 2) Then try explicit logo_url
     if (subscription.logo_url && !logoFailed) {
       return (
-        <img
+        <Image
           src={subscription.logo_url}
-          alt={subscription.name}
+          alt={`${subscription.name} logo`}
           width={48}
           height={48}
           className="w-12 h-12 rounded-xl object-cover shadow-sm"
+          unoptimized
           onError={() => setLogoFailed(true)}
         />
       )

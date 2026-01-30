@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { Grid, List, BarChart3, DollarSign, CheckCircle, PiggyBank, TrendingUp } from 'lucide-react';
 import { EnhancedCard, MetricsCard } from '@/components/ui/enhanced-card';
 import Image from 'next/image';
-import { AI_TOOL_CATEGORY_LABEL } from '@/types/ai-tools';
+// import { AI_TOOL_CATEGORY_LABEL } from '@/types/ai-tools';
 import { PremiumButton, ButtonGroup } from '@/components/ui/premium-button';
 // import { SearchInput } from '@/components/ui/enhanced-input';
 import { Subscription, SubscriptionFilters, ViewMode } from '@/types/subscription';
@@ -64,8 +64,44 @@ export default function PremiumDashboard({
   // Destructure loading states
   const { initial } = loadingStates;
 
-  // Helper function to get subscription icon
+  // Helper function to get subscription icon (matches list view logic)
   const getSubscriptionIcon = (subscription: Subscription) => {
+    // Use Google's favicon service for ALL subscriptions with URLs, just like the list view
+    if (subscription.url) {
+      try {
+        const domain = new URL(subscription.url).hostname;
+        return (
+          <div className="relative w-8 h-8 flex items-center justify-center flex-shrink-0">
+            <Image
+              src={`https://www.google.com/s2/favicons?domain=${domain}&sz=64`}
+              alt={`${subscription.name} favicon`}
+              width={32}
+              height={32}
+              className="w-8 h-8 rounded-sm"
+              unoptimized
+              onError={(e) => {
+                const img = e.currentTarget as HTMLImageElement;
+                img.style.display = 'none';
+                const fallback = img.nextElementSibling as HTMLElement;
+                if (fallback) fallback.style.display = 'flex';
+              }}
+            />
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 items-center justify-center text-white font-semibold text-sm hidden">
+              {subscription.fallback_icon || subscription.name.charAt(0).toUpperCase()}
+            </div>
+          </div>
+        );
+      } catch {
+        // If URL parsing fails, fall back to emoji/letter
+        return (
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-white font-semibold text-sm">
+            {subscription.fallback_icon || subscription.name.charAt(0).toUpperCase()}
+          </div>
+        );
+      }
+    }
+
+    // For subscriptions without URL, try logo_url
     if (subscription.logo_url) {
       return (
         <Image
@@ -75,16 +111,11 @@ export default function PremiumDashboard({
           height={32}
           className="w-8 h-8 rounded-lg object-cover"
           unoptimized
-          onError={(e) => {
-            const img = e.currentTarget as HTMLImageElement;
-            img.style.display = 'none';
-            const fallback = img.nextElementSibling as HTMLElement;
-            if (fallback) fallback.style.display = 'flex';
-          }}
         />
       );
     }
-    
+
+    // Final fallback
     return (
       <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-white font-semibold text-sm">
         {subscription.fallback_icon || subscription.name.charAt(0).toUpperCase()}
@@ -168,35 +199,33 @@ export default function PremiumDashboard({
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-3">
-            <EnhancedCard variant="elevated" padding="lg">
+            <EnhancedCard variant="elevated" padding="lg" hover={false}>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-h2 text-neutral-900">Subscription Overview</h2>
-                <ButtonGroup>
-                  <PremiumButton
-                    variant={viewMode.type === 'grid' ? 'orange-gradient' : 'ghost'}
-                    size="sm"
+                <div className="flex items-center space-x-3 relative z-10">
+                  <button
                     onClick={() => onViewModeChange('grid')}
+                    className={`px-4 py-2 rounded transition-colors cursor-pointer ${
+                      viewMode.type === 'grid'
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}
+                    type="button"
                   >
-                    <Grid className="h-4 w-4 mr-2" />
                     Grid
-                  </PremiumButton>
-                  <PremiumButton
-                    variant={viewMode.type === 'list' ? 'orange-gradient' : 'ghost'}
-                    size="sm"
+                  </button>
+                  <button
                     onClick={() => onViewModeChange('list')}
+                    className={`px-4 py-2 rounded transition-colors cursor-pointer ${
+                      viewMode.type === 'list'
+                        ? 'bg-green-500 text-white'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}
+                    type="button"
                   >
-                    <List className="h-4 w-4 mr-2" />
                     List
-                  </PremiumButton>
-                  <PremiumButton
-                    variant={viewMode.type === 'analytics' ? 'orange-gradient' : 'ghost'}
-                    size="sm"
-                    onClick={() => onViewModeChange('analytics')}
-                  >
-                    <BarChart3 className="h-4 w-4 mr-2" />
-                    Analytics
-                  </PremiumButton>
-                </ButtonGroup>
+                  </button>
+                </div>
               </div>
 
               {viewMode.type === 'list' && (
@@ -222,10 +251,9 @@ export default function PremiumDashboard({
                           <div className="flex-1 min-w-0">
                             <h3 className="text-sm text-neutral-900 leading-tight">{sanitizeInput(subscription.name)}</h3>
                             <p className="text-xs text-neutral-600 leading-tight">
-                              {(AI_TOOL_CATEGORY_LABEL as Record<string,string>)[subscription.category]
-                                || (subscription.category === 'AI Tools' && subscription.subcategory
-                                  ? (AI_TOOL_CATEGORY_LABEL[subscription.subcategory as keyof typeof AI_TOOL_CATEGORY_LABEL] || subscription.subcategory)
-                                  : subscription.category)}
+                              {subscription.category === 'AI Tools' && subscription.subcategory
+                                ? subscription.subcategory
+                                : subscription.category}
                             </p>
                           </div>
                         </div>
