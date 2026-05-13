@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Subscription } from '@/types/subscription';
 import { subscriptionCreateSchema } from '@/lib/validation/schemas';
-import { ZodError } from 'zod';
-
-// Mock data store (in production, this would be a database)
-const subscriptions: Subscription[] = [];
+import { resolveFaviconUrl } from '@/lib/api-helpers';
+import { findSubscription, findSubscriptionIndex, updateSubscription, removeSubscription } from '@/lib/subscription-store';
 
 /**
  * GET /api/subscriptions/[id]
@@ -16,7 +14,7 @@ export async function GET(
 ) {
   try {
     const resolvedParams = await params;
-    const subscription = subscriptions.find(sub => sub.id === resolvedParams.id);
+    const subscription = findSubscription(resolvedParams.id);
 
     if (!subscription) {
       return NextResponse.json(
@@ -49,8 +47,7 @@ export async function PUT(
   try {
     const body = await request.json();
     const resolvedParams = await params;
-    
-    // Validate the incoming data using Zod
+
     const validationResult = subscriptionCreateSchema.safeParse({
       ...body,
       id: resolvedParams.id
@@ -68,7 +65,7 @@ export async function PUT(
     }
 
     const validatedData = validationResult.data;
-    const subscriptionIndex = subscriptions.findIndex(sub => sub.id === resolvedParams.id);
+    const subscriptionIndex = findSubscriptionIndex(resolvedParams.id);
 
     if (subscriptionIndex === -1) {
       return NextResponse.json(
@@ -77,28 +74,19 @@ export async function PUT(
       );
     }
 
-    // Apply favicon logic for AI tools
-    let logo = validatedData.logo;
-    if (validatedData.category === 'AI Tools' && validatedData.url && !logo) {
-      try {
-        const domain = new URL(validatedData.url).hostname;
-        logo = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
-      } catch {
-        // If URL parsing fails, keep original logo or use fallback
-        logo = validatedData.logo || '';
-      }
-    }
+    const logo = resolveFaviconUrl(validatedData.category, validatedData.url, validatedData.logo);
 
+    const existing = findSubscription(resolvedParams.id)!;
     const updatedSubscription: Subscription = {
-      ...subscriptions[subscriptionIndex],
+      ...existing,
       ...validatedData,
       logo: logo,
-      start_date: validatedData.start_date ? new Date(validatedData.start_date) : subscriptions[subscriptionIndex].start_date,
-      renewal_date: validatedData.renewal_date ? new Date(validatedData.renewal_date) : subscriptions[subscriptionIndex].renewal_date,
-      id: resolvedParams.id // Ensure ID doesn't change
+      start_date: validatedData.start_date ? new Date(validatedData.start_date) : existing.start_date,
+      renewal_date: validatedData.renewal_date ? new Date(validatedData.renewal_date) : existing.renewal_date,
+      id: resolvedParams.id
     };
 
-    subscriptions[subscriptionIndex] = updatedSubscription;
+    updateSubscription(subscriptionIndex, updatedSubscription);
 
     return NextResponse.json({
       success: true,
@@ -106,12 +94,7 @@ export async function PUT(
       message: 'Subscription updated successfully'
     });
   } catch (error) {
-    if (error instanceof ZodError) {
-      return NextResponse.json(
-        { success: false, error: 'Validation failed', details: error.issues },
-        { status: 400 }
-      );
-    }
+    console.error('Error updating subscription:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to update subscription' },
       { status: 500 }
@@ -129,7 +112,7 @@ export async function DELETE(
 ) {
   try {
     const resolvedParams = await params;
-    const subscriptionIndex = subscriptions.findIndex(sub => sub.id === resolvedParams.id);
+    const subscriptionIndex = findSubscriptionIndex(resolvedParams.id);
 
     if (subscriptionIndex === -1) {
       return NextResponse.json(
@@ -138,8 +121,7 @@ export async function DELETE(
       );
     }
 
-    const deletedSubscription = subscriptions[subscriptionIndex];
-    subscriptions.splice(subscriptionIndex, 1);
+    const deletedSubscription = removeSubscription(subscriptionIndex);
 
     return NextResponse.json({
       success: true,

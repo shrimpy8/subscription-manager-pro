@@ -1,21 +1,21 @@
 import { NextRequest } from 'next/server';
 import { Subscription } from '@/types/subscription';
 import { subscriptionCreateSchema, subscriptionsBulkSchema } from '@/lib/validation/schemas';
-import { sampleSubscriptions } from '@/lib/sample-data';
-import { 
-  generateRequestId, 
-  createSuccessResponse, 
+import {
+  generateRequestId,
+  createSuccessResponse,
   createErrorResponse,
   parsePaginationParams,
   parseFilterParams,
   applyPagination,
   applyFilters,
   applySorting,
+  resolveFaviconUrl,
   PaginatedResponse
 } from '@/lib/api-helpers';
+import { getSubscriptions, setSubscriptions, addSubscription } from '@/lib/subscription-store';
 
-// Mock data store (in production, this would be a database)
-let subscriptions: Subscription[] = [...sampleSubscriptions];
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
 
 /**
  * GET /api/subscriptions
@@ -23,23 +23,17 @@ let subscriptions: Subscription[] = [...sampleSubscriptions];
  */
 export async function GET(request: NextRequest) {
   const requestId = generateRequestId();
-  
+
   try {
     const { searchParams } = new URL(request.url);
-    
-    // Parse pagination and filter parameters
+
     const pagination = parsePaginationParams(searchParams);
     const filters = parseFilterParams(searchParams);
-    
-    // Apply filters
-    let filteredData = applyFilters(subscriptions, filters);
-    
-    // Apply sorting
+
+    let filteredData = applyFilters(getSubscriptions(), filters);
     filteredData = applySorting(filteredData, filters.sort, filters.order);
-    
-    // Apply pagination
     const { data, has_more, next_cursor } = applyPagination(filteredData, pagination);
-    
+
     const response: PaginatedResponse<Subscription> = {
       success: true,
       data: data as Subscription[],
@@ -48,7 +42,7 @@ export async function GET(request: NextRequest) {
       next_cursor,
       request_id: requestId
     };
-    
+
     return createSuccessResponse(response, requestId);
   } catch {
     return createErrorResponse(
@@ -68,7 +62,7 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   const requestId = generateRequestId();
-  
+
   try {
     const json = await request.json();
     const parsed = subscriptionCreateSchema.safeParse(json);
@@ -84,19 +78,9 @@ export async function POST(request: NextRequest) {
       );
     }
     const body = parsed.data;
-    
-    // Apply favicon logic for AI tools
-    let logo = body.logo;
-    if (body.category === 'AI Tools' && body.url && !logo) {
-      try {
-        const domain = new URL(body.url).hostname;
-        logo = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
-      } catch {
-        // If URL parsing fails, keep original logo or use fallback
-        logo = body.logo || '';
-      }
-    }
-    
+
+    const logo = resolveFaviconUrl(body.category, body.url, body.logo);
+
     const subscription: Subscription = {
       id: `sub-${Date.now()}`,
       name: body.name,
@@ -118,7 +102,6 @@ export async function POST(request: NextRequest) {
       logo: logo,
       tags: [],
       auto_renew: body.auto_renew ?? true,
-      // defaults for optional analytics-related fields
       alternative_services: [],
     };
 
@@ -145,10 +128,12 @@ export async function POST(request: NextRequest) {
         auto_renew: subscription.auto_renew,
         logo_url: subscription.logo
       };
-      
-      console.log('Sending to Supabase:', JSON.stringify(supabaseData, null, 2));
-      
-      const response = await fetch('/api/supabase-proxy?endpoint=/rest/v1/subscriptions', {
+
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Sending to Supabase:', JSON.stringify(supabaseData, null, 2));
+      }
+
+      const response = await fetch(`${APP_URL}/api/supabase-proxy?endpoint=/rest/v1/subscriptions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -156,8 +141,10 @@ export async function POST(request: NextRequest) {
         body: JSON.stringify(supabaseData)
       });
 
-      console.log('Supabase response status:', response.status);
-      
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Supabase response status:', response.status);
+      }
+
       if (!response.ok) {
         const errorText = await response.text();
         console.error('Supabase error response:', errorText);
@@ -165,17 +152,21 @@ export async function POST(request: NextRequest) {
       }
 
       const dbResult = await response.json();
-      console.log('Supabase result:', JSON.stringify(dbResult, null, 2));
-      
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Supabase result:', JSON.stringify(dbResult, null, 2));
+      }
+
       if (!dbResult.success) {
         throw new Error(dbResult.error || 'Database save failed');
       }
+
+      addSubscription(subscription);
     } catch (dbError) {
-      console.error('Database save error:', JSON.stringify(dbError, null, 2));
+      console.error('Database save error:', dbError);
       return createErrorResponse(
         'api_error',
         'database_save_failed',
-        `Failed to save subscription to database: ${dbError instanceof Error ? dbError.message : 'Unknown error'}`,
+        'Failed to save subscription to database',
         undefined,
         requestId,
         500
@@ -206,7 +197,7 @@ export async function POST(request: NextRequest) {
  */
 export async function PUT(request: NextRequest) {
   const requestId = generateRequestId();
-  
+
   try {
     const json = await request.json();
     const parsed = subscriptionsBulkSchema.safeParse(json);
@@ -221,11 +212,11 @@ export async function PUT(request: NextRequest) {
         400
       );
     }
-    subscriptions = parsed.data.subscriptions as Subscription[];
+    setSubscriptions(parsed.data.subscriptions as Subscription[]);
 
     return createSuccessResponse({
       success: true,
-      data: subscriptions,
+      data: getSubscriptions(),
       message: 'Subscriptions updated successfully',
       request_id: requestId
     }, requestId);

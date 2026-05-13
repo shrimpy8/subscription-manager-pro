@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { SUPABASE_URL, SUPABASE_SERVICE_KEY } from '@/lib/supabase-config'
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://127.0.0.1:55421'
-const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+if (!SUPABASE_SERVICE_KEY) {
+  throw new Error('Missing SUPABASE_SERVICE_ROLE_KEY environment variable')
+}
 
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -20,8 +22,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     const resp = await fetch(url, {
       method: 'PATCH',
       headers: {
-        'apikey': SERVICE_KEY,
-        'Authorization': `Bearer ${SERVICE_KEY}`,
+        'apikey': SUPABASE_SERVICE_KEY!,
+        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY!}`,
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Prefer': 'return=representation'
@@ -37,8 +39,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     const data = await resp.json()
     return NextResponse.json({ success: true, data })
   } catch (error) {
-    return NextResponse.json({ success: false, error: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 })
+    console.error('Using PATCH error:', error)
+    return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 })
   }
 }
-
-

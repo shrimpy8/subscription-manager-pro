@@ -1,26 +1,50 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSubscription } from '@/lib/supabase-data';
+import { subscriptionCreateSchema } from '@/lib/validation/schemas';
+
+const MAX_IMPORT_SIZE = 500;
 
 export async function POST(request: NextRequest) {
   try {
     const { subscriptions } = await request.json();
-    
+
     if (!subscriptions || !Array.isArray(subscriptions)) {
       return NextResponse.json(
         { success: false, error: 'Invalid subscriptions data' },
         { status: 400 }
       );
     }
-    
+
+    if (subscriptions.length > MAX_IMPORT_SIZE) {
+      return NextResponse.json(
+        { success: false, error: `Import limited to ${MAX_IMPORT_SIZE} subscriptions at a time` },
+        { status: 400 }
+      );
+    }
+
     let successCount = 0;
     const errors: string[] = [];
-    
-    // Process each subscription
+
     for (const sub of subscriptions) {
       try {
+        const validation = subscriptionCreateSchema.safeParse({
+          name: sub.name || 'Unknown',
+          category: sub.category || 'Other',
+          cost: parseFloat(sub.cost) || 0,
+          billing_cycle: sub.billing_cycle || 'Monthly',
+          status: sub.status || 'active',
+          usage_importance: sub.usage_importance || 'medium',
+          usage_frequency: sub.usage_frequency || 'monthly',
+        });
+
+        if (!validation.success) {
+          errors.push(`Validation failed for ${sub.name}: ${validation.error.issues[0]?.message}`);
+          continue;
+        }
+
         // Transform CSV data to Subscription format
         const subscription = {
-          id: sub.id || `sub-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          id: sub.id || `sub-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
           name: sub.name || 'Unknown',
           category: sub.category || 'Other',
           subcategory: sub.subcategory || '',
@@ -53,7 +77,7 @@ export async function POST(request: NextRequest) {
           last_used: undefined,
           fallback_icon: '📦'
         };
-        
+
         const result = await createSubscription(subscription);
         if (result.success) {
           successCount++;
@@ -64,17 +88,18 @@ export async function POST(request: NextRequest) {
         errors.push(`Error processing ${sub.name}: ${error instanceof Error ? error.message : 'Unknown error'}`);
       }
     }
-    
+
     return NextResponse.json({
       success: successCount > 0,
       count: successCount,
       total: subscriptions.length,
-      errors: errors.slice(0, 10) // Limit error messages
+      errors: errors.slice(0, 10)
     });
-    
+
   } catch (error) {
+    console.error('Import failed:', error)
     return NextResponse.json(
-      { success: false, error: 'Import failed: ' + (error instanceof Error ? error.message : 'Unknown error') },
+      { success: false, error: 'Import failed' },
       { status: 500 }
     );
   }

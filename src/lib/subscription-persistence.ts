@@ -274,7 +274,7 @@ export function exportSubscriptionsToCSV(subscriptions: Subscription[]): string 
   ]);
 
   const csvContent = [headers, ...rows]
-    .map(row => row.map(field => `"${String(field).replace(/"/g, '""')}"`).join(','))
+    .map(row => row.map(field => `"${String(field).replace(/"/g, '""').replace(/\n/g, '\\n').replace(/\r/g, '\\r')}"`).join(','))
     .join('\n');
 
   return csvContent;

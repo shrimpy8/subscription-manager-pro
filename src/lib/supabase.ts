@@ -39,26 +39,26 @@ export function getSupabaseAdmin() {
       )
     }
 
-    supabaseAdminInstance = createClient(supabaseUrl, supabaseServiceKey)
+    supabaseAdminInstance = createClient(supabaseUrl!, supabaseServiceKey)
   }
 
   return supabaseAdminInstance
 }
 
 // For backward compatibility - but don't use this in client components
-export const supabaseAdmin = typeof window === 'undefined' ? getSupabaseAdmin() : null as any
+export const supabaseAdmin: ReturnType<typeof createClient> | null = typeof window === 'undefined' ? getSupabaseAdmin() : null
 
 // Test connection function
 export async function testSupabaseConnection() {
   try {
-    console.log('Testing Supabase connection...')
-    console.log('URL:', supabaseUrl)
-    console.log('Key:', supabaseAnonKey ? 'Present' : 'Missing')
-    console.log('Environment:', typeof window !== 'undefined' ? 'Browser' : 'Server')
-    
-    // Use server-side proxy to avoid browser network issues
-    console.log('Testing via server-side proxy...')
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Testing Supabase connection...')
+    }
+
     try {
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Testing via server-side proxy...')
+      }
       const proxyResponse = await fetch('/api/supabase-proxy?endpoint=/rest/v1/subscriptions&query=select=id&limit=1', {
         method: 'GET',
         headers: {
@@ -66,35 +66,36 @@ export async function testSupabaseConnection() {
           'Accept': 'application/json'
         }
       })
-      
-      console.log('Proxy response status:', proxyResponse.status)
-      console.log('Proxy response ok:', proxyResponse.ok)
-      
+
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Proxy response status:', proxyResponse.status)
+        console.log('Proxy response ok:', proxyResponse.ok)
+      }
+
       if (!proxyResponse.ok) {
         const errorText = await proxyResponse.text()
-        console.log('Proxy response error:', errorText)
         return { success: false, error: `Proxy request failed: ${proxyResponse.status} - ${errorText}` }
       }
-      
+
       const proxyData = await proxyResponse.json()
-      console.log('Proxy response data:', proxyData)
-      
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Proxy response data:', proxyData)
+      }
+
       if (proxyData.success) {
-        console.log('Proxy connection successful!')
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Proxy connection successful!')
+        }
         return { success: true, data: proxyData.data }
       } else {
-        console.log('Proxy returned error:', proxyData.error)
         return { success: false, error: `Proxy error: ${proxyData.error}` }
       }
-      
+
     } catch (proxyErr) {
       console.error('Proxy request error:', proxyErr)
-      console.error('Proxy error type:', typeof proxyErr)
-      console.error('Proxy error message:', proxyErr instanceof Error ? proxyErr.message : 'Unknown')
-      
       return { success: false, error: `Proxy request failed: ${proxyErr}` }
     }
-    
+
   } catch (err) {
     console.error('Supabase connection test error:', err)
     return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
