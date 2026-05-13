@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Subscription } from '@/types/subscription';
-
-// Mock data store (in production, this would be a database)
-const subscriptions: Subscription[] = [];
+import { getSubscriptions } from '@/lib/subscription-store';
+import { exportSubscriptionsToCSV } from '@/lib/subscription-persistence';
 
 /**
  * GET /api/subscriptions/export
@@ -13,55 +11,10 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const rawFormat = (searchParams.get('format') || '').toLowerCase();
     const format = rawFormat === 'json' ? 'json' : 'csv';
+    const subscriptions = getSubscriptions();
 
     if (format === 'csv') {
-      const headers = [
-        'Name',
-        'Category',
-        'Subcategory',
-        'Plan',
-        'Cost',
-        'Currency',
-        'Billing Cycle',
-        'Status',
-        'Start Date',
-        'Renewal Date',
-        'Priority',
-        'Usage Frequency',
-        'URL',
-        'Description',
-        'Notes',
-        'Account Email',
-        'Auto Renew',
-        'Safe for Work',
-        'China Region Only'
-      ];
-
-      const rows = subscriptions.map(sub => [
-        sub.name,
-        sub.category,
-        sub.subcategory || '',
-        sub.plan || '',
-        sub.cost.toString(),
-        sub.currency,
-        sub.billing_cycle,
-        sub.status,
-        sub.start_date.toISOString().split('T')[0],
-        sub.renewal_date.toISOString().split('T')[0],
-        sub.usage_importance,
-        sub.usage_frequency,
-        sub.url,
-        sub.description,
-        sub.notes,
-        sub.account_email,
-        sub.auto_renew ? 'Yes' : 'No',
-        sub.safe_for_work ? 'Yes' : 'No',
-        sub.china_region_only ? 'Yes' : 'No'
-      ]);
-
-      const csvContent = [headers, ...rows]
-        .map(row => row.map(field => `"${String(field).replace(/"/g, '""')}"`).join(','))
-        .join('\n');
+      const csvContent = exportSubscriptionsToCSV(subscriptions);
 
       return new NextResponse(csvContent, {
         status: 200,
@@ -72,7 +25,6 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Default JSON export
     return NextResponse.json({
       success: true,
       data: subscriptions,

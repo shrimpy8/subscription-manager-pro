@@ -168,10 +168,18 @@ export const PRODUCTION_DEPLOYMENT_CHECKLIST = [
 // Health check for production
 export async function productionHealthCheck() {
   try {
-    // Use local Supabase instance for development
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://127.0.0.1:55421'
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH'
-    
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+      return {
+        status: 'unhealthy',
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV,
+        error: 'Missing Supabase environment variables'
+      }
+    }
+
     const client = createClient(supabaseUrl, supabaseAnonKey)
     const { error } = await client
       .from('subscriptions')
@@ -202,22 +210,20 @@ export async function productionHealthCheck() {
 // Production configuration validation
 export function validateProductionConfig(): { valid: boolean; errors: string[] } {
   const errors: string[] = []
-  
-  // For local development, use default values if env vars are missing
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://127.0.0.1:55421'
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH'
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'sb_secret_N7UND0UgjKTVK-Uodkm0Hg_xSvEMPvz'
-  
-  // Only validate format if values are provided
-  if (process.env.NEXT_PUBLIC_SUPABASE_URL && !supabaseUrl.startsWith('http')) {
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+  if (supabaseUrl && !supabaseUrl.startsWith('http')) {
     errors.push('Invalid Supabase URL format')
   }
-  
-  if (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY && !anonKey.startsWith('sb_')) {
+
+  if (anonKey && !anonKey.startsWith('sb_')) {
     errors.push('Invalid Supabase anonymous key format')
   }
-  
-  if (process.env.SUPABASE_SERVICE_ROLE_KEY && !serviceKey.startsWith('sb_')) {
+
+  if (serviceKey && !serviceKey.startsWith('sb_')) {
     errors.push('Invalid Supabase service role key format')
   }
   

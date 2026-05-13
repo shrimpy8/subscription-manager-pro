@@ -1,11 +1,24 @@
 import { NextResponse } from 'next/server';
 
+export function resolveFaviconUrl(category: string, url?: string, existingLogo?: string): string {
+  if (existingLogo) return existingLogo;
+  if (category === 'AI Tools' && url) {
+    try {
+      const domain = new URL(url).hostname;
+      return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+    } catch {
+      return '';
+    }
+  }
+  return '';
+}
+
 /**
  * Generate a unique request ID for API tracking
  */
 export function generateRequestId(): string {
   const timestamp = Date.now();
-  const random = Math.random().toString(36).substr(2, 9);
+  const random = Math.random().toString(36).substring(2, 11);
   return `req_${timestamp}_${random}`;
 }
 

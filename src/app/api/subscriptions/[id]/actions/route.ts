@@ -1,15 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Subscription } from '@/types/subscription';
 import { z } from 'zod';
-import { ZodError } from 'zod';
+import { findSubscription, findSubscriptionIndex, updateSubscription, addSubscription } from '@/lib/subscription-store';
 
 // Define valid actions
 const actionSchema = z.object({
   action: z.enum(['pause', 'duplicate', 'cancel', 'reactivate']),
 });
-
-// Mock data store (in production, this would be a database)
-const subscriptions: Subscription[] = [];
 
 /**
  * POST /api/subscriptions/[id]/actions
@@ -22,8 +19,7 @@ export async function POST(
   try {
     const body = await request.json();
     const resolvedParams = await params;
-    
-    // Validate the incoming action using Zod
+
     const validationResult = actionSchema.safeParse(body);
 
     if (!validationResult.success) {
@@ -38,7 +34,7 @@ export async function POST(
     }
 
     const { action } = validationResult.data;
-    const subscriptionIndex = subscriptions.findIndex(sub => sub.id === resolvedParams.id);
+    const subscriptionIndex = findSubscriptionIndex(resolvedParams.id);
 
     if (subscriptionIndex === -1) {
       return NextResponse.json(
@@ -47,19 +43,18 @@ export async function POST(
       );
     }
 
-    const subscription = subscriptions[subscriptionIndex];
+    const subscription = findSubscription(resolvedParams.id)!;
     let result: Subscription | Subscription[] = subscription;
 
     switch (action) {
-      case 'pause':
-        subscriptions[subscriptionIndex] = {
-          ...subscription,
-          status: subscription.status === 'paused' ? 'active' : 'paused'
-        };
-        result = subscriptions[subscriptionIndex];
+      case 'pause': {
+        const updated = { ...subscription, status: subscription.status === 'paused' ? 'active' : 'paused' } as Subscription;
+        updateSubscription(subscriptionIndex, updated);
+        result = updated;
         break;
+      }
 
-      case 'duplicate':
+      case 'duplicate': {
         const duplicated: Subscription = {
           ...subscription,
           id: `sub-${Date.now()}`,
@@ -68,25 +63,24 @@ export async function POST(
           start_date: new Date(),
           renewal_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
         };
-        subscriptions.push(duplicated);
+        addSubscription(duplicated);
         result = duplicated;
         break;
+      }
 
-      case 'cancel':
-        subscriptions[subscriptionIndex] = {
-          ...subscription,
-          status: 'canceled'
-        };
-        result = subscriptions[subscriptionIndex];
+      case 'cancel': {
+        const updated = { ...subscription, status: 'canceled' } as Subscription;
+        updateSubscription(subscriptionIndex, updated);
+        result = updated;
         break;
+      }
 
-      case 'reactivate':
-        subscriptions[subscriptionIndex] = {
-          ...subscription,
-          status: 'active'
-        };
-        result = subscriptions[subscriptionIndex];
+      case 'reactivate': {
+        const updated = { ...subscription, status: 'active' } as Subscription;
+        updateSubscription(subscriptionIndex, updated);
+        result = updated;
         break;
+      }
     }
 
     return NextResponse.json({
@@ -95,12 +89,7 @@ export async function POST(
       message: `Subscription ${action}ed successfully`
     });
   } catch (error) {
-    if (error instanceof ZodError) {
-      return NextResponse.json(
-        { success: false, error: 'Validation failed', details: error.issues },
-        { status: 400 }
-      );
-    }
+    console.error('Error performing action:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to perform action' },
       { status: 500 }
