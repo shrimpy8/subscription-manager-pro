@@ -1,12 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSubscriptions } from '@/lib/subscription-store';
 import { exportSubscriptionsToCSV } from '@/lib/subscription-persistence';
+import { assertWriteAllowed } from '@/lib/api-guard';
 
 /**
  * GET /api/subscriptions/export
  * Export all subscriptions to CSV format
  */
 export async function GET(request: NextRequest) {
+  // Export exposes all user data — enforce same-origin even for GET
+  const guard = assertWriteAllowed(request, 'GET');
+  if (guard) return guard;
+
   try {
     const { searchParams } = new URL(request.url);
     const rawFormat = (searchParams.get('format') || '').toLowerCase();

@@ -7,6 +7,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { notFound } from 'next/navigation'
 import { SupabaseIntegration } from '@/components/supabase/supabase-integration'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -16,6 +17,10 @@ import { runSupabaseIntegrationTestSuite, IntegrationTestSuite, IntegrationTestR
 import { TestTube, Database, RefreshCw, CheckCircle, XCircle, AlertTriangle } from 'lucide-react'
 
 export default function SupabaseTestPage() {
+  if (process.env.NODE_ENV !== 'development') {
+    notFound();
+  }
+
   const [testResults, setTestResults] = useState<IntegrationTestSuite | null>(null)
   const [running, setRunning] = useState(false)
   const [error, setError] = useState<string | null>(null)

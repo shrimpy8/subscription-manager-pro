@@ -7,6 +7,7 @@
 'use client'
 
 import React from 'react'
+import { notFound } from 'next/navigation'
 import { IntegrationSummary } from '@/components/supabase/integration-summary'
 import { SupabaseIntegration } from '@/components/supabase/supabase-integration'
 import { ProductionMonitoring } from '@/components/supabase/production-monitoring'
@@ -24,6 +25,10 @@ import {
 } from 'lucide-react'
 
 export default function SupabaseIntegrationPage() {
+  if (process.env.NODE_ENV !== 'development') {
+    notFound();
+  }
+
   const handleLaunch = () => {
     window.open('/supabase-launch', '_blank')
   }

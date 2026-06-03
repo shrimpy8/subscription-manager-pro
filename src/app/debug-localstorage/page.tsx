@@ -1,9 +1,13 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { notFound } from 'next/navigation';
 import { getLocalSubscriptions } from '@/lib/supabase-sync';
 
 export default function DebugLocalStoragePage() {
+  if (process.env.NODE_ENV !== 'development') {
+    notFound();
+  }
   const [localData, setLocalData] = useState<Record<string, unknown> | null>(null);
   const [count, setCount] = useState(0);
   const [allKeys, setAllKeys] = useState<string[]>([]);

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { notFound } from 'next/navigation';
 
 interface FieldConversion {
   currentField: string;
@@ -12,6 +13,10 @@ interface FieldConversion {
 }
 
 export default function FieldConversionAnalysisPage() {
+  if (process.env.NODE_ENV !== 'development') {
+    notFound();
+  }
+
   const [conversions, setConversations] = useState<FieldConversion[]>([]);
 
   useEffect(() => {

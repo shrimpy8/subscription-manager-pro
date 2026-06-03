@@ -7,6 +7,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { notFound } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -27,6 +28,10 @@ import {
 } from 'lucide-react'
 
 export default function SupabaseLaunchPage() {
+  if (process.env.NODE_ENV !== 'development') {
+    notFound();
+  }
+
   const [launchResult, setLaunchResult] = useState<LaunchResult | null>(null)
   const [isLaunching, setIsLaunching] = useState(false)
   const [currentStep, setCurrentStep] = useState<string | null>(null)

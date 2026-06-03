@@ -7,6 +7,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { notFound } from 'next/navigation'
 import { ProductionMonitoring } from '@/components/supabase/production-monitoring'
 import { SupabaseIntegration } from '@/components/supabase/supabase-integration'
 import { Button } from '@/components/ui/button'
@@ -24,6 +25,10 @@ import {
 } from 'lucide-react'
 
 export default function SupabaseProductionPage() {
+  if (process.env.NODE_ENV !== 'development') {
+    notFound();
+  }
+
   const [configValidation, setConfigValidation] = useState<{ valid: boolean; errors: string[] } | null>(null)
   const [healthCheck, setHealthCheck] = useState<{ status: string; error?: string; timestamp?: string; environment?: string; database?: string; version?: string } | null>(null)
   const [loading, setLoading] = useState(false)

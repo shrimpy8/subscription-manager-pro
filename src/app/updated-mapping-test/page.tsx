@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { notFound } from 'next/navigation';
 import { getLocalSubscriptions } from '@/lib/supabase-sync';
 
 interface UpdatedMapping {
@@ -12,6 +13,10 @@ interface UpdatedMapping {
 }
 
 export default function UpdatedMappingTestPage() {
+  if (process.env.NODE_ENV !== 'development') {
+    notFound();
+  }
+
   const [subscriptions, setSubscriptions] = useState<unknown[]>([]);
   const [mappings, setMappings] = useState<UpdatedMapping[]>([]);
   const [isClient, setIsClient] = useState(false);
