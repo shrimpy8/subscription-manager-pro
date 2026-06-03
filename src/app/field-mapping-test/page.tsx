@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { notFound } from 'next/navigation';
 import { getLocalSubscriptions } from '@/lib/supabase-sync';
 import { Subscription } from '@/types/subscription';
 
@@ -15,6 +16,10 @@ interface FieldMapping {
 }
 
 export default function FieldMappingTestPage() {
+  if (process.env.NODE_ENV !== 'development') {
+    notFound();
+  }
+
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [fieldMappings, setFieldMappings] = useState<FieldMapping[]>([]);
   const [unmappedFields, setUnmappedFields] = useState<string[]>([]);

@@ -3,6 +3,8 @@ import { Subscription } from '@/types/subscription';
 import { subscriptionCreateSchema } from '@/lib/validation/schemas';
 import { resolveFaviconUrl } from '@/lib/api-helpers';
 import { findSubscription, findSubscriptionIndex, updateSubscription, removeSubscription } from '@/lib/subscription-store';
+import { assertWriteAllowed } from '@/lib/api-guard';
+import { updateSubscription as supabaseUpdateSubscription, deleteSubscription as supabaseDeleteSubscription } from '@/lib/supabase-data';
 
 /**
  * GET /api/subscriptions/[id]
@@ -44,6 +46,9 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const guard = assertWriteAllowed(request, 'PUT');
+  if (guard) return guard;
+
   try {
     const body = await request.json();
     const resolvedParams = await params;
@@ -86,6 +91,19 @@ export async function PUT(
       id: resolvedParams.id
     };
 
+    // Persist to Supabase first; only update in-memory store on success (or local-only mode)
+    const supabaseConfigured = !!(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+    if (supabaseConfigured) {
+      const dbResult = await supabaseUpdateSubscription(resolvedParams.id, updatedSubscription);
+      if (!dbResult.success) {
+        console.error('Supabase update failed:', dbResult.error);
+        return NextResponse.json(
+          { success: false, error: 'Failed to persist change remotely' },
+          { status: 500 }
+        );
+      }
+    }
+
     updateSubscription(subscriptionIndex, updatedSubscription);
 
     return NextResponse.json({
@@ -110,6 +128,9 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const guard = assertWriteAllowed(request, 'DELETE');
+  if (guard) return guard;
+
   try {
     const resolvedParams = await params;
     const subscriptionIndex = findSubscriptionIndex(resolvedParams.id);
@@ -119,6 +140,19 @@ export async function DELETE(
         { success: false, error: 'Subscription not found' },
         { status: 404 }
       );
+    }
+
+    // Persist deletion to Supabase first; only remove from in-memory store on success (or local-only mode)
+    const supabaseConfigured = !!(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+    if (supabaseConfigured) {
+      const dbResult = await supabaseDeleteSubscription(resolvedParams.id);
+      if (!dbResult.success) {
+        console.error('Supabase delete failed:', dbResult.error);
+        return NextResponse.json(
+          { success: false, error: 'Failed to persist change remotely' },
+          { status: 500 }
+        );
+      }
     }
 
     const deletedSubscription = removeSubscription(subscriptionIndex);

@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { Subscription } from '@/types/subscription';
 import { subscriptionCreateSchema, subscriptionsBulkSchema } from '@/lib/validation/schemas';
+import { assertWriteAllowed } from '@/lib/api-guard';
 import {
   generateRequestId,
   createSuccessResponse,
@@ -13,7 +14,8 @@ import {
   resolveFaviconUrl,
   PaginatedResponse
 } from '@/lib/api-helpers';
-import { getSubscriptions, setSubscriptions, addSubscription } from '@/lib/subscription-store';
+import { getSubscriptions, setSubscriptions, addSubscription } from '@/lib/subscription-store'
+import { updateSubscription as supabaseUpdateSubscription } from '@/lib/supabase-data';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
 
@@ -62,6 +64,9 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   const requestId = generateRequestId();
+
+  const guard = assertWriteAllowed(request, 'POST');
+  if (guard) return guard;
 
   try {
     const json = await request.json();
@@ -198,6 +203,9 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   const requestId = generateRequestId();
 
+  const guard = assertWriteAllowed(request, 'PUT');
+  if (guard) return guard;
+
   try {
     const json = await request.json();
     const parsed = subscriptionsBulkSchema.safeParse(json);
@@ -212,7 +220,29 @@ export async function PUT(request: NextRequest) {
         400
       );
     }
-    setSubscriptions(parsed.data.subscriptions as Subscription[]);
+    const updatedSubscriptions = parsed.data.subscriptions as Subscription[];
+
+    // Persist each updated subscription to Supabase first; only update in-memory store if all succeed (or local-only mode)
+    const supabaseConfigured = !!(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+    if (supabaseConfigured) {
+      const dbResults = await Promise.all(
+        updatedSubscriptions.map((sub) => supabaseUpdateSubscription(sub.id, sub))
+      );
+      const firstFailure = dbResults.find((r) => !r.success);
+      if (firstFailure) {
+        console.error('Supabase bulk PUT failed:', firstFailure.error);
+        return createErrorResponse(
+          'api_error',
+          'database_save_failed',
+          'Failed to persist change remotely',
+          undefined,
+          requestId,
+          500
+        );
+      }
+    }
+
+    setSubscriptions(updatedSubscriptions);
 
     return createSuccessResponse({
       success: true,

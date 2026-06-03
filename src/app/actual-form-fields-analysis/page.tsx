@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { notFound } from 'next/navigation';
 
 interface FormFieldAnalysis {
   formField: string;
@@ -12,6 +13,10 @@ interface FormFieldAnalysis {
 }
 
 export default function ActualFormFieldsAnalysisPage() {
+  if (process.env.NODE_ENV !== 'development') {
+    notFound();
+  }
+
   const [analyses, setAnalyses] = useState<FormFieldAnalysis[]>([]);
 
   useEffect(() => {

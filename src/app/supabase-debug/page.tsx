@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { notFound } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { testSupabaseConnection } from '@/lib/supabase'
 import { SupabaseDataAccess } from '@/lib/supabase-data'
@@ -16,6 +17,10 @@ interface TestResult {
 }
 
 export default function SupabaseDebugPage() {
+  if (process.env.NODE_ENV !== 'development') {
+    notFound();
+  }
+
   const [tests, setTests] = useState<Record<string, { status: 'pending' | 'success' | 'error', message: string, duration?: number }>>({})
   const [isRunning, setIsRunning] = useState(false)
 

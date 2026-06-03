@@ -9,11 +9,25 @@ const ALLOWED_ENDPOINTS = [
   '/rest/v1/subscriptions',
 ] as const
 
+const ALLOWED_METHODS = new Set(['GET', 'POST', 'PATCH', 'DELETE'])
+
+// Disallowed query param keys that reference other tables or RPC calls
+const DISALLOWED_QUERY_PATTERNS = /\b(rpc|from|join|table)\b/i
+
 function isAllowedEndpoint(endpoint: string): boolean {
-  return ALLOWED_ENDPOINTS.some(allowed => endpoint.startsWith(allowed))
+  // Exact match only — no subpath traversal (e.g. /rest/v1/subscriptions/other_table blocked)
+  return ALLOWED_ENDPOINTS.some((allowed) => endpoint === allowed)
+}
+
+function isAllowedQuery(query: string): boolean {
+  // Reject query strings that reference RPC calls or other tables
+  return !DISALLOWED_QUERY_PATTERNS.test(query)
 }
 
 export async function GET(request: NextRequest) {
+  if (!ALLOWED_METHODS.has('GET')) {
+    return NextResponse.json({ success: false, error: 'Method not allowed' }, { status: 405 })
+  }
   try {
     const { searchParams } = new URL(request.url)
     const endpoint = searchParams.get('endpoint') || '/rest/v1/subscriptions'
@@ -26,6 +40,9 @@ export async function GET(request: NextRequest) {
     }
 
     const query = searchParams.get('query') || 'select=id&limit=1'
+    if (!isAllowedQuery(query)) {
+      return NextResponse.json({ success: false, error: 'Query not allowed' }, { status: 403 })
+    }
     const url = `${SUPABASE_URL}${endpoint}?${query}`
 
     const response = await fetch(url, {
@@ -117,6 +134,9 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  if (!ALLOWED_METHODS.has('DELETE')) {
+    return NextResponse.json({ success: false, error: 'Method not allowed' }, { status: 405 })
+  }
   try {
     const { searchParams } = new URL(request.url)
     const endpoint = searchParams.get('endpoint') || '/rest/v1/subscriptions'
@@ -129,6 +149,9 @@ export async function DELETE(request: NextRequest) {
     }
 
     const query = searchParams.get('query') || 'select=id&limit=1'
+    if (!isAllowedQuery(query)) {
+      return NextResponse.json({ success: false, error: 'Query not allowed' }, { status: 403 })
+    }
     const url = `${SUPABASE_URL}${endpoint}?${query}`
 
     const response = await fetch(url, {
@@ -170,6 +193,9 @@ export async function DELETE(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
+  if (!ALLOWED_METHODS.has('PATCH')) {
+    return NextResponse.json({ success: false, error: 'Method not allowed' }, { status: 405 })
+  }
   try {
     const { searchParams } = new URL(request.url)
     const endpoint = searchParams.get('endpoint') || '/rest/v1/subscriptions'
@@ -182,6 +208,9 @@ export async function PATCH(request: NextRequest) {
     }
 
     const query = searchParams.get('query') || ''
+    if (query && !isAllowedQuery(query)) {
+      return NextResponse.json({ success: false, error: 'Query not allowed' }, { status: 403 })
+    }
     const url = `${SUPABASE_URL}${endpoint}${query ? `?${query}` : ''}`
 
     const body = await request.text()
