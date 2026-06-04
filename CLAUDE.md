@@ -1,5 +1,7 @@
 # CLAUDE.md — subscription-manager-pro
 
+> **Scope:** project-specific decisions, invariants, and gotchas only. General engineering, security, language, and testing standards are handled globally and are not restated here.
+
 ## Stack
 - Next.js 14 App Router, TypeScript strict mode
 - Supabase (Postgres + auth)
